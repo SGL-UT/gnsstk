@@ -65,6 +65,12 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc StdNavTimeOffset::isSameData()
+      * 
+      * No additional data checked at GalINavTimeOffset 
+      */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double tow;       ///< TOW field from word type 6.
    };
 

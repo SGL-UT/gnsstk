@@ -62,6 +62,13 @@ namespace gnsstk
           * @return true if this message is valid according to ICD criteria.
           */
       bool validate() const override;
+      
+      /*! @copydoc NeQuickIonoNavData::isSameData()
+      * 
+      * No additional data checked at GalINavIono 
+      */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
    };
 
       //@}

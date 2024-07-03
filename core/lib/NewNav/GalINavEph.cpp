@@ -150,4 +150,32 @@ namespace gnsstk
         << "Bgd(E1-E5b)         : " << setw(13) << bgdE5bE1 << " sec" << endl;
       s.flags(oldFlags);
    }
+
+   bool GalINavEph ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalINavEph> eph =
+         std::dynamic_pointer_cast<GalINavEph>(right);
+      if (!eph)
+      {
+            // not the same type.
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, true) &&
+              (bgdE5aE1 == eph->bgdE5aE1) &&
+              (bgdE5bE1 == eph->bgdE5bE1) &&
+              (sisaIndex == eph->sisaIndex) &&
+              (svid == eph->svid) &&
+              (iodnav1 == eph->iodnav1) &&
+              (iodnav2 == eph->iodnav2) &&
+              (iodnav3 == eph->iodnav3) &&
+              (iodnav4 == eph->iodnav4) &&
+              (hsE5b == eph->hsE5b) &&
+              (hsE1B == eph->hsE1B) &&
+              (dvsE5b == eph->dvsE5b) &&
+              (dvsE1B == eph->dvsE1B));
+
+
+            //   Checked 6/11/2024
+   }
 }

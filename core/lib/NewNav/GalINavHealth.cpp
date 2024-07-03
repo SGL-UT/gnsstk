@@ -154,4 +154,19 @@ namespace gnsstk
             return SVHealth::Unknown;
       }
    }
+
+   bool GalINavHealth::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalINavHealth> health = std::dynamic_pointer_cast<GalINavHealth>(right);
+      
+      if (!health)
+      {
+         return false;
+      }
+
+      return (NavData::isSameData(right, true) &&
+         getHealth() == health->getHealth());
+   }
+
 }
