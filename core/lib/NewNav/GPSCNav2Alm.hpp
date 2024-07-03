@@ -79,6 +79,21 @@ namespace gnsstk
          /// Fill the beginFit and endFit values for this object.
       void fixFit();
 
+      /*! @copydoc OrbitDataKepler::isSameData()
+      *
+      * Additional Checks at the GPSCNav2Alm Level
+      *
+      *    <table>
+      *     <tr><td>healthL1<td>L1 signal health
+      *     <tr><td>healthL2<td>L2 signal health
+      *     <tr><td>healthL5<td>L5 signal health
+      *     <tr><td>deltai<td>Inclination in rad relative to 0.3*pi rad
+      *     <tr><td>wna<td>Reference week for toa
+      *     <tr><td>toa<td>Convenience storage of unqualified toa
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /// @note The health flags are true if unhealthy.
       bool healthL1;      ///< L1 signal health.
       bool healthL2;      ///< L2 signal health.

@@ -101,6 +101,23 @@ namespace gnsstk
          /** @todo deal with the fact that there are two subframes in
           * this, i.e. implement a proper getUserTime() method */
 
+      /*! @copydoc InterSigCorr::isSameData()
+      *
+      * Additional Checks at the GPSCNavISC Level
+      *
+      *    <table>
+      *     <tr><td>haveSF2<td>True if iscL1CP and iscL1CD are set
+      *     <tr><td>haveSF3<td>True if iscL1CA,iscL2C,iscL5I5,iscL5Q5 are set
+      *     <tr><td>iscL1CP<td>Intersignal corrections for L1 CP
+      *     <tr><td>iscL1CD<td>Intersignal corrections for L1 CD
+      *     <tr><td>iscL1CA<td>Intersignal corrections for L1 C/A
+      *     <tr><td>iscL2C<td>Intersignal corrections for L2C
+      *     <tr><td>iscL5I5<td>Intersignal corrections for L5 in-phase
+      *     <tr><td>iscL5Q5<td>Intersignal corrections for L5 quadrature
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       bool haveSF2;     ///< True if iscL1CP and iscL1CD are set.
       bool haveSF3;     ///< True if iscL1CA,iscL2C,iscL5I5,iscL5Q5 are set.
       CommonTime xmit2; ///< Transmit time of subframe 2.

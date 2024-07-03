@@ -81,6 +81,28 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc OrbitDataKepler::isSameData()
+      *
+      * Additional Checks at the GPSCNav2Eph Level
+      *
+      *    <table>
+      *     <tr><td>itow<td>Interval time of week
+      *     <tr><td>healthL1C<td>L1C signal health
+      *     <tr><td>uraED<td>5-bit URA index from message type 10
+      *     <tr><td>uraNED0<td>non-elevation dependent URA from clock message
+      *     <tr><td>uraNED1<td>non-elevation dependent URA from clock message
+      *     <tr><td>uraNED2<td>non-elevation dependent URA from clock message
+      *     <tr><td>integStat<td>Integrity status flag
+      *     <tr><td>deltaA<td>Semi-major axis relative to reference (Aref)
+      *     <tr><td>dOMEGAdot<td>Rate of right ascension relative to -2.6e-9*pi
+      *     <tr><td>top<td>Time of prediction
+      *     <tr><td>tgd<td>Ionospheric group delay in seconds. NaN=invalid
+      *     <tr><td>iscL1CP<td>Inter-signal correction for L1CP
+      *     <tr><td>iscL1CD<td>Inter-signal correction for L1CD
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       uint8_t itow;       ///< Interval time of week.
          /// @note The health flags are true if unhealthy.
       bool healthL1C;     ///< L1C signal health.
