@@ -117,4 +117,20 @@ namespace gnsstk
       return (Hj || lj) ? SVHealth::Unhealthy : SVHealth::Healthy;
    }
 
+
+   bool GLOCNavHealth::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOCNavHealth> health = std::dynamic_pointer_cast<GLOCNavHealth>(right);
+      if (!health)
+      {
+         return false;
+      }
+      
+      return (NavHealthData::isSameData(right, true) && 
+            (getHealth() == health->getHealth()));
+
+      // Checked 6/13/2024
+   } 
+
 }

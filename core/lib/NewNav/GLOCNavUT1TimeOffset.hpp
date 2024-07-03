@@ -98,6 +98,21 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the GLOCNavUT1TimeOffset Level 
+      * 
+      *    <table>
+      *     <tr><td>refTime<td>Reference time for computation
+      *     <tr><td>NB<td>Day since the most recent leap year-aligned 4 years
+      *     <tr><td>B0<td>Time bias in seconds
+      *     <tr><td>B1<td>Time drift in s/s
+      *     <tr><td>B2<td>Time drift rate in s/s**2
+      *     <tr><td>UTCTAI<td>Leap seconds - not really used 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       CommonTime refTime; ///< Reference time for computation.
       unsigned NB;   ///< Day since the most recent leap year-aligned 4 years.
       double B0;     ///< Time bias in seconds.

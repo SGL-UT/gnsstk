@@ -121,6 +121,30 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpTerse(std::ostream& s) const;
 
+      /*! @copydoc GLOCNavData::isSameData() 
+      * 
+      * Additional Checks at the GLOCNavAlm Level 
+      * 
+      *    <table>
+      *     <tr><td>Toa<td>Reference time for almanac
+      *     <tr><td>orbitType<td>Orbit type
+      *     <tr><td>aoa<td>Age of almanac (E<sub>A</sub>)
+      *     <tr><td>NA<td>Almanac reference time days since leap year
+      *     <tr><td>statusReg<td>Status register (SR<sub>A</sub> 5.3.2.7)
+      *     <tr><td>satType<td>What satellite j is and what it transmits
+      *     <tr><td>tau<td>Time correction from L3OCd to GLONASS
+      *     <tr><td>lambda<td>Longitude of first ascending node (semicirc)
+      *     <tr><td>tLambda<td>Instant in Moscow time when passing lambda
+      *     <tr><td>deltai<td>Inclination offset from 64.8 degrees (semicirc)
+      *     <tr><td>ecc<td>Eccentricity at t<sub>lambda<sub>A</sub></sub>
+      *     <tr><td>omega<td>Almanac parameter for argument of perigee (semicirc)
+      *     <tr><td>deltaT<td>Draconic orbital period offset
+      *     <tr><td>deltaTdot<td>Draconic orbital period rate 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          /** @note the data members are being left in units of
           * semi-circles rather than converting to radians as typical,
           * so that the math in the ICD matches the math in the
