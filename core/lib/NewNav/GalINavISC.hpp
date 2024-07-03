@@ -96,6 +96,17 @@ namespace gnsstk
          const override
       { return InterSigCorr::getISC(oid1, oid2, corrOut); }
 
+      /*! @copydoc InterSigCorr::isSameData() 
+      * 
+      * Additional Checks at the GalINavISC Level 
+      * 
+      *    <table>
+      *     <tr><td>bgdE1E5a<td>Broadcast group delay for the E1,E5a pair
+      *     <tr><td>bgdE1E5b<td>Broadcast group delay for the E1,E5b pair 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double bgdE1E5a; ///< Broadcast group delay for the E1,E5a pair.
       double bgdE1E5b; ///< Broadcast group delay for the E1,E5b pair.
    };

@@ -58,4 +58,18 @@ namespace gnsstk
    {
       return true;
    }
+
+   bool GalINavIono::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalINavIono> iono = std::dynamic_pointer_cast<GalINavIono>(right);
+      
+      if (!iono)
+      {
+         return false;
+      }
+      return (NeQuickIonoNavData::isSameData(right, true));
+
+   }
+
 }
