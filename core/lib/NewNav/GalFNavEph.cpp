@@ -148,4 +148,30 @@ namespace gnsstk
         << "Bgd(E1-E5a)         : " << setw(13) << bgdE5aE1 << " sec" << endl;
       s.flags(oldFlags);
    }
+
+
+   bool GalFNavEph ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalFNavEph> eph =
+         std::dynamic_pointer_cast<GalFNavEph>(right);
+      if (!eph)
+      {
+            // not the same type.
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, true) &&
+              (bgdE5aE1 == eph->bgdE5aE1) &&
+              (sisaIndex == eph->sisaIndex) &&
+              (svid == eph->svid) &&
+              (iodnav1 == eph->iodnav1) &&
+              (iodnav2 == eph->iodnav2) &&
+              (iodnav3 == eph->iodnav3) &&
+              (iodnav4 == eph->iodnav4) &&
+              (hsE5a == eph->hsE5a) &&
+              (dvsE5a == eph->dvsE5a));
+
+              // Checked 6/11/2024
+             
+   }
 }

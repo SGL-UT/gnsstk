@@ -98,6 +98,13 @@ namespace gnsstk
          corrOut = 0;
          return true;
       }
+
+      /*! @copydoc InterSigCorr::isSameData()
+      * 
+      * No additional data checked at GalFNavISC 
+      */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;      
+
    };
 
       //@}
