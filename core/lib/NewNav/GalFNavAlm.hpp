@@ -95,6 +95,22 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc OrbitDataKepler::isSameData() 
+      * 
+      * Additional Checks at the GalFNavAlm Level 
+      * 
+      *    <table>
+      *     <tr><td>dAhalf<td>delta sqrt(A)
+      *     <tr><td>deltai<td>Inclination in rad relative to 0.3*pi rad
+      *     <tr><td>wna<td>Reference week for t0a
+      *     <tr><td>t0a<td>Convenience storage of unqualified t0a
+      *     <tr><td>ioda5<td>IODa for page type 5
+      *     <tr><td>ioda6<td>IODa for page type 6
+      *     <tr><td>hsE5a<td>Health status for E5a 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /** Transmit time of the second page type used in constructing
           * the almanac, or the same as xmitTime if not split.  That is:
           * SVID | xmitTime page type | xmit2 page type

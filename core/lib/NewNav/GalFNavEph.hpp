@@ -82,6 +82,24 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc OrbitDataKepler::isSameData() 
+      * 
+      * Additional Checks at the GalFNavEph Level 
+      * 
+      *    <table>
+      *     <tr><td>bgdE5aE1<td>Group delay in seconds between E5a and E1
+      *     <tr><td>sisaIndex<td>Signal in space accuracy index (OS-SIS-ICD tbl 76)
+      *     <tr><td>svid<td>SV ID Number
+      *     <tr><td>iodnav1<td>IODnav for page type 1
+      *     <tr><td>iodnav2<td>IODnav for page type 2
+      *     <tr><td>iodnav3<td>IODnav for page type 3
+      *     <tr><td>iodnav4<td>IODnav for page type 4
+      *     <tr><td>hsE5a<td>Health status for E5a
+      *     <tr><td>dvsE5a<td>Data validity status for E5a 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double bgdE5aE1;   ///< Group delay in seconds between E5a and E1.
       uint8_t sisaIndex; ///< Signal in space accuracy index (OS-SIS-ICD tbl 76)
       uint8_t svid;

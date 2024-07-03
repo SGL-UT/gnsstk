@@ -59,5 +59,19 @@ namespace gnsstk
          /// @todo determine what ranges are valid for Galileo.
       return true;
    }
+
+   bool GalFNavTimeOffset::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalFNavTimeOffset> GalFTO = std::dynamic_pointer_cast<GalFNavTimeOffset>(right);
+      
+      if (!GalFTO)
+      {
+         return false;
+      }
+      return (StdNavTimeOffset::isSameData(right, true));
+
+      // Checked 6/11/2024
+   }
 }
 
