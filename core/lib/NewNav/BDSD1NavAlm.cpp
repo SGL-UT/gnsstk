@@ -90,4 +90,26 @@ namespace gnsstk
         << " (" << gnsstk::StringUtils::asString(health) << ")" << endl;
       s.flags(oldFlags);
    }
+
+   bool BDSD1NavAlm ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD1NavAlm> alm =
+         std::dynamic_pointer_cast<BDSD1NavAlm>(right);
+      if (!alm)
+      {
+         return false;
+      }
+
+      return (BDSD1NavData::isSameData(right, true) &&
+              (pnum == alm->pnum) &&
+              (deltai == alm->deltai) &&
+              (toa == alm->toa) &&
+              (healthBits == alm->healthBits) &&
+              (isDefault == alm->isDefault));
+
+      // Checked 6/12/2024
+             
+   }
+
 }
