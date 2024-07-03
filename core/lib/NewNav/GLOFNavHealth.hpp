@@ -75,6 +75,16 @@ namespace gnsstk
           * @return Healthy if no health bits are set. */
       SVHealth getHealth() const override;
 
+      /*! @copydoc NavData::isSameData()
+      *
+      * Additional Checks at the GLOFNavHealth Level
+      *
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth()
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          // We use ValidType to account for the fact that the health
          // data can be a variety of combinations.
       ValidType<uint8_t> healthBits; ///< The 3-bit B_n value.

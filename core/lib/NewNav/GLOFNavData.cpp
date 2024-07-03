@@ -60,7 +60,9 @@ namespace gnsstk
       return true;
    }
 
-   bool GLOFNavData::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   bool GLOFNavData::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+
    {
       const std::shared_ptr<GLOFNavData> rhs = std::dynamic_pointer_cast<GLOFNavData>(right);
       if (!rhs)

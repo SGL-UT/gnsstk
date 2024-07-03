@@ -109,6 +109,35 @@ namespace gnsstk
           *   GLO. */
       static double getSiderealTime(const CommonTime& time);
 
+      /*! @copydoc GLOFNavData::isSameData()
+      *
+      * Additional Checks at the GLOFNavEph Level
+      *
+      *    <table>
+      *     <tr><td>ref<td>Reference time (t_k) for this ephemeris
+      *     <tr><td>pos<td>Satellite position at tb in km
+      *     <tr><td>vel<td>Satellite position at tb in km/s
+      *     <tr><td>acc<td>Satellite acceleration at tb in km/s**2
+      *     <tr><td>clkBias<td>Satellite clock bias in sec (tau^j)
+      *     <tr><td>freqBias<td>Satellite relative frequency bias (gamma^j)
+      *     <tr><td>healthBits<td>The 3-bit B_n value (look at bit 2 not 0 or 1)
+      *     <tr><td>tb<td>Epoch index with Moscow day
+      *     <tr><td>P1<td>Flag for interval between adjacent t_b
+      *     <tr><td>P2<td>Flag of oddness (=1) or evenness (=0) of t_b
+      *     <tr><td>P3<td>Flag 1=5 almanac sats in frame, 0=4 almanac sats
+      *     <tr><td>P4<td>Flag 1=ephemeris present/uploaded. 0=nope
+      *     <tr><td>interval<td>P1 interval (minutes, see PNBGLOFNavDataFactory)
+      *     <tr><td>opStatus<td>Operational status flag
+      *     <tr><td>tauDelta<td>Offset of L3OCP time to L3OCD time
+      *     <tr><td>aod<td>Age of data in days (E_n)
+      *     <tr><td>accIndex<td>User accuracy index (F_T)
+      *     <tr><td>dayCount<td>Days since Jan 1 of most recent leap year (N_T)
+      *     <tr><td>Toe<td>Orbit epoch (t_b)
+      *     <tr><td>step<td>Integration step for Runge-Kutta algorithm (1 minute by default)
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       CommonTime ref;     ///< Reference time (t_k) for this ephemeris.
       CommonTime xmit3;   ///< Transmit time for string 3.
       CommonTime xmit4;   ///< Transmit time for string 4.

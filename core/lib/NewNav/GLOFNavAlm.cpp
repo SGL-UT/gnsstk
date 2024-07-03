@@ -729,4 +729,31 @@ namespace gnsstk
       DEBUGTRACE("JsinTerm(m=" << m << ") = " << math.JsinTerm);
       DEBUGTRACE("a(m=" << m << ") = " << a);
    }
+
+   bool GLOFNavAlm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOFNavAlm> alm = std::dynamic_pointer_cast<GLOFNavAlm>(right);
+      if (!alm)
+      {
+         return false;
+      }
+   
+      return (GLOFNavData::isSameData(right, true) && 
+         (Toa == alm->Toa) &&
+         (healthBits == alm->healthBits) &&
+         (taunA == alm->taunA) &&
+         (lambdanA == alm->lambdanA) &&
+         (deltainA == alm->deltainA) &&
+         (eccnA == alm->eccnA) &&
+         (omeganA == alm->omeganA) &&
+         (tLambdanA == alm->tLambdanA) &&
+         (deltaTnA == alm->deltaTnA) &&
+         (deltaTdotnA == alm->deltaTdotnA) &&
+         (freqnA == alm->freqnA)); 
+
+      
+      // Checked 6/12/2024. Look into NumberCruncher
+   } 
+
 }

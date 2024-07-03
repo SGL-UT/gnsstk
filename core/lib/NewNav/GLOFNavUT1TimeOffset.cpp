@@ -183,5 +183,24 @@ namespace gnsstk
          /// @todo add some checks.
       return true;
    }
-}
 
+   bool GLOFNavUT1TimeOffset::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOFNavUT1TimeOffset> UT1TO = std::dynamic_pointer_cast<GLOFNavUT1TimeOffset>(right);
+      if (!UT1TO)
+      {
+         return false;
+      }
+   
+      return (TimeOffsetData::isSameData(right, true) && 
+         (tauc == UT1TO->tauc) &&
+         (B1 == UT1TO->B1) &&
+         (B2 == UT1TO->B2) &&
+         (KP == UT1TO->KP) &&
+         (NT == UT1TO->NT) &&
+         (NA == UT1TO->NA)); 
+
+      // Checked 6/12/2024
+   } 
+}
