@@ -148,6 +148,7 @@ ENUM_MAPPER(gnsstk::NavMessageType, NavMessageType, "gnsstk")
 %import "YumaBase.hpp"
 %import "YumaData.hpp"
 %import "Vector.hpp"
+%import "TimeRange.hpp"
 
 /* %include "BDSD1Bits.hpp" */
 %include "NavSignalID.hpp"

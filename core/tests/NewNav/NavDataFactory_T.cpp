@@ -68,6 +68,12 @@ public:
              gnsstk::NavDataPtr& navData, gnsstk::SVHealth xmitHealth,
              gnsstk::NavValidityType valid, gnsstk::NavSearchOrder order) override
    { return false; }
+
+
+   bool findAll(const gnsstk::NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+                               gnsstk::NavDataPtrList& navOut, bool unique, gnsstk::SVHealth xmitHealth,
+                               gnsstk::NavValidityType valid) override
+   { return false; }
    bool getOffset(gnsstk::TimeSystem fromSys, gnsstk::TimeSystem toSys,
                   const gnsstk::CommonTime& when, gnsstk::NavDataPtr& offset,
                   gnsstk::SVHealth xmitHealth, gnsstk::NavValidityType valid)
