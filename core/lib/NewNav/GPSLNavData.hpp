@@ -80,7 +80,7 @@ namespace gnsstk
    
       /*! @copydoc OrbitDataKepler::isSameData()
        * 
-      * Additional Checks at the GPSLNavISC Level 
+      * Additional Checks at the GPSLNavData Level 
       * 
       *    <table>
       *     <tr><td>isf<td>Integrity status flag

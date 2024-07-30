@@ -42,6 +42,8 @@
 #include "NavDataFactory.hpp"
 #include "TimeOffsetData.hpp"
 #include "StdNavTimeOffset.hpp"
+#include "TimeRange.hpp"
+
 
 namespace gnsstk
 {
@@ -352,6 +354,25 @@ namespace gnsstk
           * @param[in] nmid The nav message ID to obtain the map for.
           * @return The resulting NavMap if available or nullptr if not. */
       const NavMap* getNavMap(const NavMessageID& nmid) const;
+         
+         /** Return all messages that match the criteria set by the following arguments
+          * @param[in] nmid Specify the message type, satellite and
+          *   codes to match.
+          * @param[in] whenRange The time range of interest to search for data. Orbit data
+          *   object (Ephemeris, Almanac) is "within" this range if its fit interval overlaps
+          *   this range. Fit interval computed in the overloaded fixFit() and overlaps as defined
+          *   in gnsstk::TimeRange.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[out] navOut The resulting navigation messages.
+          * @param[in] unique Return only unique messages. Uniqueness is defined by isSameData() 
+          *   on each NavData object. See documentation of isSameData() for more info.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return true if successful.  If false, navOut will be untouched. */
+      virtual bool findAll(const NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+                               NavDataPtrList& navOut, bool unique, SVHealth xmitHealth,
+                               NavValidityType valid);
 
    protected:
          /** Search the store to find the navigation message that meets
@@ -397,7 +418,8 @@ namespace gnsstk
                                NavDataPtr& navData, SVHealth xmitHealth,
                                NavValidityType valid);
 
-         /** Performs an appropriate validity check based on the
+
+         /** Perform an appropriate validity check based on the
           * desired validity.
           * @param[in] ti A container iterator pointing to the nav
           *   data to check.
@@ -405,6 +427,7 @@ namespace gnsstk
           * @param[in] valid The desired validity for navigation data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
+          * @param[in] when The Common Time of interest.
           * @return true if the validity of the nav data pointed to by
           *   ti matches the requested validity described by valid and
           *   the health status of the transmitting satellite matches
@@ -415,13 +438,15 @@ namespace gnsstk
                          SVHealth xmitHealth,
                          const CommonTime& when);
 
-         /** Performs an appropriate validity check based on the
-          * desired validity.
+         /** Perform an appropriate validity check based on the
+          * desired validity. 
           * @param[in] ndp The NavDataPtr object whose validity is to
           *   be checked.
           * @param[in] valid The desired validity for navigation data.
           * @param[in] xmitHealth The desired health status of the
           *   transmitting satellite.
+          * @param[in] when The Common Time used to determine temporal 
+          *   validity of ndp.
           * @return true if the validity of ndp matches the requested
           *   validity described by valid and the health status of the
           *   transmitting satellite matches xmitHealth. */
@@ -429,6 +454,23 @@ namespace gnsstk
                          NavValidityType valid,
                          SVHealth xmitHealth,
                          const CommonTime& when);
+
+         /** Perform an appropriate validity check based on the
+          * desired validity. 
+          * @param[in] ndp The NavDataPtr object whose validity is to
+          *   be checked.
+          * @param[in] valid The desired validity for navigation data.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[in] when The Time Range used to determine temporal 
+          *   validity of ndp.
+          * @return true if the validity of ndp matches the requested
+          *   validity described by valid and the health status of the
+          *   transmitting satellite matches xmitHealth. */
+      bool validityCheck(const NavDataPtr& ndp,
+                        NavValidityType valid,
+                        SVHealth xmitHealth,
+                        const gnsstk::TimeRange& when);
 
          /** Check the SV health status of the transmitting satellite
           * of a navigation message.

@@ -171,10 +171,10 @@ namespace gnsstk
       {
         return false;
       }
-    
+
       return (NavData::isSameData(right, ignore_timestamp) && 
-           (alpha == rhs->alpha) &&
-           (beta == rhs->beta));
+           (std::equal(std::begin(alpha), std::end(alpha), std::begin(rhs->alpha))) &&
+           (std::equal(std::begin(beta), std::end(beta), std::begin(rhs->beta))));
 
       // Checked 6/13/2024
    } 
