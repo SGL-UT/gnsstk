@@ -52,6 +52,7 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <cstdint>
 
 #include "gnsstk_export.h"
 #include "Exception.hpp"
