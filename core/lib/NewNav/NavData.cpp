@@ -96,7 +96,7 @@ namespace gnsstk
       {
          s << " / " << "SVN : " << setw(2) << svn;
       }
-      if (signal.messageType == NavMessageType::Almanac)
+      if (signal.xmitSat != signal.sat)
       {
             // for almanacs, print the transmitting satellite as well.
          s << endl
