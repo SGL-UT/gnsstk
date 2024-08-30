@@ -48,6 +48,8 @@
 #include "GPSLNavISC.hpp"
 #include "GPSLNavIono.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "GPSLNavNMC.hpp"
+#include "GPSNMCTAI.hpp"
 #include "GPSNavConfig.hpp"
 #include "NavMessageID.hpp"
 #include "NavMessageType.hpp"
@@ -111,11 +113,13 @@ namespace gnsstk
          {
             case 1:
             case 2:
+               rv = processNMCT(sfid, navIn, navOut);
             case 3:
                   //cerr << "sfid " << sfid << " = ephemeris" << endl;
                rv = processEph(sfid, navIn, navOut);
                break;
             case 4:
+               rv = processNMCT(sfid, navIn, navOut);
             case 5:
                svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
                dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
@@ -750,6 +754,99 @@ namespace gnsstk
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;
       navOut.push_back(p0);
+      return true;
+   }
+
+
+   bool PNBGPSLNavDataFactory ::
+   processNMCT(unsigned sfid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      DEBUGTRACE_FUNCTION();
+      if (processSys)
+      {
+         DEBUGTRACE("User wants NMCT.")
+         NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
+                         navIn->getobsID(), navIn->getNavID());
+
+         if (nmctAcc.find(key) == nmctAcc.end())
+         {
+            DEBUGTRACE("Creating accumulation storage for " << key);
+            nmctAcc[key].resize(2);
+         }
+
+         if (sfid == 1 || sfid == 2)
+         {
+            DEBUGTRACE("Storing sfid " << sfid << " for " << key);
+            nmctAcc[key][sfid-1] = navIn;
+            return true;
+         }
+
+         unsigned svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
+         if (sfid != 4 || svid != 52)
+         {
+            DEBUGTRACE("This is not a subframe 4 page 13.");
+            return true;
+         }
+
+         std::vector<PackedNavBitsPtr> &ephSF(nmctAcc[key]);
+         if (!ephSF[sf1] || !ephSF[sf2] ||
+            (ephSF[sf1]->getNumBits() != 300) ||
+            (ephSF[sf2]->getNumBits() != 300))
+         {
+            DEBUGTRACE("Don't have both sf1 and sf2 to be able to process subframe 4 page 13.");
+            return true;
+         }
+
+         DEBUGTRACE("Processing subframe 4 page 13.");
+         SatID xmitSat(navIn->getsatSys());
+         int prn = 1;
+         unsigned startBit = nsbERD;
+         for (unsigned erdi = 1; erdi < 31; ++erdi)
+         {
+            if (erdi == key.sat.id)
+            {
+               ++prn;
+            }
+
+            NavSatelliteID sat(prn, xmitSat, navIn->getobsID(), navIn->getNavID());
+
+            NavDataPtr p0 = std::make_shared<GPSLNavNMC>();
+            GPSLNavNMC *nmc = dynamic_cast<GPSLNavNMC*>(p0.get());
+
+            nmc->timeStamp = navIn->getTransmitTime();
+            nmc->signal = NavMessageID(sat, NavMessageType::System);
+
+            double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
+            unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
+            GPSWeekSecond refTime(nmc->timeStamp);
+            long refWeek = refTime.week;
+            wn = timeAdjustWeekRollover(wn, refWeek);
+
+            nmc->Toe = GPSWeekSecond(wn,toe).weekRolloverAdj(refTime);
+            nmc->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
+            nmc->updateTNMCT();
+
+            nmc->availabilityIndicator = static_cast<GPSNMCTAI>(navIn->asUnsignedLong(nsbAI, nnbAI, nscAI));
+
+            if ((erdi + 1) % 4 == 0)
+            {
+               unsigned startBitLSB = startBit + nnbERDm + fnbParity1;
+               nmc->erd = navIn->asLong(startBit, nnbERDm, startBitLSB, nnbERDl, 1) * (3.0 / 10.0) ;
+               startBit += nnbERDm + fnbParity1 + nnbERDl;
+            }
+            else
+            {
+               nmc->erd = navIn->asLong(startBit, nnbERD, 1) * (3.0 / 10.0);
+               startBit += nnbERD;
+            }
+
+            navOut.push_back(p0);
+            ++prn;
+         }
+
+         nmctAcc.erase(key);
+      }
+
       return true;
    }
 

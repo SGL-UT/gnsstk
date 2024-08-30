@@ -90,6 +90,31 @@ namespace gnsstk
          fsbParity2 = fsbSolver+fnbSolver, ///< Word 2 parity
          fnbParity2 = 6,
          fscParity2 = 1,
+
+         fsbWord3 = 60,  ///< Word 3 start bit
+      };
+
+         // Bit constants for the NMCT in subframe 4 page 13.
+         // See "Figure 20-1. Data Format (sheet 10 of 11)" for more info.
+      enum NMCTBitInfo
+      {
+         nsbDataID = fsbWord3,
+         nnbDataID = 2,
+         nscDataID = 1,
+
+         nsbPageID = fsbWord3 + nnbDataID,
+         nnbPageID = 6,
+         nscPageID = 1,
+
+         nsbAI = nsbPageID + nnbPageID,
+         nnbAI = 2,
+         nscAI = 1,
+
+         nsbERD = nsbAI + nnbAI,
+         nnbERD = 6,
+         nnbERDm = 2,
+         nnbERDl = 4,
+         nscERD = 0
       };
 
          // Miscellaneous constants.  Using enums instead of constants
