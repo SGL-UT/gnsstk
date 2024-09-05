@@ -1,3 +1,56 @@
+# Version 14.5.0   Thursday September 05, 2024
+
+Modifications by Author
+-----------------------
+     Andrew Joplin <ajoplin@arlut.utexas.edu> (1):
+           Add missing cstdint include
+
+     Ben Brutocao <benjamin.brutocao@arlut.utexas.edu> (1):
+           NewNav findAll MultiFormatNavDataFactorySupport
+
+     Benjamin Brutocao <benjamin.brutocao@arlut.utexas.edu> (11):
+           Root isSameData
+           GPSLNav is same data
+           GPSCNav isSameData
+           BDSD1 isSameData
+           GALFNAV isSameData
+           BDSD2 isSameData
+           GALINav isSameData
+           GLOCNav isSameData
+           GLOFNav isSameData
+           GPSCNav2 is same data
+           NewNav findAll functionality
+
+     Benji Hillard <bhillard@arlut.utexas.edu> (1):
+           Bugfix/ci epoch clock model
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           add bugfix branch to sonarqube scans
+           Update gnsstk-data submodule ref
+
+     Latha Subramanian <latha.subramanian@arlut.utexas.edu> (1):
+           Changes to add testSSEph.cpp to core/tests/geomatics suite to improve code coverage
+
+
+
+# Version 14.4.1   Friday June 07, 2024
+
+Modifications by Author
+-----------------------
+     Benjamin Brutocao <benjamin.brutocao@arlut.utexas.edu> (1):
+           refactoring find tests
+
+     David Barber <dbarber@arlut.utexas.edu> (1):
+           refactor pipeline to use rhel 8 image instead of centos 8
+
+     Sankara Muthukrishnan <sankara.m@arlut.utexas.edu> (1):
+           Handle already disambiguated GPS Week in SEM almanac
+
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           Fix SWIG wrapping of satTimeSystem()
+
+
+
 # Version 14.4.0   Thursday May 09, 2024
 
 Modifications by Author

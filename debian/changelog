@@ -1,3 +1,37 @@
+gnsstk (14.5.0-1) focal; urgency=low
+
+  * Updated to version 14.5.0
+  * Add isSameData functionality to the root and branches of the NavData
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GPSCNav subclasses
+  * Add isSameData for BDSD1 subclasses
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GALINav subclasses
+  * Add isSameData for GLOCNav subclasses
+  * Add isSameData for GLOFNav subclasses
+  * Add isSameData for GPSCNav2 subclasses
+  * Add findAll functionality to NavDataFactoryWithStore
+  * Add Geomatics/testSSEph.cpp to test suite to improve code coverage
+  * Update gnsstk-data submodule refs
+  * Add findAll MultiFormatNavDataFactory Support
+  * Add missing include to ObsID.hpp
+  * Add test coverage to Epoch clock model
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Thu, 05 Sep 2024 16:26:00 -0500
+
+gnsstk (14.4.1-1) focal; urgency=low
+
+  * Updated to version 14.4.1
+  * Update Codeowners file with additional NewNav reviewer
+  * Fix SWIG wrapping of satTimeSystem()
+  * Update to handle already disambiguated GPS Week in SEM Almanacs
+  * Update navdatafactorywithstore_t find tests non breaking refactor
+  * Update pipeline to use rhel 8 ubi image instead of deprecated centos
+    8 appstream
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Fri, 07 Jun 2024 10:11:55 -0500
+
 gnsstk (14.4.0-1) focal; urgency=low
 
   * Updated to version 14.4.0
