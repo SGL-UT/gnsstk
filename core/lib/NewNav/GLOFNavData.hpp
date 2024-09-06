@@ -64,6 +64,19 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc NavData::isSameData()
+       * 
+       * Additional Checks at the GLOFNavData Level
+       *   <table>
+       *     <tr><td>satType<td>Satellite type (M_n: GLONASS or GLONASS-M)
+       *     <tr><td>slot<td>Slot number (n)
+       *     <tr><td>lhealth<td>Health flag? Different from B_n and C_n
+       *     <tr><td>health<td>SV health status
+       *   </table>
+       */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
       CommonTime xmit2;   ///< Transmit time for string 2 (eph) or odd string.
       GLOFNavSatType satType; ///< Satellite type (M_n: GLONASS or GLONASS-M).
       unsigned slot;      ///< Slot number (n).

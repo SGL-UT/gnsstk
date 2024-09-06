@@ -75,11 +75,22 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+      /*! @copydoc GPSLNavData::isSameData()
+       *
+       * Additional Checks at the GPSLNavAlm Level
+       *
+       *    <table>
+       *     <tr><td>healthBits<td>health bits
+       *     <tr><td>deltai<td>Inclination in rad relative to 0.3*pi rad
+       *     <tr><td>toa<td>convenience storage of unqualified toa
+       *    </table>
+       */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       uint8_t healthBits; ///< 8 SV health bits.
       double deltai;      ///< Inclination in rad relative to 0.3*pi rad.
       double toa;         ///< Convenience storage of unqualified toa.
    };
-
       //@}
 
 }

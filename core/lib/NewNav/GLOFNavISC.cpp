@@ -86,4 +86,21 @@ namespace gnsstk
       }
       return false;
    }
+
+
+   bool GLOFNavISC::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOFNavISC> iscPrime = std::dynamic_pointer_cast<GLOFNavISC>(right);
+      if (!iscPrime)
+      {
+         return false;
+      }
+   
+      return (InterSigCorr::isSameData(right, true)); 
+
+      // Checked 6/12/2024
+
+   } 
+
 }

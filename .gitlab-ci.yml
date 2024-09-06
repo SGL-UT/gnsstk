@@ -415,7 +415,7 @@ sonar-scan:
     - !reference [.scan-c++, script]
     - touch $CI_PROJECT_DIR/success
   rules:
-    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable"
+    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable" || $CI_COMMIT_REF_NAME =~/^bugfix\/ci_.*$/
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
   # Sonar Quality Profile will fail since code coverage is below 80%

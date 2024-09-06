@@ -76,6 +76,16 @@ namespace gnsstk
           * (not xmitSat).
           * @return Rolled-up health status based on internal data. */
       SVHealth getHealth() const override;
+   
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the GalFNavHealth Level 
+      * 
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth() 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
          /// Signal health status (SHS)
       GalHealthStatus sigHealthStatus;

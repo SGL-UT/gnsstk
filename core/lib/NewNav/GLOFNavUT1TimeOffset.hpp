@@ -99,6 +99,20 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc NavData::isSameData()
+      *
+      * Additional Checks at the GLOFNavUT1TimeOffset Level
+      *
+      *    <table>
+      *     <tr><td>tauc<td>Non-integer correction between UTC(SU) and GLONASS
+      *     <tr><td>B1<td>Time bias in seconds
+      *     <tr><td>B2<td>Time drift in s/s
+      *     <tr><td>KP<td>Leap second indicator
+      *     <tr><td>NT<td>Ephemeris days since leap year
+      *     <tr><td>NA<td>Almanac days since leap year
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
       double tauc; ///< Non-integer correction between UTC(SU) and GLONASS.
       double B1;   ///< Time bias in seconds.

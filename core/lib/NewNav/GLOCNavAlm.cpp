@@ -295,4 +295,40 @@ namespace gnsstk
            vr(std::numeric_limits<double>::quiet_NaN())
    {
    }
+
+
+   bool GLOCNavAlm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+      {
+         const std::shared_ptr<GLOCNavAlm> alm = std::dynamic_pointer_cast<GLOCNavAlm>(right);
+         if (!alm)
+         {
+            return false;
+         }
+
+         return (GLOCNavData::isSameData(right, true) &&
+               (Toa == alm->Toa) &&
+               (orbitType == alm->orbitType) &&
+               (aoa == alm->aoa) &&
+               (NA == alm->NA) &&
+               (statusReg == alm->statusReg) &&
+               (satType == alm->satType) &&
+               (tau == alm->tau) &&
+               (lambda == alm->lambda) &&
+               (tLambda == alm->tLambda) &&
+               (deltai == alm->deltai) &&
+               (ecc == alm->ecc) &&
+               (omega == alm->omega) &&
+               (deltaT == alm->deltaT) &&
+               (deltaTdot == alm->deltaTdot));
+
+               // Checked 6/13/2024
+      }
+
+
+
+
 }
+
+
+

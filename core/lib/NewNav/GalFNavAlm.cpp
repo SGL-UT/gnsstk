@@ -130,4 +130,26 @@ namespace gnsstk
         << " (" << gnsstk::StringUtils::asString(hsE5a) << ")" << endl;
       s.flags(oldFlags);
    }
+
+   bool GalFNavAlm ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalFNavAlm> alm =
+         std::dynamic_pointer_cast<GalFNavAlm>(right);
+      if (!alm)
+      {
+            // not the same type.
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, true) &&
+              (dAhalf == alm->dAhalf) &&
+              (deltai == alm->deltai) &&
+              (wna == alm->wna) &&
+              (t0a == alm->t0a) &&
+              (ioda5 == alm->ioda5) &&
+              (ioda6 == alm->ioda6) &&
+              (hsE5a == alm->hsE5a));
+             
+            //  Checked 6/11/2024
+   }
 }

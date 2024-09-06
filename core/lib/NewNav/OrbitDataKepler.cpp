@@ -356,20 +356,21 @@ namespace gnsstk
       return drift;
    }
 
-
    bool OrbitDataKepler ::
-   isSameData(const NavDataPtr& right) const
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
    {
       const std::shared_ptr<OrbitDataKepler> rhs =
          std::dynamic_pointer_cast<OrbitDataKepler>(right);
+
       if (!rhs)
       {
-            // not the same type.
          return false;
       }
-      return (NavData::isSameData(right) &&
+
+      return (NavData::isSameData(right, ignore_timestamp) &&
               (Toe == rhs->Toe) &&
               (Toc == rhs->Toc) &&
+              (health == rhs->health) &&
               (Cuc == rhs->Cuc) &&
               (Cus == rhs->Cus) &&
               (Crc == rhs->Crc) &&
@@ -391,8 +392,9 @@ namespace gnsstk
               (af0 == rhs->af0) &&
               (af1 == rhs->af1) &&
               (af2 == rhs->af2));
-   }
 
+      // Checked 6/13/2024
+   }
 
    std::list<std::string> OrbitDataKepler ::
    compare(const NavDataPtr& right) const

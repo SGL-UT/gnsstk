@@ -421,6 +421,40 @@ namespace gnsstk
       return false;
    }
 
+   bool NavLibrary ::
+   findAll(const NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+                               NavDataPtrList& navOut, bool unique, SVHealth xmitHealth,
+                               NavValidityType valid)
+   {
+      DEBUGTRACE_FUNCTION();
+         // Don't use factories.equal_range(nmid), as it can result in
+         // range.first and range.second being the same iterator, in
+         // which case the loop won't process anything at all.
+         // Also don't use the unique iterator as it will result in
+         // skipping over valid factories, e.g. looking for CNAV but
+         // LNAV is first in the map, the signals don't match and the
+         // factory won't be looked at again.
+      std::set<NavDataFactory*> uniques;
+      for (auto& fi : factories)
+      {
+         if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
+         {
+            try
+            {
+               if (fi.second->findAll(nmid, whenRange, navOut, unique, xmitHealth, valid))
+               {
+                  return true;
+               }
+            }
+            catch (gnsstk::Exception& exc)
+            {
+               GNSSTK_RETHROW(exc);
+            }
+            uniques.insert(fi.second.get());
+         }
+      }
+      return false;
+   }
 
    void NavLibrary ::
    setValidityFilter(NavValidityType nvt)

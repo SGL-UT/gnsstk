@@ -117,16 +117,35 @@ namespace gnsstk
          /// Const accessor for msgLenSec (total message transmit time).
       double getMsgLenSec() const
       { return msgLenSec; }
-         /** Returns true if this two objects are 
-          *   1. same concrete type, and
-          *   2. same data contents.
-          * This is intended as a "data uniqueness test" to allow
+
+
+         /** This is intended as a "data uniqueness test" to allow
           * detection of successive transmissions of same data
           * and avoid duplicate storage.  The exact rules for 
-          * uniqueness will vary by descendent class. 
+          * uniqueness will vary by descendent class.
+          *
+          * The isSameData method as of June 2024 checked the timestamp
+          * attribute in establish equality, which is inappropriate for
+          * most NavData types. Setting the ignore_timestamp to true
+          * will allow for a true comparison. The default option was
+          * decided upon in order to not break existing use cases.
+          *
+          * In some instances, data attributes are left off of the isSameData
+          * equivalence check. The relevant data payload was determined as follows.
+          * 
+          * For GPS LNAV and CNAV, the reference is IS-GPS-200, Section 6.2.9.1, Table 6-I-1
+          * For everyone else, they lack such a definitive reference. Therefore, we are "guided 
+          * by the spirit of ..." IS-GPS-200, Section 6.2.9.1, Table 6-I-1. That is to say,
+          * uniqueness is defined as the parameters that will cause the result of a getXvt( ) call to change.
+          *
           * @note We use shared_ptr to allow for casting without
-          *   risking memory leaks. */
-      virtual bool isSameData(const NavDataPtr& right) const;
+          *   risking memory leaks. 
+          * @param[in] right The data to compare against.
+          * @param[in] ignore_timestamp if true, ignore the timeStamp in equality check
+          */
+      virtual bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const;
+
+
          /** Compare two NavData descendent objects.
           *  Any differences are summarized and returned as a list of
           *  readable text.

@@ -486,4 +486,39 @@ namespace gnsstk
       dxt(5) = gloAz;            // Set Vz' = gloAz
       return dxt;
    }  // derivative()
+
+   bool GLOFNavEph::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GLOFNavEph> eph = std::dynamic_pointer_cast<GLOFNavEph>(right);
+      if (!eph)
+      {
+         return false;
+      }
+   
+      return (GLOFNavData::isSameData(right, true) && 
+         (ref == eph->ref) &&
+         (pos == eph->pos) &&
+         (vel == eph->vel) &&
+         (acc == eph->acc) &&
+         (clkBias == eph->clkBias) &&
+         (freqBias == eph->freqBias) &&
+         (healthBits == eph->healthBits) &&
+         (tb == eph->tb) &&
+         (P1 == eph->P1) &&
+         (P2 == eph->P2) &&
+         (P3 == eph->P3) &&
+         (P4 == eph->P4) &&
+         (interval == eph->interval) &&
+         (opStatus == eph->opStatus) &&
+         (tauDelta == eph->tauDelta) &&
+         (aod == eph->aod) &&
+         (accIndex == eph->accIndex) &&
+         (dayCount == eph->dayCount) &&
+         (Toe == eph->Toe) &&
+         (step == eph->step)); 
+
+         // Checked 6/12/2024
+   } 
+
 }

@@ -193,4 +193,27 @@ namespace gnsstk
       }
       return false;
    }
+
+   bool GPSCNav2ISC::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNav2ISC> isc = std::dynamic_pointer_cast<GPSCNav2ISC>(right);
+      
+      if (!isc)
+      {
+         return false;
+      }
+      return (InterSigCorr::isSameData(right, true) &&
+         (haveSF2 == isc->haveSF2) &&
+         (haveSF3 == isc->haveSF3) &&
+         (iscL1CP == isc->iscL1CP) &&
+         (iscL1CD == isc->iscL1CD) &&
+         (iscL1CA == isc->iscL1CA) &&
+         (iscL2C == isc->iscL2C) &&
+         (iscL5I5 == isc->iscL5I5) &&
+         (iscL5Q5 == isc->iscL5Q5));
+
+         // Checked 6/11/2024
+   }
+
 }

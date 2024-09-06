@@ -123,4 +123,22 @@ namespace gnsstk
          /// @todo implement this
       return std::numeric_limits<double>::quiet_NaN();
    }
+
+   bool GLOCNavIono::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+      {
+         const std::shared_ptr<GLOCNavIono> iono = std::dynamic_pointer_cast<GLOCNavIono>(right);
+         if (!iono)
+         {
+            return false;
+         }
+         
+         return (NavData::isSameData(right, true) && 
+               (peakTECF2 == iono->peakTECF2) &&
+               (solarIndex == iono->solarIndex) &&
+               (geoIndex == iono->geoIndex)); 
+
+         // Checked 6/13/2024
+      } 
+
 }

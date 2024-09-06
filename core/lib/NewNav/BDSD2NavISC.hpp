@@ -92,6 +92,17 @@ namespace gnsstk
       bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut)
          const override;
 
+      /*! @copydoc InterSigCorr::isSameData() 
+      * 
+      * Additional Checks at the BDSD2NavISC Level 
+      * 
+      *    <table>
+      *     <tr><td>tgd1<td>Group delay differential on B1I
+      *     <tr><td>tgd2<td>Group delay differential on B2I 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       uint32_t pre;  ///< The preamble from word 1 of the subframe.
       uint32_t rev;  ///< The rev field from word 1 of the subframe.
       uint8_t fraID; ///< The subframe ID (FraID) from word 1 of the subframe.

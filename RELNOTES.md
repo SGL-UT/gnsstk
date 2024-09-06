@@ -1,25 +1,37 @@
-GNSSTk 14.4.1 Release Notes
+GNSSTk 14.5.0 Release Notes
 ========================
 
-* This release includes the following:
-   * Updating the handling already disambiguated GPS Week in SEM Almanacs.
-   * Fixing SWIG wrapping of satTimeSystem().
-   * Updating navdatafactorywithstore_t find tests non breaking refactor.
- * Additionally, it contains CI updates.
+ * This release includes the following:
+   * Adding `isSameData` method for several subclasses.
+   * Adding test coverage to Epoch clock model.
+   * Adding missing include to `ObsID.hpp`.
+   * Adding findAll MultiFormatNavDataFactory Support.
 
-Updates since v14.4.0
+Updates since v14.4.1
 ---------------------
 
 **Build System and Test Suite**
-  * Update navdatafactorywithstore_t find tests non breaking refactor
+  * Add test coverage to Epoch clock model
 
 **Gitlab CI**
-  * Update Codeowners file with additional NewNav reviewer
-  * Update pipeline to use rhel 8 ubi image instead of deprecated centos 8 appstream
+  * Update gnsstk-data submodule refs
 
 **Library Changes**
-  * Update to handle already disambiguated GPS Week in SEM Almanacs 
+  * Add isSameData functionality to the root and branches of the NavData
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GPSCNav subclasses
+  * Add isSameData for BDSD1 subclasses
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GPSLNav subclasses
+  * Add isSameData for GALINav subclasses
+  * Add isSameData for GLOCNav subclasses
+  * Add isSameData for GLOFNav subclasses
+  * Add isSameData for GPSCNav2 subclasses
+  * Add findAll functionality to NavDataFactoryWithStore
+  * Add Geomatics/testSSEph.cpp to test suite to improve code coverage
+  * Add findAll MultiFormatNavDataFactory Support
+  * Add missing include to ObsID.hpp
 
-Fixes since v14.4.0
---------------------
-  * Fix SWIG wrapping of satTimeSystem()
+New Modules
+-------------------------------
+     core/tests/Geomatics/convertSSEph.cpp

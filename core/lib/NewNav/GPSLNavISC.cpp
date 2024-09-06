@@ -72,4 +72,20 @@ namespace gnsstk
    {
       return ((pre == 0) || (pre == 0x8b));
    }
+
+   bool GPSLNavISC::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSLNavISC> isc = std::dynamic_pointer_cast<GPSLNavISC>(right);
+      
+      if (!isc)
+      {
+         return false;
+      }
+      return (InterSigCorr::isSameData(right, ignore_timestamp) &&
+         (isf == isc->isf));
+
+      // Checked 6/6/2024 
+
+   }
 }

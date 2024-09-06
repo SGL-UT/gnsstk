@@ -78,6 +78,7 @@ namespace gnsstk
          case NavSearchOrder::Nearest:
             rv = findNearest(nmid, when, navOut, xmitHealth, valid);
             break;
+
          default:
                // requested an invalid search order
             return false;
@@ -99,6 +100,8 @@ namespace gnsstk
       }
       return rv;
    }
+
+ 
 
 
    bool NavDataFactoryWithStore ::
@@ -321,6 +324,7 @@ namespace gnsstk
          { return itGT == map->end() ? 999e99 : fabs(itGT->first - when); }
          double getDistLT() const
          { return itLT == map->end() ? 999e99 : fabs(itLT->first - when); }
+
          NavNearMap *map;
          NavNearMap::iterator itGT, itLT;
          const CommonTime& when;
@@ -434,6 +438,78 @@ namespace gnsstk
       return false;
    }
 
+
+   bool NavDataFactoryWithStore ::
+   findAll(const NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+        NavDataPtrList& navOut, bool unique, SVHealth xmitHealth, NavValidityType valid)
+   {
+      gnsstk::NavDataPtrList matchList;
+      auto dataIt = data.find(nmid.messageType);
+      if (dataIt == data.end())
+      {
+         DEBUGTRACE("false = not found 1");
+         return false; // not found.
+      }
+
+      if (nmid.isWild())
+      {
+         for (const auto& nsmIt : dataIt->second)
+         {
+            if (nsmIt.first == nmid)
+            {
+               for (const auto& nmPair : nsmIt.second)
+               {
+                  // We only want the NavData shared_ptr
+                  matchList.push_back(nmPair.second);
+               }
+            }
+         }
+      }
+      else
+      {
+         NavSatMap::iterator nsmIt2 = dataIt->second.find(nmid);
+         if (nsmIt2 != dataIt->second.end())
+         {
+            for (std::pair<const CommonTime, std::shared_ptr<NavData>>& nm : nsmIt2->second)
+            {
+               matchList.push_back(nm.second);
+            }
+         }
+      }
+
+      bool msgIsUnique{false};
+      NavDataPtrList ndpl;
+
+      for (const NavDataPtr& ndp : matchList)
+      {
+         if (unique)
+         {
+            msgIsUnique = true;
+            for (const auto& msg : ndpl)
+            {
+               if (ndp.get()->isSameData(msg, true))
+               {
+                  msgIsUnique = false;
+                  break;
+               }
+            }
+         }
+         if (unique && !msgIsUnique)
+         {
+            continue;
+         }
+
+         if (validityCheck(ndp, valid, xmitHealth, whenRange))
+         {
+            ndpl.push_back(ndp);
+         } 
+      }
+
+      // Return the user their NavDataPtrLst by reference.
+      navOut = ndpl;
+
+      return true;
+   }
 
    bool NavDataFactoryWithStore ::
    getOffset(TimeSystem fromSys, TimeSystem toSys,
@@ -1219,6 +1295,56 @@ namespace gnsstk
       return matchHealth(ndp.get(), xmitHealth);
    }
 
+   bool NavDataFactoryWithStore ::
+   validityCheck(const NavDataPtr& ndp,
+                 NavValidityType valid,
+                 SVHealth xmitHealth,
+                 const gnsstk::TimeRange& when)
+   {
+      bool rv = true;
+      
+      NavFit *nf = dynamic_cast<NavFit*>(ndp.get());
+      if (nf != nullptr)
+      {
+         // Since nf exists, we know ndp is orbit data. 
+         // Therefore, the fit interval must overlap with the timerange to be valid.
+         TimeRange fitInterval(nf->beginFit,nf->endFit);
+
+         if (!when.overlaps(fitInterval))
+         {
+            return false;
+         }
+      }
+
+      switch (valid)
+      {
+         case NavValidityType::ValidOnly:
+            rv = ndp->validate();
+            break;
+         case NavValidityType::InvalidOnly:
+            rv = !ndp->validate();
+            break;
+         default:
+            break;
+      }
+      if (!rv)
+      {
+         std::cout << "Invalid: Validity Check Failed" << std::endl;
+         return false;
+      }
+
+      // Only match the health of Orbit Data
+      if ((ndp->signal.messageType == gnsstk::NavMessageType::Health) || 
+         (ndp->signal.messageType == gnsstk::NavMessageType::TimeOffset) || 
+         (ndp->signal.messageType == gnsstk::NavMessageType::ISC) || 
+         (ndp->signal.messageType == gnsstk::NavMessageType::Iono))
+      {
+         return true;
+      }
+
+      return matchHealth(ndp.get(), xmitHealth);
+   }
+
 
    bool NavDataFactoryWithStore ::
    matchHealth(NavData *ndp, SVHealth xmitHealth)
@@ -1248,8 +1374,6 @@ namespace gnsstk
          case SVHealth::Healthy:
          case SVHealth::Unhealthy:
          case SVHealth::Degraded:
-            DEBUGTRACE("attempting to match "
-                       << gnsstk::StringUtils::asString(xmitHealth));
                // make sure the health status is the desired state
             if (ndp->signal.sat == ndp->signal.xmitSat)
             {
@@ -1305,7 +1429,7 @@ namespace gnsstk
                          SVHealth::Any, NavValidityType::Any,
                          NavSearchOrder::User))
                {
-                  DEBUGTRACE("  couldn't find health");
+                  DEBUGTRACE("Couldn't find health");
                   return false;
                }
                hea = dynamic_cast<NavHealthData*>(heaPtr.get());

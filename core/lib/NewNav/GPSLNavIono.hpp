@@ -62,6 +62,18 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc KlobucharIonoNavData::isSameData() 
+       * 
+       * Additional Checks at the GPSLNavIono Level 
+       * 
+       *    <table>
+       *     <tr><td>isf<td>Integrity status flag
+       *     <tr><td>alert<td>Alert flag from HOW 
+       *    </table> 
+       */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
       uint32_t pre;    ///< The TLM preamble from word 1 of the subframe.
       uint32_t tlm;    ///< The TLM message from word 1 of the subframe.
       bool isf;        ///< Integrity status flag.

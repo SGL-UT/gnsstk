@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 14.4.1
+%define version 14.5.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,13 +57,30 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 05 2024 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.5.0 release
+- Add test coverage to Epoch clock model
+- Add missing include to ObsID.hpp
+- Add findAll MultiFormatNavDataFactory Support
+- Update gnsstk-data submodule refs
+- Add Geomatics/testSSEph.cpp to test suite to improve code coverage
+- Add findAll functionality to NavDataFactoryWithStore
+- Add isSameData for GPSCNav2 subclasses
+- Add isSameData for GLOFNav subclasses
+- Add isSameData for GLOCNav subclasses
+- Add isSameData for GALINav subclasses
+- Add isSameData for GPSLNav subclasses
+- Add isSameData for GPSLNav subclasses
+- Add isSameData for BDSD1 subclasses
+- Add isSameData for GPSCNav subclasses
+- Add isSameData for GPSLNav subclasses
+- Add isSameData functionality to the root and branches of the NavData
 * Fri Jun 07 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.4.1 release
 - Update pipeline to use rhel 8 ubi image instead of deprecated centos 8 appstream
 - Update navdatafactorywithstore_t find tests non breaking refactor
 - Update to handle already disambiguated GPS Week in SEM Almanacs
 - Fix SWIG wrapping of satTimeSystem()
-- Update Codeowners file with additional NewNav reviewer
 * Thu May 09 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.4.0 release
 - Add reference epoch support in constructor of `MultiFormatNavDataFactory` and `SEMNavDataFactory`

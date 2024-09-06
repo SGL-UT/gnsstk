@@ -89,6 +89,16 @@ namespace gnsstk
       static SVHealth galHealth(GalHealthStatus shs, GalDataValid dvs,
                                 uint8_t sisa);
 
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the GalINavHealth Level 
+      * 
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth() 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /// Signal health status (SHS)
       GalHealthStatus sigHealthStatus;
          /// Data Validity Status (DVS)

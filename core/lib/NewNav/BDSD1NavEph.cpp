@@ -194,4 +194,27 @@ namespace gnsstk
          return 24 * (aod-23);
       return (unsigned)-1;
    }
+
+   bool BDSD1NavEph ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD1NavEph> eph =
+         std::dynamic_pointer_cast<BDSD1NavEph>(right);
+
+      if (!eph)
+      {
+         return false;
+      }
+
+      return (BDSD1NavData::isSameData(right, true) &&
+              (satH1 == eph->satH1) &&
+              (aodc == eph->aodc) &&
+              (aode == eph->aode) &&
+              (uraIndex == eph->uraIndex) &&
+              (tgd1 == eph->tgd1) &&
+              (tgd2 == eph->tgd2));
+      
+      // Checked 6/12/2024
+             
+   }
 }

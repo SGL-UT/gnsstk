@@ -54,6 +54,7 @@ namespace gnsstk
       {
          supportedSignals.insert(i.first);
       }
+
    }
 
    MultiFormatNavDataFactory ::
@@ -92,6 +93,35 @@ namespace gnsstk
          {
             if (fi.second->find(nmid, when, navOut, xmitHealth, valid, order))
                return true;
+            uniques.insert(fi.second.get());
+         }
+      }
+      return false;
+   }
+
+   
+
+   bool MultiFormatNavDataFactory ::
+   findAll(const NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+      NavDataPtrList& navOut, bool unique, SVHealth xmitHealth, NavValidityType valid)
+   {
+
+      std::set<NavDataFactory*> uniques;
+      for (auto& fi : *myFactories)
+      {
+         if ((fi.first == nmid) && (uniques.count(fi.second.get()) == 0))
+         {
+            try
+            {
+               if (fi.second->findAll(nmid, whenRange, navOut, unique, xmitHealth, valid))
+               {
+                  return true;
+               }
+            }
+            catch (gnsstk::Exception& exc)
+            {
+               GNSSTK_RETHROW(exc);
+            }
             uniques.insert(fi.second.get());
          }
       }
@@ -489,7 +519,6 @@ namespace gnsstk
       return false;
    }
 
-
    void MultiFormatNavDataFactory ::
    dump(std::ostream& s, DumpDetail dl) const
    {
@@ -542,8 +571,10 @@ namespace gnsstk
    std::shared_ptr<NavDataFactoryMap> MultiFormatNavDataFactory ::
    factories()
    {
+
       static std::shared_ptr<NavDataFactoryMap> rv =
          std::make_shared<NavDataFactoryMap>();
+      
       return rv;
    }
 }

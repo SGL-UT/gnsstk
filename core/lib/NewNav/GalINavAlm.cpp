@@ -137,4 +137,27 @@ namespace gnsstk
         << gnsstk::StringUtils::asString(health) << endl;
       s.flags(oldFlags);
    }
+
+   bool GalINavAlm ::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalINavAlm> alm =
+         std::dynamic_pointer_cast<GalINavAlm>(right);
+      if (!alm)
+      {
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, true) &&
+              (dAhalf == alm->dAhalf) &&
+              (deltai == alm->deltai) &&
+              (wna == alm->wna) &&
+              (t0a == alm->t0a) &&
+              (ioda1 == alm->ioda1) &&
+              (ioda2 == alm->ioda2) &&
+              (hsE5b == alm->hsE5b) && 
+              (hsE1B == alm->hsE1B));
+
+            //   Checked 6/11/2024
+             
+   }
 }

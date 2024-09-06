@@ -111,6 +111,22 @@ namespace gnsstk
           *   navigation data. */
       static unsigned getAOD(uint8_t aod);
 
+      /*! @copydoc BDSD2NavData::isSameData() 
+      * 
+      * Additional Checks at the BDSD2NavEph Level 
+      * 
+      *    <table>
+      *     <tr><td>satH1<td>Autonomous satellite health flag
+      *     <tr><td>aodc<td>Age of data - clock
+      *     <tr><td>aode<td>Age of data - ephemeris
+      *     <tr><td>uraIndex<td>4-bit URA index from subframe 1
+      *     <tr><td>tgd1<td>Group delay differential on B1I
+      *     <tr><td>tgd2<td>Group delay differential on B2I 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          /// @note The health flag is true if unhealthy.
       bool satH1;         ///< Autonomous satellite health flag.
       uint8_t aodc;       ///< Age of data - clock.

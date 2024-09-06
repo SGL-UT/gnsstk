@@ -43,6 +43,7 @@
 #include "Xvt.hpp"
 #include "SVHealth.hpp"
 #include "Position.hpp"
+#include "TimeRange.hpp"
 
 namespace gnsstk
 {
@@ -1230,6 +1231,25 @@ namespace gnsstk
       bool find(const NavMessageID& nmid, const CommonTime& when,
                 NavDataPtr& navOut, SVHealth xmitHealth, NavValidityType valid,
                 NavSearchOrder order);
+
+         /** Return all messages that match the criteria set by the following arguments
+          * @param[in] nmid Specify the message type, satellite and
+          *   codes to match.
+          * @param[in] whenRange The time range of interest to search for data. Orbit data
+          *   object (Ephemeris, Almanac) is "within" this range if its fit interval overlaps
+          *   this range. Fit interval computed in the overloaded fixFit() and overlaps as defined
+          *   in gnsstk::TimeRange.
+          * @param[in] xmitHealth The desired health status of the
+          *   transmitting satellite.
+          * @param[out] navOut The resulting navigation messages.
+          * @param[in] unique Return only unique messages. Uniqueness is defined by isSameData() 
+          *   on each NavData object. See documentation of isSameData() for more info.
+          * @param[in] valid Specify whether to search only for valid
+          *   or invalid messages, or both.
+          * @return true if successful.  If false, navOut will be untouched. */
+      bool findAll(const NavMessageID& nmid, const gnsstk::TimeRange& whenRange,
+                NavDataPtrList& navOut, bool unique, 
+                SVHealth xmitHealth, NavValidityType valid);
 
          /** Set the factories' handling of valid and invalid
           * navigation data.  This should be called before any find()

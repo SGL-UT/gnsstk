@@ -157,4 +157,21 @@ namespace gnsstk
       }
       s.flags(oldFlags);
    }
+
+   bool BDSD1NavHealth::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD1NavHealth> health = std::dynamic_pointer_cast<BDSD1NavHealth>(right);
+      
+      if (!health)
+      {
+         return false;
+      }
+
+      return (NavData::isSameData(right, true) &&
+         getHealth() == health->getHealth());
+
+      // Checked 6/12/2024
+   }
+
 }

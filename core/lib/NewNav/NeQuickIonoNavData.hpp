@@ -119,6 +119,16 @@ namespace gnsstk
                     const Position& rxgeo,
                     const Position& svgeo) const;
 
+      /*! @copydoc NavData::isSameData()
+       *                          
+       * Additional Checks at the NeQuickIonoNavData Level
+       *   <table>
+       *     <tr><td>ai<td>a<sub>i</sub> terms of NeQuick model in solar flux units, solar flux units/degree, solar flux, units/degree<sup>2</sup>.
+       *     <tr><td>idf<td>Ionospheric disturbance flag for regions 1-5 (0-4)
+       *   </table>
+       */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /** a<sub>i</sub> terms of NeQuick model in solar flux units,
           * solar flux units/degree, solar flux
           * units/degree<sup>2</sup>.  Refer to Galileo-OS-SIS-ICD. */

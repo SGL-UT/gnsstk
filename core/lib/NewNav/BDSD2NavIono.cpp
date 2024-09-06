@@ -63,4 +63,20 @@ namespace gnsstk
       return (KlobucharIonoNavData::validate() && ((pre == 0) || (pre == 0x712)) &&
               (fraID == 1));
    }
+
+
+   
+bool BDSD2NavIono::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD2NavIono> iono = std::dynamic_pointer_cast<BDSD2NavIono>(right);
+      if (!iono)
+         {
+            return false;
+         }
+
+      return (KlobucharIonoNavData::isSameData(right, true));
+
+      // Checked 6/12/2024
+   }
+
 }

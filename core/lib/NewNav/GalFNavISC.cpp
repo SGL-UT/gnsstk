@@ -96,4 +96,19 @@ namespace gnsstk
       }
       return false;
    }
+
+   bool GalFNavISC::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GalFNavISC> isc = std::dynamic_pointer_cast<GalFNavISC>(right);
+      
+      if (!isc)
+      {
+         return false;
+      }
+      return (InterSigCorr::isSameData(right, true));
+
+      // Checked 6/11/2024. Move ISC downstairs
+   }
+
 }

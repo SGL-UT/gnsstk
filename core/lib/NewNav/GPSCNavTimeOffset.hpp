@@ -83,6 +83,12 @@ namespace gnsstk
           *   this is CNAV on L5 or on L2.
           */
       CommonTime getUserTime() const override;
+
+      /*! @copydoc StdNavTimeOffset::isSameData()
+      * 
+      * No additional data checked at GPSCNavTimeOffset 
+      */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
    };
 
       //@}

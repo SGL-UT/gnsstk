@@ -156,4 +156,18 @@ namespace gnsstk
       return TimeCvtSet({ keyF, keyR });
    }
 
+
+   bool RinexTimeOffset::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<RinexTimeOffset> rto = std::dynamic_pointer_cast<RinexTimeOffset>(right);
+      if (!rto)
+      {
+         return false;
+      }
+   
+      return (NavData::isSameData(right, ignore_timestamp) && 
+         (deltatLS == rto->deltatLS));
+
+      // Checked 6/13/2024
+   } 
 } // namespace gnsstk

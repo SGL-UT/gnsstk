@@ -110,6 +110,15 @@ namespace gnsstk
           * @return a set of supported time system conversion to/from pairs. */
       TimeCvtSet getConversions() const override;
 
+      /*! @copydoc NavData::isSameData()
+       * 
+       * Additional Checks at the InterSigCorr Level
+       *   <table>
+       *     <tr><td>deltatLS<td>Current or past leap second count (UTC only)
+       *   </table>
+       */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
       double deltatLS;  ///< Current or past leap second count (UTC only)
    };
 

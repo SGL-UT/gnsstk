@@ -60,6 +60,22 @@ namespace gnsstk
          /// Create a deep copy of this object.
       NavDataPtr clone() const override
       { return std::make_shared<GPSCNav2Iono>(*this); }
+
+
+      /*! @copydoc KlobucharIonoNavData::isSameData()
+      *
+      * No additional data checked at GPSCNav2Iono
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override
+      {
+         const std::shared_ptr<GPSCNav2Iono> iono = std::dynamic_pointer_cast<GPSCNav2Iono>(right);
+         
+         if (!iono)
+         {
+            return false;
+         }
+         return (KlobucharIonoNavData::isSameData(right, ignore_timestamp));
+      }
    };
 
       //@}

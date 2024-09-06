@@ -98,4 +98,19 @@ namespace gnsstk
    {
       msgLenSec = e ? 12.0 : 5.48;
    }
+
+   bool GPSCNav2Health::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNav2Health> health = std::dynamic_pointer_cast<GPSCNav2Health>(right);
+      
+      if (!health)
+      {
+         return false;
+      }
+
+      return (NavData::isSameData(right, true) &&
+         getHealth() == health->getHealth());
+   }
+
 }

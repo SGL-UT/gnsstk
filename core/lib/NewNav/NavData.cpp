@@ -53,12 +53,15 @@ namespace gnsstk
    {
    }
 
-
    bool NavData ::
-   isSameData(const NavDataPtr& right) const
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
    {
-      return ((timeStamp == right->timeStamp) &&
-              (signal == right->signal));
+      bool ret = (signal == right->signal);
+
+      return ignore_timestamp ? ret : ret && (timeStamp == right->timeStamp);
+   
+      // Checked 6/13/2024
+
    }
 
 

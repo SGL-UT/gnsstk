@@ -63,6 +63,12 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc KlobucharIonoNavData::isSameData()
+      * 
+      * No additional data checked at BDSD2NavIono 
+      */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+      
       uint32_t pre;  ///< The preamble from word 1 of the subframe.
       uint32_t rev;  ///< The rev field from word 1 of the subframe.
       uint8_t fraID; ///< The subframe ID (FraID) from word 1 of the subframe.

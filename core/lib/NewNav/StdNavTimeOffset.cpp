@@ -156,5 +156,34 @@ namespace gnsstk
       TimeCvtKey keyR(tgt,src);
       return TimeCvtSet({ keyF, keyR });
    }
+
+
+   bool StdNavTimeOffset::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<StdNavTimeOffset> snto = std::dynamic_pointer_cast<StdNavTimeOffset>(right);
+      if (!snto)
+      {
+        return false;
+      }
+    
+      return (NavData::isSameData(right, ignore_timestamp) && 
+           (src == snto->src) &&
+           (tgt == snto->tgt) &&
+           (a0 == snto->a0) &&
+           (a1 == snto->a1) &&
+           (a2 == snto->a2) &&
+           (deltatLS == snto->deltatLS) &&
+           (refTime == snto->refTime) &&
+           (effTime == snto->effTime) &&
+           (tot == snto->tot) &&
+           (wnot == snto->wnot) &&
+           (wnLSF == snto->wnLSF) &&
+           (dn == snto->dn) &&
+           (deltatLSF == snto->deltatLSF) &&
+           (dnSun == snto->dnSun));
+
+
+         //   Checked 6/13/2024
+   } 
 }
 

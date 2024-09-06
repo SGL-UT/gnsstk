@@ -87,6 +87,13 @@ namespace gnsstk
           *   corrOut was set according to available data. */
       bool getISC(const ObsID& oid1, const ObsID& oid2, double& corrOut) const
          override;
+
+      /*! @copydoc InterSigCorr::isSameData()
+      *
+      * No additional data checked at GLOFNavISC
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
    };
 
       //@}

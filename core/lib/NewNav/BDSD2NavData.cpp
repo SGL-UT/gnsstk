@@ -61,4 +61,17 @@ namespace gnsstk
       return (((pre == 0) || (pre == 0x712)) &&
               (fraID >= 1) && (fraID <= 5));
    }
+
+   bool BDSD2NavData::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD2NavData> rhs = std::dynamic_pointer_cast<BDSD2NavData>(right);
+      if (!rhs)
+      {
+        return false;
+      }
+    
+      return (OrbitDataKepler::isSameData(right, ignore_timestamp));
+
+      // Checked 6/13/2024 
+   } 
 }

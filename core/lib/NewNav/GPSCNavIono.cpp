@@ -67,4 +67,18 @@ namespace gnsstk
          return timeStamp + 12.0;
       return timeStamp + 6.0;
    }
+   
+   bool GPSCNavIono::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNavIono> iono = std::dynamic_pointer_cast<GPSCNavIono>(right);
+      
+      if (!iono)
+      {
+         return false;
+      }
+      return (KlobucharIonoNavData::isSameData(right, true));
+
+   }
+
 }

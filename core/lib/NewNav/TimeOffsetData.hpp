@@ -97,12 +97,6 @@ namespace gnsstk
           * @return a set of supported time system conversion to/from pairs. */
       virtual TimeCvtSet getConversions() const = 0;
 
-         /// @copydoc NavData::isSameData
-      bool isSameData(const NavDataPtr& right) const override
-      {
-         Exception exc("Unimplemented function");
-         GNSSTK_THROW(exc);
-      }
          /// @copydoc NavData::compare
       std::list<std::string> compare(const NavDataPtr& right)
          const override

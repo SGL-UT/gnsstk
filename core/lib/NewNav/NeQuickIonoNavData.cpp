@@ -1037,4 +1037,19 @@ namespace gnsstk
       }
       return rv;
    }
+
+   bool NeQuickIonoNavData::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<NeQuickIonoNavData> rhs = std::dynamic_pointer_cast<NeQuickIonoNavData>(right);
+      if (!rhs)
+      {
+        return false;
+      }
+    
+      return (NavData::isSameData(right, ignore_timestamp) && 
+           (ai == rhs->ai) &&
+           (idf == rhs->idf));
+      
+      // Checked 6/13/2024
+   } 
 }

@@ -82,6 +82,16 @@ namespace gnsstk
           */
       void setEph(bool e);
 
+      /*! @copydoc NavData::isSameData()
+      *
+      * Additional Checks at the GPSCNav2Health Level
+      *
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth()
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          /// 1-bit health.
       bool health;
    };

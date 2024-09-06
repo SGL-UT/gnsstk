@@ -101,6 +101,13 @@ namespace gnsstk
           */
       bool validate() const override;
 
+      /*! @copydoc OrbitDataKepler::isSameData()
+       * 
+       * No additional data checked at GPSCNavData:
+       */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
       uint32_t pre; ///< The preamble from the start of the subframe.
       bool alert;   ///< Alert flag
    };

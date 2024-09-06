@@ -64,5 +64,17 @@ namespace gnsstk
          // else.
       return ((dn <= maxDN) && (tot <= maxtot) && (tot >= mintot));
    }
+
+   
+   bool GPSCNav2TimeOffset::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNav2TimeOffset> GPSC2TO = std::dynamic_pointer_cast<GPSCNav2TimeOffset>(right);
+      
+      if (!GPSC2TO)
+      {
+         return false;
+      }
+      return (StdNavTimeOffset::isSameData(right, ignore_timestamp));
+   }   
 }
 

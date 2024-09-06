@@ -60,5 +60,20 @@ namespace gnsstk
    {
       return ((dn <= maxDN) && ((a0 != 0.0) || (a1 != 0.0)));
    }
+
+   bool BDSD2NavTimeOffset::isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<BDSD2NavTimeOffset> bdsd2to = std::dynamic_pointer_cast<BDSD2NavTimeOffset>(right);
+      
+      if (!bdsd2to)
+      {
+         return false;
+      }
+
+      return (StdNavTimeOffset::isSameData(right, true));
+
+      // Checked 6/12/2024.
+   }
+
 }
 

@@ -152,12 +152,16 @@ namespace gnsstk
           * @return The ISC value, which may be NaN. */
       static double getGPSISC(const PackedNavBitsPtr& navIn, unsigned startBit);
 
-         /// @copydoc NavData::isSameData
-      bool isSameData(const NavDataPtr& right) const override
-      {
-         Exception exc("Unimplemented function");
-         GNSSTK_THROW(exc);
-      }
+      /*! @copydoc NavData::isSameData()
+       * 
+       * Additional Checks at the InterSigCorr Level
+       *   <table>
+       *     <tr><td>isc<td>inter-signal correction value (T<sub>GD</sub> or BGD)
+       *   </table>
+       */ 
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          /// @copydoc NavData::compare
       std::list<std::string> compare(const NavDataPtr& right)
          const override

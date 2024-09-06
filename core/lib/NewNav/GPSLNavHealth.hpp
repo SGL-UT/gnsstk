@@ -76,6 +76,17 @@ namespace gnsstk
       SVHealth getHealth() const override
       { return (svHealth == 0) ? SVHealth::Healthy : SVHealth::Unhealthy; }
 
+      /*! @copydoc NavData::isSameData()
+       *
+       * Additional Checks at the GPSLNavHealth Level
+       *
+       *    <table>
+       *      <tr><td>getHealth()<td>GPSLNavHealth::getHealth()
+       *    </table>
+       */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          /// 6-bit or 8-bit health.
       uint8_t svHealth;
    };

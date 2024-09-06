@@ -74,6 +74,17 @@ namespace gnsstk
           * (not xmitSat).
           * @return Healthy if no health bits are set. */
       SVHealth getHealth() const override;
+   
+      /*! @copydoc NavData::isSameData() 
+      * 
+      * Additional Checks at the GLOCNavHealth Level 
+      * 
+      *    <table>
+      *     <tr><td>getHealth()<td>getHealth() 
+      *    </table> 
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
 
       bool Hj; ///< The H^j health bit (SV health).
       bool lj; ///< The l^j health bit (validity indicator).

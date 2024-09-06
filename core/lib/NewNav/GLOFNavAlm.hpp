@@ -132,6 +132,27 @@ namespace gnsstk
          /// Compute and set the semi-major axis (A) and inclination (i).
       void setSemiMajorAxisIncl();
 
+      /*! @copydoc GLOFNavData::isSameData()
+      *
+      * Additional Checks at the GLOFNavAlm Level
+      *
+      *    <table>
+      *     <tr><td>Toa<td>Reference time for almanac
+      *     <tr><td>healthBits<td>Health flag (C_n, 1 = operable)
+      *     <tr><td>taunA<td>Time offset to GLONASS time (tau_n^A)
+      *     <tr><td>lambdanA<td>Longitude of  ascending node (lambda_n^A)
+      *     <tr><td>deltainA<td>Correction to mean inclination (Delta i_n^A)
+      *     <tr><td>eccnA<td>Eccentricity (epsilon_n^A)
+      *     <tr><td>omeganA<td>Argument of perigee (omega_n^A)
+      *     <tr><td>tLambdanA<td>Time of ascending node crossing (t_lambda_n^A)
+      *     <tr><td>deltaTnA<td>Correction to mean value of Draconian period (Delta T_n^A)
+      *     <tr><td>deltaTdotnA<td>Time derivative of deltaT (Delta T'_n^A)
+      *     <tr><td>freqnA<td>Frequency offset (H_n^A)
+      *    </table>
+      */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
+
          /// Class to assist in doing all the math to get the XVT.
       class NumberCruncher
       {
@@ -201,6 +222,8 @@ namespace gnsstk
          static double integrateEin(double Mi, double epsi);
 
          bool getXvt(const CommonTime& when, Xvt& xvt, const GLOFNavAlm& alm);
+      
+      
       private:
             /** Yet more abstraction, as these data get computed
              * multiple times.  What are they? *shrug*. */

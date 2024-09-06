@@ -78,6 +78,16 @@ namespace gnsstk
                          const Position& svgeo,
                          CarrierBand band) const override;
 
+      /*! @copydoc NavData::isSameData()
+       *                          
+       * Additional Checks at the KlobucharIonoNavData Level
+       *   <table>
+       *     <tr><td>alpha<td>alpha terms of Klobuchar model (sec/semi-circle^i, where i is the index into the array)
+       *     <tr><td>beta<td>beta terms of Klobuchar model (sec/semi-circle^i, where i is the index into the array)
+       *   </table>
+       */
+      bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
+
          // alpha/beta terms are seconds, seconds/semi-circle,
          // seconds/semi-circle**2, seconds/semi-circle**3.  Refer to
          // IS-GPS-200 Table 20-X.
