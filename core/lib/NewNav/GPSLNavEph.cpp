@@ -91,45 +91,40 @@ namespace gnsstk
    void GPSLNavEph ::
    fixFit()
    {
-      GPSWeekSecond xws(xmitTime), toeWS(Toe);
-      int xmitWeek = xws.week;
-      long xmitSOW = (long) xws.sow;
-      bool isNominalToe = (long)toeWS.sow % 7200 == 0;
-      double fitSeconds = 3600.0 * getLegacyFitInterval(iodc, fitIntFlag);
-      endFit = Toe + (fitSeconds/2.0);
+      GPSWeekSecond toeWS(Toe);
+      bool isNominalToe = (long)toeWS.sow % 3600 == 0;
 
-         // If the toe is NOT offset, then the begin valid time can be set
-         // to the beginning of the two hour interval.
-         // NOTE: This is only true for GPS.   We can't do this
-         // for QZSS, even though it also broadcasts the LNAV message format.
-      if (signal.system==SatelliteSystem::GPS && isNominalToe)
-      {
-         xmitSOW = xmitSOW - (xmitSOW % 7200);
-      }
-
-         // If there IS an offset, all we can assume is that we (hopefully)
-         // captured the earliest transmission and set the begin valid time
-         // to that value.
-         //
-         // @note Prior to GPS III, the offset was typically applied
-         // to BOTH the first and second data sets following a
-         // cutover.  So this means the SECOND data set will NOT be
-         // coerced to the top of the even hour start time if it
-         // wasn't collected at the top of the hour.
-      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, xws.getTimeSystem());
-         // If an upload cutover, need some adjustment.
-         // Calculate the SOW aligned with the mid point and then
-         // calculate the number of seconds the toe is SHORT
-         // of that value.   That's how far the endValid needs
-         // to be adjusted.
+         // Round the Toe up to the nearest hour to get the midpoint
+         // of the curve fit interval. Usually the Toe is already the
+         // midpoint but in the case of an upload cutover the Toe is offset
+         // from the midpoint by a multiple of -16 seconds.
+         // See IS-GPS-200N Section 20.3.4.5 for more info.
+      CommonTime curveMidpoint{Toe};
       if (!isNominalToe)
       {
-         long sow = (long) toeWS.sow;
-         long num900secIntervals = sow / 900;
-         long midPointSOW = (num900secIntervals+1) * 900;
-         double adjustUp = (double) (midPointSOW - sow);
-         endFit += adjustUp;
+         curveMidpoint = Toe + (3600 - ((long)toeWS.sow % 3600));
       }
+
+      double fitSeconds = 3600.0 * getLegacyFitInterval(iodc, fitIntFlag);
+      if (signal.system == SatelliteSystem::QZSS)
+      {
+            // QZSS has a fit interval of 2 hours instead
+            // of GPS's usual 4 hours. Also the fit interval flag
+            // is defined to be always zero.
+         fitSeconds = 7200.0;
+      }
+      
+      beginFit = curveMidpoint - (fitSeconds / 2.0);
+      if (!isNominalToe)
+      {
+            // If this is an upload cutover CEI then the begin fit must
+            // be the time of the first transmission of the new CEI set.
+            // All we can assume is that we (hopefully) captured the earliest
+            // transmission and set the begin valid time to that transmission
+            // time
+         beginFit = xmitTime;
+      }
+      endFit = curveMidpoint + (fitSeconds / 2.0);
    }
 
 
