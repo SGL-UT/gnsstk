@@ -917,7 +917,7 @@ processEphQZSSTest()
                                                    gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(2118,518400,
                                                      gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(2118,530100,
+   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(2118,525600,
                                                    gnsstk::TimeSystem::QZS);
    gnsstk::NavDataPtrList navOut;
    gnsstk::GPSLNavHealth *hea;
