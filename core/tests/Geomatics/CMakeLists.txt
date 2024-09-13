@@ -170,4 +170,10 @@ add_test(NAME JPL_403eph_conversion
          -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST JPL_403eph_conversion PROPERTY LABELS Geomatics)
 
-
+################################################################################
+set(TESTDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../data/inputs/)
+add_executable(AntennaStore_T AntennaStore_T.cpp)
+target_link_libraries(AntennaStore_T gnsstk)
+target_compile_definitions(AntennaStore_T PRIVATE TESTDIR="${TESTDIR}")
+add_test(NAME AntennaStore COMMAND $<TARGET_FILE:AntennaStore_T>)
+set_property(TEST AntennaStore PROPERTY LABELS Geomatics)
