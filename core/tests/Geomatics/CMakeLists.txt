@@ -184,3 +184,8 @@ target_link_libraries(AntexData_T gnsstk)
 target_compile_definitions(AntexData_T PRIVATE TESTDIR="${TESTDIR}")
 add_test(NAME AntexData COMMAND $<TARGET_FILE:AntexData_T>)
 set_property(TEST AntexData PROPERTY LABELS Geomatics)
+
+add_executable(gdc_T gdc_T.cpp)
+target_link_libraries(gdc_T gnsstk)
+add_test(NAME gdc_T COMMAND $<TARGET_FILE:gdc_T>)
+set_property(TEST gdc_T PROPERTY LABELS Geomatics)
