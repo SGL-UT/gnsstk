@@ -36,18 +36,151 @@
 //
 //==============================================================================
 
-#include "TestUtil.hpp"
+#include "ORDEpoch.hpp"
 #include <iostream>
+#include <iomanip>
+
+#include "EpochClockModel.hpp"
+#include "ObsRngDev.hpp"
+#include "TestUtil.hpp"
+#include "NavLibrary.hpp"
+#include "RinexNavDataFactory.hpp"
+#include "EphemerisRange.hpp"
+#include "SimpleTropModel.hpp"
+
+using namespace std;
+using namespace gnsstk;
 
 class ORDEpoch_T
 {
         public:
-		ORDEpoch_T(){}// Default Constructor, set the precision value
-		~ORDEpoch_T() {} // Default Desructor
+	   ORDEpoch_T(){}// Default Constructor, set the precision value
+           ~ORDEpoch_T() {} // Default Desructor
+            int test_removeORD();
+            int test_applyClockModel();
+            int test_removeOffset();
+
+            gnsstk::ObsRngDev makeORD(const double prange, const float elevation, const short health, const unsigned wonky) {
+
+                gnsstk::NavLibrary ephemStore;
+                gnsstk::WGS84Ellipsoid em;
+                gnsstk::NavDataFactoryPtr ndfp;
+                gnsstk::Position receiverPos;
+                gnsstk::CommonTime obsTime = gnsstk::CivilTime(2006, 1, 31, 2, 0, 0, gnsstk::TimeSystem::GPS).convertToCommonTime();
+                SatID SV = SatID(1, SatelliteSystem::GPS);
+
+                receiverPos.setGeodetic(30.387577, -97.727607, 240);
+                std::string path = gnsstk::getPathData() + "/test_input_rinex_nav_ephemerisData.031";
+                ndfp = std::make_shared<gnsstk::RinexNavDataFactory>();
+                ndfp->addDataSource(path);
+                ephemStore.addFactory(ndfp);
+
+                gnsstk::ObsRngDev ord(prange, SV, obsTime, receiverPos, ephemStore, em); 
+
+                ord.elevation =  vfloat(elevation);
+                ord.health = vshort(health);
+                ord.wonky = wonky;
+
+                return ord;
+            } 
 };
 
 
+int ORDEpoch_T::test_removeORD()
+{
+   TUDEF("ORDEpoch", "removeORD");
+   // Verify that removeORD correctly removes ord from ords 
+
+   try
+   {
+      // Initialize ORDEpoch and one ObsRngDev
+      ORDEpoch oe;
+      gnsstk::ObsRngDev ord1 = this->makeORD(100, 15, 0, 0);
+      SatID SV1 = SatID(1, SatelliteSystem::GPS);
+      oe.ords[SV1] = ord1;
+
+      // Function call
+      oe.removeORD(SV1);
+      TUASSERT(oe.ords.size() == 0);
+   }
+   catch(const gnsstk::Exception& e)
+   {
+      TUFAIL("Exception: " + std::string(e.what()));
+   }
+   catch(...)
+   {
+      TUFAIL("An unexpected error occurred.");
+   }
+
+   TURETURN();
+}
+
+int ORDEpoch_T::test_applyClockModel() // Also covers removeOffset()
+{
+   TUDEF("ORDEpoch", "applyClockModel");
+
+   try
+   {
+      // Initialize an ObsRngDev and a ClockModel
+      EpochClockModel cm;
+      ORDEpoch oe;
+      gnsstk::ObsRngDev ord1 = this->makeORD(100, 15, 0, 0);
+      gnsstk::ObsRngDev ord2 = this->makeORD(120, 15, 0, 0);
+      gnsstk::ObsRngDev ord3 = this->makeORD(140, 15, 0, 0);
+
+      SatID SV1 = SatID(1, SatelliteSystem::GPS);
+      SatID SV2 = SatID(2, SatelliteSystem::GPS);
+      SatID SV3 = SatID(3, SatelliteSystem::GPS);
+
+      oe.ords[SV1] = ord1;
+      oe.ords[SV2] = ord2;
+      oe.ords[SV3] = ord3;
+
+      // isOffsetValid() must return true
+      cm.addEpoch(oe);
+
+      // Obtain the old ORD values
+      vector<double> oldORDs;
+      map<SatID, ObsRngDev>::iterator it;
+      for(it = oe.ords.begin(); it != oe.ords.end(); it++)
+      {
+         oldORDs.push_back((*it).second.getORD());
+      }
+
+      // Function call
+      oe.applyClockModel(cm);
+
+      // Verify each new ord in the map
+      vector<double>::iterator it_old = oldORDs.begin();
+      for(it = oe.ords.begin(); it != oe.ords.end(); it++)
+      {
+         cout << "DEBUG" << endl;
+         cout << "Old: " << std::fixed << std::setprecision(4) << (*it).second.getORD() << " New: " << std::fixed << std::setprecision(4) << *it_old - cm.getOffset(oe.time) << endl;
+         TUASSERT((*it).second.getORD() == *it_old - cm.getOffset(oe.time));
+         it_old++;
+      }
+   }
+   catch(const gnsstk::Exception& e)
+   {
+      TUFAIL("Exception: " + std::string(e.what()));
+   }
+   catch(...)
+   {
+      TUFAIL("An unexpected error occurred.");
+   }
+
+   TURETURN();
+}
+
 int main() //Main function to initialize and run all tests above
 {
-	return 0; //Return the total number of errors
+   int errorTotal = 0;
+
+   ORDEpoch_T testClass;
+   
+   errorTotal += testClass.test_removeORD();
+   errorTotal += testClass.test_applyClockModel();
+
+   cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl; 
+   return errorTotal;
 }
