@@ -154,9 +154,9 @@ int ORDEpoch_T::test_applyClockModel() // Also covers removeOffset()
       vector<double>::iterator it_old = oldORDs.begin();
       for(it = oe.ords.begin(); it != oe.ords.end(); it++)
       {
-         cout << "DEBUG" << endl;
-         cout << "Old: " << std::fixed << std::setprecision(4) << (*it).second.getORD() << " New: " << std::fixed << std::setprecision(4) << *it_old - cm.getOffset(oe.time) << endl;
-         TUASSERT((*it).second.getORD() == *it_old - cm.getOffset(oe.time));
+         double ordExpected = *it_old - cm.getOffset(oe.time);
+         double ordReturned = (*it).second.getORD();
+         TUASSERTFEPS(ordReturned, ordExpected, 1e-7);
          it_old++;
       }
    }
