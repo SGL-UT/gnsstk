@@ -66,11 +66,11 @@ class ORDEpoch_T
                 gnsstk::WGS84Ellipsoid em;
                 gnsstk::NavDataFactoryPtr ndfp;
                 gnsstk::Position receiverPos;
-                gnsstk::CommonTime obsTime = gnsstk::CivilTime(2006, 1, 31, 2, 0, 0, gnsstk::TimeSystem::GPS).convertToCommonTime();
+                gnsstk::CommonTime obsTime = gnsstk::CivilTime(2006, 1, 31, 2, 0, 0, gnsstk::TimeSystem::GPS);
                 SatID SV = SatID(1, SatelliteSystem::GPS);
 
                 receiverPos.setGeodetic(30.387577, -97.727607, 240);
-                std::string path = gnsstk::getPathData() + "/test_input_rinex_nav_ephemerisData.031";
+                std::string path = gnsstk::getPathData() + gnsstk::getFileSep() + "test_input_rinex_nav_ephemerisData.031";
                 ndfp = std::make_shared<gnsstk::RinexNavDataFactory>();
                 ndfp->addDataSource(path);
                 ephemStore.addFactory(ndfp);
