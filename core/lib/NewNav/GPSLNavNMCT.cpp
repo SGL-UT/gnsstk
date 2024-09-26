@@ -204,7 +204,7 @@ namespace gnsstk
            << getSignalString() << '\n'
            << "TIMES OF INTEREST\n\n"
            << "           " << getDumpTimeHdr(dl) << '\n'
-           << "Transmit (SF4PG18):     " << getDumpTime(dl, timeStamp) << '\n'
+           << "Transmit (SF4PG13):     " << getDumpTime(dl, timeStamp) << '\n'
            << "Toe (SF1):              " << getDumpTime(dl, Toe) << '\n'
            << "Tnmct:                  " << getDumpTime(dl, Tnmct) << "\n\n"
            << "AODO (SF2):             " << aodo << '\n'
