@@ -48,7 +48,7 @@
 #include "GPSLNavISC.hpp"
 #include "GPSLNavIono.hpp"
 #include "GPSLNavTimeOffset.hpp"
-#include "GPSLNavNMC.hpp"
+#include "GPSLNavNMCT.hpp"
 #include "GPSNMCTAI.hpp"
 #include "GPSNavConfig.hpp"
 #include "NavMessageID.hpp"
@@ -799,51 +799,54 @@ namespace gnsstk
 
          DEBUGTRACE("Processing subframe 4 page 13.");
          SatID xmitSat(navIn->getsatSys());
+         SatID wildSubj(xmitSat.system);
+
+         NavDataPtr p0 = std::make_shared<GPSLNavNMCT>();
+         GPSLNavNMCT *nmct = dynamic_cast<GPSLNavNMCT*>(p0.get());
+         nmct->timeStamp = navIn->getTransmitTime();
+         NavSatelliteID sat(wildSubj, xmitSat, navIn->getobsID(), navIn->getNavID());
+         nmct->signal = NavMessageID(sat, NavMessageType::System);
+         double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
+         unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
+         GPSWeekSecond refTime(nmct->timeStamp);
+         long refWeek = refTime.week;
+         wn = timeAdjustWeekRollover(wn, refWeek);
+
+         nmct->Toe = GPSWeekSecond(wn,toe).weekRolloverAdj(refTime);
+         nmct->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
+         nmct->updateTNMCT();
+
+         nmct->availabilityIndicator = static_cast<GPSNMCTAI>(navIn->asUnsignedLong(nsbAI, nnbAI, nscAI));
+         
          int prn = 1;
          unsigned startBit = nsbERD;
+            // There are only 30 ERD slots.
          for (unsigned erdi = 1; erdi < 31; ++erdi)
          {
+               // The xmitting satellite does not xmit it's own ERD.
             if (erdi == key.sat.id)
             {
                ++prn;
             }
 
-            NavSatelliteID sat(prn, xmitSat, navIn->getobsID(), navIn->getNavID());
-
-            NavDataPtr p0 = std::make_shared<GPSLNavNMC>();
-            GPSLNavNMC *nmc = dynamic_cast<GPSLNavNMC*>(p0.get());
-
-            nmc->timeStamp = navIn->getTransmitTime();
-            nmc->signal = NavMessageID(sat, NavMessageType::System);
-
-            double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
-            unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
-            GPSWeekSecond refTime(nmc->timeStamp);
-            long refWeek = refTime.week;
-            wn = timeAdjustWeekRollover(wn, refWeek);
-
-            nmc->Toe = GPSWeekSecond(wn,toe).weekRolloverAdj(refTime);
-            nmc->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
-            nmc->updateTNMCT();
-
-            nmc->availabilityIndicator = static_cast<GPSNMCTAI>(navIn->asUnsignedLong(nsbAI, nnbAI, nscAI));
-
             if ((erdi + 1) % 4 == 0)
             {
                unsigned startBitLSB = startBit + nnbERDm + fnbParity1;
-               nmc->erd = navIn->asLong(startBit, nnbERDm, startBitLSB, nnbERDl, 1) * (3.0 / 10.0) ;
+                  // The NMCT object handles further parsing
+               nmct->erds[prn] = navIn->asUnsignedLong(startBit, nnbERDm, startBitLSB, nnbERDl, 1);
                startBit += nnbERDm + fnbParity1 + nnbERDl;
             }
             else
             {
-               nmc->erd = navIn->asLong(startBit, nnbERD, 1) * (3.0 / 10.0);
+                  // The NMCT object handles further parsing
+               nmct->erds[prn] = navIn->asUnsignedLong(startBit, nnbERD, 1);
                startBit += nnbERD;
             }
 
-            navOut.push_back(p0);
             ++prn;
          }
 
+         navOut.push_back(p0);
          nmctAcc.erase(key);
       }
 

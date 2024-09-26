@@ -50,33 +50,43 @@ namespace gnsstk
       /// @ingroup NavFactory
       //@{
 
-      /** Wrapper for entries of the Navigation Message Correction Table (NMCT) 
-       * in subframe 4, page 13. 
+      /** Container of the Navigation Message Correction Table (NMCT) in subframe 4, page 13. 
        * 
        * Also contains the Age of Data Offset (AODO) and Toe as provided in subframe 2.
        * The IS-GPS-200 specifies: "If the AODO term is 27900 seconds (i.e., binary 11111), 
        * then the NMCT currently available from the transmitting SV is invalid and shall not be used."
-       * It is currently up to users to check the AODO value and assess whether the ERD can be used. 
-       * 
        * 
        * For reference, from the IS-GPS-200:
        *   * Figure 20-1. Data Format (sheet 10 of 11)
        *   * 20.3.3.4.4 NMCT Validity Time
        *   * 20.3.3.5.1.9 NMCT
        */
-   class GPSLNavNMC : public SystemNavData
+   struct GPSLNavNMCT : public SystemNavData
    {
-   public:
-      GPSLNavNMC();
+      GPSLNavNMCT();
 
          /// Create a deep copy of this object.
       NavDataPtr clone() const override
       {
-         return std::make_shared<GPSLNavNMC>(*this);
+         return std::make_shared<GPSLNavNMCT>(*this);
       }
+
+         /** For a given PRN, decode the ERD into engineering units for a given PRN.
+          *
+          * @param[in] prn to parse ERD of. Must be between and including 1-31 and
+          *    cannot be the transmitting PRN. 
+          * @param[out] erd the result in meters if valid.
+          * @return false if the PRN is not valid, the AODO or Availability Indicator indicate
+          *    the NMCT is unavailable, or the ERD of the PRN is unavailable. Returns true
+          *    if NMCT/ERD is valid and successfully parsed.
+          */
+      bool getERD(unsigned prn, double& erd) const;
 
          /// @copydoc NavData::validate
       bool validate() const override;
+
+            /// @copydoc NavData::getTerseHeader()
+      // std::string getTerseHeader() const override;
 
          /// @copydoc NavData::dump
       void dump(std::ostream &s, DumpDetail dl) const override;
@@ -111,12 +121,13 @@ namespace gnsstk
          /// Defaults to NotAvailable
       GPSNMCTAI availabilityIndicator = GPSNMCTAI::NotAvailable;
 
-         /// The Estimated Range Deviation (ERD) for the given subject satellite.
-      double erd = std::numeric_limits<double>::quiet_NaN();
+         /// Contains the hexadecimal ERD per PRN. There should only be 30 slots.
+         /// PRN 32 is not a valid PRN for NMCT and an SV should not be broadcasting
+         /// it's own ERD. To get the floating point equivalent use getERD().
+      std::map<unsigned, unsigned> erds;
 
          /// The validity time for the NMCT
       CommonTime Tnmct = CommonTime::END_OF_TIME;
-
    };
 
       //@}

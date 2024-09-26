@@ -96,7 +96,7 @@ namespace gnsstk
       {
          s << " / " << "SVN : " << setw(2) << svn;
       }
-      if (signal.xmitSat != signal.sat)
+      if (signal.sat.isWild() || signal.xmitSat != signal.sat)
       {
             // for almanacs, print the transmitting satellite as well.
          s << endl
