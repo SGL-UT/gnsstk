@@ -189,6 +189,13 @@ namespace gnsstk
           * @param[in] t The time to format for dumping.
           * @return A string containing the formatted time. */
       std::string getDumpTime(DumpDetail dl, const CommonTime& t) const;
+
+         /** Return the header for a Terse table of this object.
+          * The default is to not have a header.
+          */
+      virtual std::string getTerseHeader() const
+      { return ""; };
+
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the
           * data, usually the transmit time. */

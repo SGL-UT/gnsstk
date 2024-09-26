@@ -64,6 +64,9 @@ namespace gnsstk
           */
       bool validate() const override;
 
+         /// @copydoc NavData::getTerseHeader() 
+      std::string getTerseHeader() const override;
+
          /** Returns the time when the navigation message would have
           * first been available to the user equipment, i.e. the time
           * at which the final bit of a given broadcast navigation

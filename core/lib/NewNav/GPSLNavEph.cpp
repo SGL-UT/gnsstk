@@ -133,6 +133,13 @@ namespace gnsstk
    }
 
 
+      
+   std::string GPSLNavEph ::
+   getTerseHeader() const
+   {
+      return "SVN  PRN     Begin Fit        Toe          End Fit       URA     IODC      Health";
+   }
+
    void GPSLNavEph ::
    dump(std::ostream& s, DumpDetail dl) const
    {
