@@ -61,15 +61,17 @@ int SvObsEpoch_T::test_operator()
    {
       // Initialize an SvObsEpoch object
       SvObsEpoch soe;
-      ObsID oid = ObsID();
-      soe[oid] = 100.999;
+      ObsID oid1 = ObsID();
+      soe[oid1] = 100.999;
+      ObsID oid2 = ObsID(ObservationType::NavMsg, CarrierBand::Undefined, TrackingCode::Undefined);
+      soe[oid2] = 200.444;
 
       // Function call and conversion to string
       stringstream out;
       out << soe;
       string result = out.str();
 
-      TUASSERT(result == "UnknownBand UnknownCode UnknownType: 100.999");
+      TUASSERT(result == "UnknownBand UnknownCode UnknownType: 100.999, undefined undefined navmsg: 200.444");
    }
    catch( const gnsstk::Exception& e)
    {
