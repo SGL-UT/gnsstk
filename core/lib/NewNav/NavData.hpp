@@ -194,7 +194,7 @@ namespace gnsstk
           * The default is to not have a header.
           */
       virtual std::string getTerseHeader() const
-      { return ""; };
+      { return ""; }
 
          /** Time stamp used to sort the data.  This should be the
           * appropriate time stamp used when attempting to find the

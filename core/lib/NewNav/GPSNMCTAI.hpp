@@ -77,4 +77,4 @@ namespace gnsstk
 
 } // namespace gnsstk
 
-#endif // GNSSTK_GPSSVCONFIG_HPP
+#endif // GNSSTK_GPSNMCTAI_HPP
