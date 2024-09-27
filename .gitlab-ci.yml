@@ -731,7 +731,8 @@ test_windows_vs2019_dll:
     - win10-vs2019
   script:
     - cd build
-    - cmake --build . --target RUN_TESTS --config Release
+    # Added COPY_GNSSTK_DLL target for workaround with python 3.8+ not honoring DLLs found in windows PATH variable.
+    - cmake --build . --target COPY_GNSSTK_DLL RUN_TESTS --config Release
   artifacts:
     when: on_failure
     paths:
