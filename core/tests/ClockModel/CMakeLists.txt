@@ -19,3 +19,7 @@ add_test(NAME ClockModel_ObsRngDev COMMAND $<TARGET_FILE:ObsRngDev_T>)
 # add_executable(ORDEpoch_T ORDEpoch_T.cpp)
 # target_link_libraries(ORDEpoch_T gnsstk)
 # add_test(NAME ClockModel_ORDEpoch COMMAND $<TARGET_FILE:ORDEpoch_T>)
+
+# add_executable(SvObsEpoch_T SvObsEpoch_T.cpp)
+# target_link_libraries(SvObsEpoch_T gnsstk)
+# add_test(NAME ClockModel_SvObsEpoch COMMAND $<TARGET_FILE:SvObsEpoch_T>)
