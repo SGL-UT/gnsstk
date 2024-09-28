@@ -50,7 +50,8 @@ class TestGPSLNavEph(unittest.TestCase):
 
     def test_fixFit(self):
         uut = gnsstk.GPSLNavEph()
-        beginExp2 = gnsstk.GPSWeekSecond(2121, 603360).toCommonTime()
+        uut.signal.system = gnsstk.SatelliteSystem.GPS
+        beginExp2 = gnsstk.GPSWeekSecond(2121, 597600).toCommonTime()
         endExp2 = gnsstk.GPSWeekSecond(2122, 7200).toCommonTime()
         uut.Toe = gnsstk.GPSWeekSecond(2122, 0).toCommonTime()
         uut.xmitTime = gnsstk.GPSWeekSecond(2121,603360).toCommonTime()

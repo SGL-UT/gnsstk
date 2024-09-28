@@ -129,22 +129,138 @@ unsigned GPSLNavEph_T ::
 fixFitTest()
 {
    TUDEF("GPSLNavEph", "fixFit");
-   gnsstk::GPSLNavEph obj;
-      /** @todo When using navdmp, it indicated the begin valid time
-       * was 597600 SOW.  The fixFit() method, which was taken from
-       * OrbElemRinex::computeBeginValid, does not make this 2-hour
-       * boundary adjustment when the Toe isn't already aligned on
-       * 2-hour boundaries.  So for now we use 603360 SOW for the
-       * test, since that matches expected behavior for this code. */
-   gnsstk::GPSWeekSecond beginExpWS2(2121, 603360), endExpWS2(2122, 7200);
-   gnsstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
-   obj.iodc = 0xd;
-   obj.fitIntFlag = 0;
-   obj.Toe = obj.Toc = gnsstk::GPSWeekSecond(2122, 0);
-   obj.xmitTime = gnsstk::GPSWeekSecond(2121,603360);
-   TUCATCH(obj.fixFit());
-   TUASSERTE(gnsstk::CommonTime, beginExp2, obj.beginFit);
-   TUASSERTE(gnsstk::CommonTime, endExp2, obj.endFit);
+   
+   // Normal GPS operations -- Standard 4 hour curve fit interval and Toe on 2 hour boundary.
+   // Broadcasted on the hour.
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2121, 597600)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 7200)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 0;
+      obj.iodc = 13;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 0);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2121,597600);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // Normal GPS operations -- Standard 4 hour curve fit interval and Toe on 2 hour boundary.
+   // Broadcasted off the hour.
+   // The begin fit can be assumed to be before the transmit time.
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2121, 597600)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 7200)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 0;
+      obj.iodc = 13;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 0);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2121,599040);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // Normal GPS operations Upload Cutover -- Toe not on hour boundary.
+   // Without additional info, the begin fit can only be assumed as the transmit time.
+   // End fit time is based on the midpoint of the curve fit interval but the Toe
+   // is no longer the midpoint in this case.
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2121, 603360)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 7200)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 0;
+      obj.iodc = 13;
+      obj.Toe = gnsstk::GPSWeekSecond(2121, 604784);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2121,603360);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // GPS short term extended nav -- 6 hour curve fit interval, broadcasted every 4 hours.
+   // Fit interval flag is 1 and IODE is less than 240.
+   // IODC is then used to determine curve fit interval
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 21600)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 1;
+      obj.iodc = 239;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 10800);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2122, 3630);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // GPS long term extended nav -- 8 hour curve fit interval, broadcasted every 6 hours.
+   // Fit interval flag  is 1 and IODC is between 240-247
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 28800)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 1;
+      obj.iodc = 244;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 14400);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2122, 3630);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+   
+   // GPS long term extended nav -- 14 hour curve fit interval, broadcasted every 12 hours.
+   // Fit interval flag  is 1 and IODC is 248-255, 496
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 50400)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 1;
+      obj.iodc = 496;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 25200);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2122, 3630);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // GPS long term extended nav -- 26 hour curve fit interval, broadcasted every 24 hours.
+   // Fit interval flag  is 1 and IODC is 497-503, 1021-1023
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 93600)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 1;
+      obj.iodc = 1021;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 46800);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2122, 3630);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
+   // QZSS normal operations -- 2 hour curve fit interval, broadcasted every hour
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 7200)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::QZSS;
+      obj.fitIntFlag = 0;
+      obj.iodc = 13;
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 3600);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2122, 30);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
       //obj.dump(std::cerr, gnsstk::OrbitDataKepler::Detail::Full);
    TURETURN();
 }

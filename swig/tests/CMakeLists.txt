@@ -5,6 +5,7 @@
 
 message(STATUS "swig test path ${MODULE_PATH}")
 message(STATUS "swig test bin dir ${CMAKE_BINARY_DIR}")
+message(STATUS "BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS}")
 set(tp  ${MODULE_PATH}/tests)
 set(td  ${MODULE_PATH}/gnsstk)
 if (WIN32)
@@ -18,6 +19,21 @@ if (WIN32)
   # they should.
   string(REPLACE ";" "\\;" TESTPATH "${TESTPATH}")
   string(REPLACE "/" "\\" TESTPATH "${TESTPATH}")
+  # Starting with python3.8, DLLs will be ignored if added to PATH variable.
+  # This is workaround for now until we add gnsstk.dll to same package directory as _gnsstk.pyd
+  find_package(Python COMPONENTS Interpreter REQUIRED)
+  message(STATUS "Python_VERSION ${Python_VERSION}")
+  if (BUILD_SHARED_LIBS AND Python_VERSION VERSION_GREATER_EQUAL "3.8")
+   add_custom_target(COPY_GNSSTK_DLL
+      COMMENT "add_custom_target COPY_GNSSTK_DLL"
+   )
+   add_custom_command(TARGET COPY_GNSSTK_DLL
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/gnsstk.dll"
+        "${MODULE_PATH}/gnsstk"
+   )
+  endif()
 endif()
 
 macro(prep_swig_test target labels)
