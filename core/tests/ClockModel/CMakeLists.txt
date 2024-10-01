@@ -1,5 +1,9 @@
 #Tests for ClockModel Classes
 
+add_executable(LinearClockModel_T LinearClockModel_T.cpp)
+target_link_libraries(LinearClockModel_T gnsstk)
+add_test(NAME ClockModel_LinearClockModel COMMAND $<TARGET_FILE:LinearClockModel_T>)
+
 add_executable(ObsClockModel_T ObsClockModel_T.cpp)
 target_link_libraries(ObsClockModel_T gnsstk)
 add_test(NAME ClockModel_ObsClockModel COMMAND $<TARGET_FILE:ObsClockModel_T>)
