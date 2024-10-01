@@ -178,6 +178,11 @@ target_compile_definitions(AntennaStore_T PRIVATE TESTDIR="${TESTDIR}")
 add_test(NAME AntennaStore COMMAND $<TARGET_FILE:AntennaStore_T>)
 set_property(TEST AntennaStore PROPERTY LABELS Geomatics)
 ################################################################################
+add_executable(EOPPrediction_T EOPPrediction_T.cpp)
+target_link_libraries(EOPPrediction_T gnsstk)
+add_test(NAME EOPPrediction COMMAND $<TARGET_FILE:EOPPrediction_T>)
+set_property(TEST EOPPrediction PROPERTY LABELS Geomatics)
+################################################################################
 set(TESTDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../data/inputs/)
 add_executable(AntexData_T AntexData_T.cpp)
 target_link_libraries(AntexData_T gnsstk)
