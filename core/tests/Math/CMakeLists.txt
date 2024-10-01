@@ -12,6 +12,14 @@ add_executable(Matrix_Initialization_T Matrix_Initialization_T.cpp)
 target_link_libraries(Matrix_Initialization_T gnsstk)
 add_test(NAME Math_Matrix_Initialization COMMAND $<TARGET_FILE:Matrix_Initialization_T>)
 
+add_executable(Matrix_Base_T Matrix_Base_T.cpp)
+target_link_libraries(Matrix_Base_T gnsstk)
+add_test(NAME Math_Matrix_Base COMMAND $<TARGET_FILE:Matrix_Base_T>)
+
+add_executable(Matrix_Slice_T Matrix_Slice_T.cpp)
+target_link_libraries(Matrix_Slice_T gnsstk)
+add_test(NAME Math_Matrix_Slice COMMAND $<TARGET_FILE:Matrix_Slice_T>)
+
 add_executable(Matrix_Operators_T Matrix_Operators_T.cpp)
 target_link_libraries(Matrix_Operators_T gnsstk)
 add_test(NAME Math_Matrix_Operators COMMAND $<TARGET_FILE:Matrix_Operators_T>)
