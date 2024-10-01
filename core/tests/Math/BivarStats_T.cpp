@@ -352,6 +352,114 @@ class BivarStats_T
 			return testFramework.countFails();
 		}
 
+		int ConstructorTest()
+		{
+			// by nature of the constructors being written using Add, these are also Add Tests. 
+			TUDEF("BiVarStats", "constructors");
+			TUCATCH(gnsstk::BivarStats<double>());
+			TUCATCH(gnsstk::BivarStats<double>(1, 2, true));
+			std::vector<double> x = {1.0, 2.0, 3.0};
+			std::vector<double> y = {-1.0, -2.0, -3.0};
+			TUCATCH(gnsstk::BivarStats<double>(x, y, false));
+			std::vector<std::pair<double, double>> xy = {std::pair<double, double>(1.0, -1.0), std::pair<double, double>(2.0, -2.0), std::pair<double, double>(3.0, -3.0)};
+			TUCATCH(gnsstk::BivarStats<double>(xy, true));
+			double xxData[3] = {1.0, 2.0, 3.0};
+			double yyData[3] = {-1.0, -2.0, -3.0};
+			gnsstk::Vector<double> xx(3);
+			xx = xxData;
+			gnsstk::Vector<double> yy(3);
+			yy = yyData;
+			TUCATCH(gnsstk::BivarStats<double>(xx, yy, true));
+			TURETURN();
+		}
+
+		int SubtractTest() {
+			TUDEF("BiVarStats", "subtract");
+			// let's do one scaled
+			gnsstk::BivarStats<double> a(1, 2, true);
+			a.add(3, 4);
+			TUASSERTE(double, a.averageX(), 3.0);
+			TUASSERTE(double, a.averageY(), 3.0);
+			// subtract const
+			a.subtract(3, 4);
+			TUASSERTE(double, a.averageX(), 3.0);
+			TUASSERTE(double, a.averageY(), 2.0);
+			// ok the rest, we'll all do unscaled. 
+			gnsstk::BivarStats<double> b(0.0, 0.0, false);
+			// subtract 2 vectors
+            std::vector<double> x = {1.0, 2.0, 3.0};
+			std::vector<double> y = {-1.0, -2.0, -3.0};
+			b.add(x,y);
+			TUASSERTE(double, b.averageX(), 1.5);
+			TUASSERTE(double, b.averageY(), -1.5);
+			b.subtract(x, y);
+			TUASSERTE(double, b.averageX(), 0);
+			TUASSERTE(double, b.averageY(), 0);
+			// subtract vector pairs
+            std::vector<std::pair<double, double>> xy = {std::pair<double, double>(1.0, -1.0), std::pair<double, double>(2.0, -2.0), std::pair<double, double>(3.0, -3.0)};
+			b.add(xy);
+			TUASSERTE(double, b.averageX(), 1.5);
+			TUASSERTE(double, b.averageY(), -1.5);
+			b.subtract(xy);
+			TUASSERTE(double, b.averageX(), 0);
+			TUASSERTE(double, b.averageY(), 0)
+			// subtract 2 gnsstk vectors
+            double xxData[3] = {1.0, 2.0, 3.0};
+			double yyData[3] = {-1.0, -2.0, -3.0};
+			gnsstk::Vector<double> xx(3);
+			xx = xxData;
+			gnsstk::Vector<double> yy(3);
+			yy = yyData;
+			b.add(xx, yy);
+			TUASSERTE(double, b.averageX(), 1.5);
+			TUASSERTE(double, b.averageY(), -1.5);
+			b.subtract(xx, yy);
+			TUASSERTE(double, b.averageX(), 0);
+			TUASSERTE(double, b.averageY(), 0)
+			TURETURN();
+		} 
+
+		int EmptyStatsMethodsTest()
+		{
+			TUDEF("BiVarStats", "methods with empty BivarStats");
+			gnsstk::BivarStats<double> a(1, 2);
+			a.clear();
+			TUASSERTE(double, a.minimumX(), 0);
+			TUASSERTE(double, a.minimumY(), 0);
+			TUASSERTE(double, a.maximumX(), 0);
+			TUASSERTE(double, a.maximumY(), 0);
+			TUASSERTE(double, a.averageX(), 0);
+			TUASSERTE(double, a.averageY(), 0);
+			TUASSERTE(double, a.varianceX(), 0);
+			TUASSERTE(double, a.varianceY(), 0);
+			TUASSERTE(double, a.stdDevX(), 0);
+			TUASSERTE(double, a.stdDevY(), 0);
+			TUASSERTE(double, a.slope(), 0);
+			TUASSERTE(double, a.intercept(), 0);
+			TUASSERTE(double, a.sigmaSlope(), 0);
+			TUASSERTE(double, a.correlation(), 0);
+			TUASSERTE(double, a.sigmaYX(), 0);
+			TURETURN();
+		}
+
+		int CombineTest() {
+			TUDEF("BiVarStats", "operator+=");
+			gnsstk::BivarStats<double> a(1, 2, false);
+			gnsstk::BivarStats<double> b(3, 4, false);
+			a += b;
+			TUASSERTE(double, a.averageX(), 2);
+			TUASSERTE(double, a.averageY(), 3);
+			TURETURN();
+		}
+
+		int EstimateDeviationTest() {
+			TUDEF("BiVarStats", "EstimateDeviation");
+			gnsstk::BivarStats<double> a(1, 2, false);
+            std::vector<std::pair<double, double>> xy = {std::pair<double, double>(1.0, -1.0), std::pair<double, double>(2.0, -2.0), std::pair<double, double>(3.0, -3.0)};
+            TUCATCH(a.estimateDeviation(xy));
+			TURETURN();
+		}
+
  };
 
 int main()
@@ -405,6 +513,18 @@ int main()
 	errorCounter += check;
 
 	check = testClass.CorrelationTest();
+	errorCounter += check;
+
+	check = testClass.ConstructorTest();
+	errorCounter += check;
+
+	check = testClass.SubtractTest();
+	errorCounter += check;
+
+	check = testClass.EmptyStatsMethodsTest();
+	errorCounter += check;
+	
+	check = testClass.EstimateDeviationTest();
 	errorCounter += check;
 
 	std::cout << "Total Errors: " << errorCounter << std::endl;

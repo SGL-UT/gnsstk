@@ -184,6 +184,211 @@ class Vector_T
 
       return testFramework.countFails();
    }
+
+   int baseOperatorTest() 
+   {
+      TUDEF("Vector", "VectorBaseOperators");
+      gnsstk::Vector<double> a(3); 
+      double data[3] = {1.0, 2.0, 3.0};
+      a = data;
+      std::stringstream ss;
+      ss << a;
+      std::cout << ss.str() << std::endl;
+      TUASSERT(ss.str().find("2") != std::string::npos);
+      // sum the vector
+      TUASSERTE(double, sum(a), 6.0);
+      // empty vector exception checks
+      gnsstk::Vector<double> empty(0);
+      TUTHROW(minabs(empty));
+      TUTHROW(min(empty));
+      TUTHROW(maxabs(empty));
+      TUTHROW(max(empty));
+      // non empty checks
+      TUASSERTE(double, 1.0, minabs(a));
+      TUASSERTE(double, 1.0, min(a));
+      TUASSERTE(double, 3.0, maxabs(a));
+      TUASSERTE(double, 3.0, max(a));
+      // dot product of two vectors
+      TUASSERTE(double, dot(a, a), 14.0);
+      // norm of a vector
+      TUASSERTFEPS(norm(a), SQRT(14.0), 1e-8);
+      // Minkowski, exception if vector not length of 4
+      TUTHROW(Minkowski(a, a);)
+      gnsstk::Vector<double> four(4);
+      double mink[4] = {1.0, 2.0, 3.0, 4.0};
+      four = mink;
+      // 1 + 4 + 9 - 16
+      TUASSERTFEPS(Minkowski(four, four), -2.0, 1e-8);
+      TUASSERTFEPS(cosVec(a, a), 1.0, 1e-8);
+      // do all shortline operators
+      TUASSERT(eq(a, a));
+      TUASSERT(!ne(a, a));
+      TUASSERT(!lt(a, a));
+      TUASSERT(!gt(a, a));
+      TUASSERT(ge(a, a));
+      TUASSERT(le(a, a));
+      TURETURN();
+   }
+
+   int baseNewBinaryOperatorsTest()
+   {
+      TUDEF("Vector", "VectorBaseBinaryOperator");
+      gnsstk::Vector<int> a(3);
+      int data1[3] = {1, 2, 3};
+      a = data1;
+      gnsstk::Vector<int> b(3);
+      int data2[3] = {1, 1, 1};
+      b = data2;
+      gnsstk::Vector<int> c = a * b;
+      TUASSERTE(int, 1, c[0]);
+      TUASSERTE(int, 2, c[1]);
+      TUASSERTE(int, 3, c[2]);
+      c = a / b;
+      TUASSERTE(int, 1, c[0]);
+      TUASSERTE(int, 2, c[1]);
+      TUASSERTE(int, 3, c[2]);
+      c = a % b;
+      TUASSERTE(int, 0, c[0]);
+      TUASSERTE(int, 0, c[1]);
+      TUASSERTE(int, 0, c[2]);
+      c = a + b;
+      TUASSERTE(int, 2, c[0]);
+      TUASSERTE(int, 3, c[1]);
+      TUASSERTE(int, 4, c[2]);
+      c = a ^ b;
+      TUASSERTE(int, 0, c[0]);
+      TUASSERTE(int, 3, c[1]);
+      TUASSERTE(int, 2, c[2]);
+      c = a & b;
+      TUASSERTE(int, 1, c[0]);
+      TUASSERTE(int, 0, c[1]);
+      TUASSERTE(int, 1, c[2]);
+      c = a | b;
+      TUASSERTE(int, 1, c[0]);
+      TUASSERTE(int, 3, c[1]);
+      TUASSERTE(int, 3, c[2]);
+      gnsstk::Vector<bool> d = a == b;
+      TUASSERT(d[0]);
+      TUASSERT(!d[1]);
+      TUASSERT(!d[2]);
+      d = a < b;
+      TUASSERT(!d[0]);
+      TUASSERT(!d[1]);
+      TUASSERT(!d[2]);
+      d = a > b;
+      TUASSERT(!d[0]);
+      TUASSERT(d[1]);
+      TUASSERT(d[2]);
+      d = a != b;
+      TUASSERT(!d[0]);
+      TUASSERT(d[1]);
+      TUASSERT(d[2]);
+      d = a <= b;
+      TUASSERT(d[0]);
+      TUASSERT(!d[1]);
+      TUASSERT(!d[2]);
+      d = a >= b;
+      TUASSERT(d[0]);
+      TUASSERT(d[1]);
+      TUASSERT(d[2]);
+      TURETURN();
+   }
+
+   int baseNewUnaryOperatorsTest()
+   {
+      TUDEF("Vector", "VectorBaseNewUnaryOperator");
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {1, 2, 3};
+      a = data1;
+      TUCATCH(std::abs(a));
+      TUCATCH(std::acos(a));
+      TUCATCH(std::asin(a));
+      TUCATCH(std::atan(a));
+      TUCATCH(std::cos(a));
+      TUCATCH(std::cosh(a));
+      TUCATCH(std::exp(a));
+      TUCATCH(std::log(a));
+      TUCATCH(std::log10(a));
+      TUCATCH(std::sinh(a));
+      TUCATCH(std::sin(a));
+      TUCATCH(std::sqrt(a));
+      TUCATCH(std::tan(a));
+      TUCATCH(std::tanh(a));
+      TURETURN();
+   }
+
+   int crossVectorTest()
+   {
+      TUDEF("Vector", "cross");
+      gnsstk::Vector<double> bad(4);
+      TUTHROW(cross(bad, bad));
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {1, 2, 3};
+      a = data1;
+      gnsstk::Vector<double> b(3);
+      double data2[3] = {1, 1, 1};
+      b = data2;
+      gnsstk::Vector<double> result = cross(a, b);
+      TUASSERTFEPS(result[0], -1, 1e-8);
+      TUASSERTFEPS(result[1], 2, 1e-8);
+      TUASSERTFEPS(result[2], -1, 1e-8);
+      TURETURN();
+   }
+
+   int normalizeVectorTest()
+   {
+      TUDEF("Vector", "normalize");
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {1, 2, 3};
+      a = data1;
+      gnsstk::Vector<double> result = normalize(a); 
+      TUASSERTFEPS(result[0], 0.26726124, 1e-8); 
+      TUASSERTFEPS(result[1], 0.53452248, 1e-8);
+      TUASSERTFEPS(result[2], 0.80178373, 1e-8);
+      TURETURN();
+   }
+
+   int RMSVectorTest()
+   {
+      TUDEF("Vector", "RMS");
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {1, 2, 3};
+      a = data1;
+      TUASSERTFEPS(2.160246899469287, RMS(a), 1e-8);
+      TURETURN();
+   }
+
+   int RSSVectorTest()
+   {
+      TUDEF("Vector", "RSS");
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {1, 2, 3};
+      a = data1;
+      TUASSERTFEPS(3.7416573867739413, RSS(a), 1e-8);
+      TURETURN();
+   }
+
+   int NewBinaryTranscendentalOperatorsTest()
+   {
+      TUDEF("Vector", "NewBinaryTranscendentalOperators (atan2, pow)");
+      gnsstk::Vector<double> a(3);
+      double data1[3] = {4, 4, 4};
+      a = data1;
+      gnsstk::Vector<double> b(3);
+      double data2[3] = {-3, -3, -3};
+      b = data2;
+      gnsstk::Vector<double> result = std::atan2(a, b);
+      TUASSERTFEPS(result[0], 2.2142974355881808179, 1e-8);
+      TUASSERTFEPS(result[1], 2.2142974355881808179, 1e-8);
+      TUASSERTFEPS(result[2], 2.2142974355881808179, 1e-8);
+      result = std::pow(a, a);
+      // 4**4 is 256
+      TUASSERTFEPS(result[0], 256, 1e-8);
+      TUASSERTFEPS(result[1], 256, 1e-8);
+      TUASSERTFEPS(result[2], 256, 1e-8);
+      TURETURN();
+   }
+
 };
 
 int main()
@@ -195,6 +400,31 @@ int main()
    errorCounter += check;
 
    check = testClass.operatorTest();
+   errorCounter += check;
+
+   check = testClass.baseOperatorTest();
+   errorCounter += check;
+
+   check = testClass.baseNewUnaryOperatorsTest();
+   errorCounter += check;
+
+   check = testClass.baseNewBinaryOperatorsTest();
+   errorCounter += check;
+
+   check = testClass.crossVectorTest();
+   errorCounter += check;
+
+   check = testClass.normalizeVectorTest();
+   errorCounter += check;
+
+   check = testClass.RMSVectorTest();
+   errorCounter += check;
+
+   check = testClass.RSSVectorTest();
+   errorCounter += check;
+
+   check = testClass.NewBinaryTranscendentalOperatorsTest();
+   errorCounter += check;
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
 
