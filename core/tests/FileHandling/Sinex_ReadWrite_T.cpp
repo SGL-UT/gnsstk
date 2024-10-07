@@ -64,6 +64,18 @@ int main(int argc, char *argv[])
       exit(-1);
    }
 
+   bool removeAfter = false;
+   if (argc > 2) {
+      for (int i = 2; i < argc; i++) {
+         if (std::string(argv[i]) == "-r") {
+            removeAfter = true;
+            break;
+         }
+      } 
+   }
+   char outputFilename[] = "sinex_test.out";
+   int status = 0;
+
    try
    {
       Sinex::Data  data;
@@ -76,22 +88,29 @@ int main(int argc, char *argv[])
 
       data.dump(cout);
 
-      cout << "Writing data to sinex_test.out . . . " << endl;
-      Sinex::Stream  output("sinex_test.out", ios::out | ios::ate);
+      cout << "Writing data to " << std::string(outputFilename) << " . . . " << endl;
+      Sinex::Stream  output(outputFilename, ios::out | ios::ate);
       output.exceptions(fstream::eofbit | fstream::failbit);
       output << data;
       cout << "Done." << endl;
-
-      exit(0);
    }
    catch(Exception& e)
    {
       cerr << e;
+      status = 1;
    }
    catch (...)
    {
       cerr << "Unknown error.  Done." << endl;
+      status = 1;
    }
-   exit(1);
+   if (removeAfter) {
+      try {
+         std::remove(outputFilename);
+      } catch (...) {
+         cout << "Failed to remove " << std::string(outputFilename) << " , may need manual removal.";
+      }
+   }
+   exit(status);
 
 } // main()
