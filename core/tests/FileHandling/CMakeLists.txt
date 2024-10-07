@@ -108,3 +108,13 @@ add_executable(MetReader_T MetReader_T.cpp)
 target_link_libraries(MetReader_T gnsstk)
 add_test(NAME FileHandling_MetReader COMMAND $<TARGET_FILE:MetReader_T>)
 set_property(TEST FileHandling_MetReader PROPERTY LABELS FileHandling)
+
+add_executable(Sinex_ReadWrite_T Sinex_ReadWrite_T.cpp)
+target_link_libraries(Sinex_ReadWrite_T gnsstk)
+add_test(NAME Sinex_ReadWrite COMMAND $<TARGET_FILE:Sinex_ReadWrite_T> ${GNSSTK_TEST_DATA_DIR}/test_input_sinex.dat -r)
+set_property(TEST Sinex_ReadWrite PROPERTY LABELS Sinex_ReadWrite)
+
+add_executable(Rinex3ObsHeader_T Rinex3ObsHeader_T.cpp)
+target_link_libraries(Rinex3ObsHeader_T gnsstk)
+add_test(NAME FileHandling_Rinex3ObsHeader COMMAND $<TARGET_FILE:Rinex3ObsHeader_T>)
+set_property(TEST FileHandling_Rinex3ObsHeader PROPERTY LABELS FileHandling)
