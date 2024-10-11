@@ -507,10 +507,15 @@ namespace gnsstk
             // only situation where it's used.
          double toa = navIn->asUnsignedDouble(asbtoa51,anbtoa51,asctoa51);
          unsigned shortWNa = navIn->asUnsignedLong(asbWNa51,anbWNa51,ascWNa51);
+         TimeSystem ts = TimeSystem::GPS;
+         if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
+         {
+            ts = TimeSystem::QZS;
+         }
          GPSWeekSecond ws(navIn->getTransmitTime());
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
-         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa,toa);
+         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa, ts);
          fullWNaMap[xmitSat.id].weekRolloverAdj(ws);
          // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
          //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
