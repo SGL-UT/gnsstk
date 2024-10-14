@@ -148,6 +148,11 @@ target_link_libraries(GPSSVConfig_T gnsstk)
 add_test(NAME GPSSVConfig_T COMMAND $<TARGET_FILE:GPSSVConfig_T>)
 set_property(TEST GPSSVConfig_T PROPERTY LABELS NewNav)
 
+add_executable(GPSLNavNMCT_T GPSLNavNMCT_T.cpp)
+target_link_libraries(GPSLNavNMCT_T gnsstk)
+add_test(NAME GPSLNavNMCT_T COMMAND $<TARGET_FILE:GPSLNavNMCT_T>)
+set_property(TEST GPSLNavNMCT_T PROPERTY LABELS NewNav)
+
 add_executable(NavDataFactory_T NavDataFactory_T.cpp)
 target_link_libraries(NavDataFactory_T gnsstk)
 add_test(NAME NavDataFactory_T COMMAND $<TARGET_FILE:NavDataFactory_T>)

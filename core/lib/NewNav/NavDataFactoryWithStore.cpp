@@ -1605,8 +1605,7 @@ namespace gnsstk
                   s << "  Map for " << StringUtils::asString(nmmi.first)
                     << " " << StringUtils::asString(nsami.first) << " has "
                     << nsami.second.size() << " entries." << std::endl
-                    << "SVN  PRN     Begin Fit        Toe          End Fit"
-                    << "       URA     IODC      Health" << std::endl;
+                    << nsami.second.cbegin()->second->getTerseHeader() << std::endl;
                   for (const auto& cti : nsami.second)
                   {
                      cti.second->dump(s, dl);

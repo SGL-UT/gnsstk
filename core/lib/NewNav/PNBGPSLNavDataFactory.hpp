@@ -133,6 +133,9 @@ namespace gnsstk
           * @return true if successful. */
       bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
+
+      bool processNMCT(unsigned sfid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
          /** Reset the state of the data accumulator.  Most
           * PNBNavDataFactory child classes will maintain some state
           * to assemble data prior to processing.  This method is
@@ -157,6 +160,8 @@ namespace gnsstk
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
           * ephemeris data, where index 0 is subframe 1 and so on. */
       std::map<NavSatelliteID, std::vector<PackedNavBitsPtr> > ephAcc;
+
+      std::map<NavSatelliteID, std::vector<PackedNavBitsPtr> > nmctAcc;
    };
 
       //@}
