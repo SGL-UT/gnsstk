@@ -544,12 +544,12 @@ public:
    {
       TUDEF("ObsRngDev", "computeOrdTx");
 
+      gnsstk::ObsRngDev::debug = true;
+
       // Setting svTime to true triggers computeOrdTx instead of computeOrdRx
       bool svTime = true;
       gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em, svTime);
-      
-      // Add debugger to exercise as much code as possible
-      ord.debug = true;
+
       
       double expectedOrd = -3140326.9124734704;
       TUASSERTFEPS(ord.getORD(), expectedOrd, 1e-7);
@@ -560,18 +560,19 @@ public:
       gnsstk::vfloat expectedElevation = 8.4342308044;
       TUASSERTE(gnsstk::vfloat, ord.getElevation(), expectedElevation);
 
+      gnsstk::ObsRngDev::debug = false;
+
       TURETURN();
    }
 
    int computeOrdRxTest(void)
    {
       TUDEF("ObsRngDev", "computeOrdRx");
+
+      gnsstk::ObsRngDev::debug = true;
       
       // Setting svTime to true triggers computeOrdTx instead of computeOrdRx
       gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em);
-      
-      // Add debugger to exercise as much code as possible
-      ord.debug = true;
       
       double expectedOrd = -3140373.3854728369;
       TUASSERTFEPS(ord.getORD(), expectedOrd, 1e-14);
@@ -581,6 +582,8 @@ public:
       
       gnsstk::vfloat expectedElevation = 8.4337768555;
       TUASSERTE(gnsstk::vfloat, ord.getElevation(), expectedElevation);
+
+      gnsstk::ObsRngDev::debug = false;
 
       TURETURN();
    }
