@@ -194,3 +194,10 @@ add_executable(gdc_T gdc_T.cpp)
 target_link_libraries(gdc_T gnsstk)
 add_test(NAME gdc_T COMMAND $<TARGET_FILE:gdc_T>)
 set_property(TEST gdc_T PROPERTY LABELS Geomatics)
+
+################################################################################
+
+add_executable(SunEarthSatGeometry_T SunEarthSatGeometry_T.cpp)
+target_link_libraries(SunEarthSatGeometry_T gnsstk)
+add_test(NAME SunEarthSatGeometry COMMAND $<TARGET_FILE:SunEarthSatGeometry_T>)
+set_property(TEST SunEarthSatGeometry PROPERTY LABELS Geomatics)
