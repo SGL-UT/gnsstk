@@ -11,3 +11,8 @@ add_test(NAME CommandLine_CommandOptionParser COMMAND $<TARGET_FILE:CommandOptio
 add_executable(CommandOptionWithCommonTimeArg_T CommandOptionWithCommonTimeArg_T.cpp)
 target_link_libraries(CommandOptionWithCommonTimeArg_T gnsstk)
 add_test(NAME CommandLine_CommandOptionWithCommonTimeArg COMMAND $<TARGET_FILE:CommandOptionWithCommonTimeArg_T>)
+
+add_executable(CommandLine_T CommandLine_T.cpp)
+target_link_libraries(CommandLine_T gnsstk)
+add_test(NAME CommandLine_CommandLine COMMAND $<TARGET_FILE:CommandLine_T>)
+
