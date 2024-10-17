@@ -230,7 +230,7 @@ namespace gnsstk
                       ConvergenceLimit(3.e-7),
                       hasMemory(true),
                       fixedAPriori(false),
-                      nsol(0), ndata(0), APV(0.0),
+                      nsol(0), ndof(0), ndata(0), APV(0.0),
                       Valid(false)
          {
             was.reset();

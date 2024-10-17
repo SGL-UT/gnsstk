@@ -55,6 +55,21 @@ public:
    unsigned raimComputeUnweightedTest();
    unsigned notEnoughSvsTest();
    unsigned noEphemerisTest();
+   unsigned wtdAveStatsSetAndGetMessage();
+   unsigned wtdAveStatsSetLabel();
+   unsigned wtdAveStatsGetSol();
+   unsigned wtdAveStatsEmptyDump();
+   unsigned prSolutionOutputStringHeader();
+   unsigned prSolutionFixAPSolution();
+   unsigned prSolutionGetAPV();
+   unsigned prSolutionDumpSolution();
+   unsigned prSolutionUpdateAPSolutionEdgeCases();
+   unsigned prSolutionOSStream();
+   unsigned prSolutionOutputPOSString();
+   unsigned prSolutionOutputCLKStringEmpty();
+   unsigned prSolutionOutputCLKString();
+   unsigned prSolutionErrorCodeString();
+   unsigned prSolutionConfigString();
 };
 
 
@@ -298,6 +313,341 @@ noEphemerisTest()
    TURETURN();
 }
 
+// WtdAveStats UNIT Tests
+
+unsigned PRSolution_T::wtdAveStatsSetAndGetMessage()
+{
+   TUDEF("PRSolution", "wtdAveStatsSetMessage");
+
+   gnsstk::WtdAveStats testAveStats;
+   std::string testString = "test string";
+   testAveStats.setMessage(testString);
+
+   TUASSERTE(std::string, testString, testAveStats.getMessage());
+
+   TURETURN();
+
+}
+
+unsigned PRSolution_T::wtdAveStatsSetLabel()
+{
+   TUDEF("PRSolution", "wtdAveStatsSetLabel");
+
+   gnsstk::WtdAveStats testAveStats;
+
+   // Add some data so dump as something to dump
+   gnsstk::Vector<double> vector(3);
+   vector[0] = 1.1;
+   vector[1] = 2.2;
+   vector[2] = 3.3;
+
+   gnsstk::Matrix<double> matrix(3, 3);
+   matrix(0, 0) = 1.0; matrix(0, 1) = 2.0; matrix(0, 2) = 3.0;
+   matrix(1, 0) = 4.0; matrix(1, 1) = 5.0; matrix(1, 2) = 6.0;
+   matrix(2, 0) = 7.0; matrix(2, 1) = 8.0; matrix(2, 2) = 9.0;
+
+   testAveStats.add(vector, matrix);
+
+   // Modify labels
+   std::string testStringOne = "test string one";
+   std::string testStringTwo = "test string two";
+   std::string testStringThree = "test string three";
+   testAveStats.setLabels(testStringOne, testStringTwo, testStringThree);
+
+   // Get dump output
+   std::ostringstream oss;
+   testAveStats.dump(oss);
+
+   std::string expectedOutput = "Simple statistics on \n"
+                               "  test string one N: 1 Ave: 1.1000 Std: 0.0000 Min: 1.1000 Max: 1.1000\n"
+                               "  test string two N: 1 Ave: 2.2000 Std: 0.0000 Min: 2.2000 Max: 2.2000\n"
+                               "  test string three N: 1 Ave: 3.3000 Std: 0.0000 Min: 3.3000 Max: 3.3000\n"
+                               "Weighted average \n"
+                               "         1.1000         2.2000         3.3000    1";
+
+   TUASSERTE(std::string, expectedOutput, oss.str());
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::wtdAveStatsGetSol()
+{
+   TUDEF("PRSolution", "wtdAveStatsGetSol");
+
+   gnsstk::WtdAveStats testAveStats;
+
+   // Add some data so dump as something to dump
+   gnsstk::Vector<double> vector(3);
+   vector[0] = 1.1;
+   vector[1] = 2.2;
+   vector[2] = 3.3;
+
+   gnsstk::Matrix<double> matrix(3, 3);
+   matrix(0, 0) = 1.0; matrix(0, 1) = 2.0; matrix(0, 2) = 3.0;
+   matrix(1, 0) = 4.0; matrix(1, 1) = 5.0; matrix(1, 2) = 6.0;
+   matrix(2, 0) = 7.0; matrix(2, 1) = 8.0; matrix(2, 2) = 9.0;
+
+   testAveStats.add(vector, matrix);
+
+   // Generate Solution
+   gnsstk::Vector<double> solutionVector = testAveStats.getSol();
+
+   TUASSERTE(double, 1.1000, solutionVector[0]);
+   TUASSERTE(double, 2.2000, solutionVector[1]);
+   TUASSERTE(double, 3.3000, solutionVector[2]);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::wtdAveStatsEmptyDump()
+{
+   TUDEF("PRSolution", "wtdAveStatsEmptyDump");
+   
+   gnsstk::WtdAveStats testAveStats;
+   testAveStats.reset();
+   std::ostringstream oss;
+   testAveStats.dump(oss);
+
+   std::string expectedOutput = "Simple statistics on \n"
+                                " No data!";
+   
+   TUASSERTE(std::string, expectedOutput, oss.str());
+
+   TURETURN();
+}
+
+// PRSolution UNIT Tests
+
+unsigned PRSolution_T::prSolutionOutputStringHeader()
+{
+   TUDEF("PRSolution", "prSolutionOutputStringHeader");
+
+   PRSolution testSolver;
+   std::string testTag = "test tag";
+   std::string header = testSolver.outputStringHeader(testTag);
+
+   std::string expectedHeader = "#test tag NAV       time     Sol/Resid:X(m)     Sol/Resid:Y(m)     Sol/Resid:Z(m)          sys clock [sys clock ...]   Valid/Not\n"
+                                "#test tag RMS    time Ngood    resid    TDOP    PDOP    GDOP Slope nit converge sats(-rej)... (ret code) Valid/Not";
+   
+   TUASSERTE(std::string, expectedHeader, header);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionFixAPSolution()
+{
+   TUDEF("PRSolution", "prSolutionFixAPSolution");
+
+   PRSolution testSolver;
+
+   double testX = 1;
+   double testY = 2;
+   double testZ = 3;
+
+   testSolver.hasMemory = true;
+   testSolver.fixAPSolution(testX, testY, testZ);
+
+   gnsstk::Vector<double> testAPSolution = testSolver.APSolution;
+
+   TUASSERTE(double, 1, testAPSolution[0]);
+   TUASSERTE(double, 2, testAPSolution[1]);
+   TUASSERTE(double, 3, testAPSolution[2]);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionGetAPV()
+{
+   TUDEF("PRSolution", "prSolutionGetAPV");
+
+   PRSolution testSolver;
+
+   TUASSERTE(double, 0.0, testSolver.getAPV());
+
+   testSolver.APV = 2;
+   testSolver.ndof = 1;
+
+   TUASSERTE(double, 2, testSolver.getAPV());
+
+   TURETURN();
+}
+
+
+unsigned PRSolution_T::prSolutionDumpSolution()
+{
+   TUDEF("PRSolution", "prSolutionDumpSolution");
+
+   PRSolution testSolver;
+
+   gnsstk::WtdAveStats testAveStats;
+
+   // Add some data so dump as something to dump
+   gnsstk::Vector<double> vector(3);
+   vector[0] = 1;
+   vector[1] = 1;
+   vector[2] = 1;
+
+   gnsstk::Matrix<double> matrix(3, 3);
+   matrix(0, 0) = 1; matrix(0, 1) = 1; matrix(0, 2) = 1;
+   matrix(1, 0) = 1; matrix(1, 1) = 1; matrix(1, 2) = 1;
+   matrix(2, 0) = 1; matrix(2, 1) = 1; matrix(2, 2) = 1;
+
+   testAveStats.add(vector, matrix);
+
+   testSolver.was = testAveStats;
+
+   std::ostringstream oss;
+   testSolver.dumpSolution(oss);
+
+   std::string expectedOutput = "Simple statistics on PRS\n"
+                                "  ECEF_X N: 1 Ave: 1.0000 Std: 0.0000 Min: 1.0000 Max: 1.0000\n"
+                                "  ECEF_Y N: 1 Ave: 1.0000 Std: 0.0000 Min: 1.0000 Max: 1.0000\n"
+                                "  ECEF_Z N: 1 Ave: 1.0000 Std: 0.0000 Min: 1.0000 Max: 1.0000\n"
+                                "Weighted average PRS\n"
+                                "         1.0000         1.0000         1.0000    1\n"
+                                "Covariance: PRS\n"
+                                "                        ECEF_X         ECEF_Y         ECEF_Z\n"
+                                "         ECEF_X      1.000e+00\n"
+                                "         ECEF_Y      1.000e+00      1.000e+00\n"
+                                "         ECEF_Z      1.000e+00      1.000e+00      1.000e+00\n"
+                                "APV: PRS sigma = 0.000 meters with 0 degrees of freedom.\n";
+   
+   TUASSERTE(std::string, expectedOutput, oss.str());
+
+   TURETURN();
+}
+
+
+unsigned PRSolution_T::prSolutionUpdateAPSolutionEdgeCases()
+{
+   TUDEF("PRSolution", "prSolutionUpdateAPSolutionEdgeCases");
+
+   gnsstk::Vector<double> vector(3);
+   vector[0] = 1.1;
+   vector[1] = 2.2;
+   vector[2] = 3.3;
+
+   PRSolution testSolver;
+
+   testSolver.APSolution.resize(0);
+
+   testSolver.updateAPSolution(vector);
+
+   gnsstk::Vector<double> apSolution =testSolver.APSolution;
+
+   TUASSERTE(double, 1.1, apSolution[0]);
+   TUASSERTE(double, 2.2, apSolution[1]);
+   TUASSERTE(double, 3.3, apSolution[2]);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionOSStream()
+{
+   TUDEF("PRSolution", "prSolutionOSStream");
+
+   WtdAveStats was;
+
+   std::stringstream ss;
+   ss << was;
+
+   TUASSERTE(std::string, "Simple statistics on \n No data!", ss.str());
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionOutputPOSString()
+{
+   TUDEF("PRSolution", "prSolutionOutputPOSString");
+
+   PRSolution testSolver;
+
+   std::string testString = "test string";
+   int iretFlag = -999;
+   gnsstk::Vector<double> vector(3);
+   vector[0] = 1.1;
+   vector[1] = 2.2;
+   vector[2] = 3.3;
+
+   std::string output = testSolver.outputPOSString(testString, iretFlag, vector);
+   std::string expectedOutput = "#test string POS    time         Sol-X(m)         Sol-Y(m)         Sol-Z(m) (ret code) Valid/Not";
+
+   TUASSERTE(std::string, expectedOutput, output);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionOutputCLKStringEmpty()
+{
+   TUDEF("PRSolution", "prSolutionOutputCLKStringEmpty");
+
+   PRSolution testSolver;
+
+   std::string testString = "test string";
+   int iretFlag = -999;
+
+   std::string output = testSolver.outputCLKString(testString, iretFlag);
+   std::string expectedOutput = "#test string CLK    time sys       clock ...";
+   TUASSERTE(std::string, expectedOutput, output);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionOutputCLKString()
+{
+   TUDEF("PRSolution", "prSolutionOutputCLKString");
+
+   PRSolution testSolver;
+
+   std::string testString = "test string";
+   int iretFlag = 0;
+
+   std::string output = testSolver.outputCLKString(testString, iretFlag);
+   std::string expectedOutput = "test string CLK %4F %10.3g (0 ok) NV";
+   TUASSERTE(std::string, expectedOutput, output);
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionErrorCodeString()
+{
+   TUDEF("PRSolution", "prSolutionErrorCodeString");
+
+   PRSolution testSolver;
+
+   TUASSERTE(std::string, "unknown", testSolver.errorCodeString(777));
+   TUASSERTE(std::string, "ok but perhaps degraded", testSolver.errorCodeString(1));
+   TUASSERTE(std::string, "ok", testSolver.errorCodeString(0));
+   TUASSERTE(std::string, "failed to converge", testSolver.errorCodeString(-1));
+   TUASSERTE(std::string, "singular solution", testSolver.errorCodeString(-2));
+   TUASSERTE(std::string, "not enough satellites", testSolver.errorCodeString(-3));
+   TUASSERTE(std::string, "not any ephemeris", testSolver.errorCodeString(-4));
+
+   TURETURN();
+}
+
+unsigned PRSolution_T::prSolutionConfigString()
+{
+   TUDEF("PRSolution", "prSolutionConfigString");
+
+   PRSolution testSolver;
+
+   std::string testTag = "test tag";
+   std::string configString = testSolver.configString(testTag);
+
+   std::string expectedConfigString = "test tag\n"
+                                      "   iterations 10\n"
+                                      "   convergence 3.00e-07\n"
+                                      "   RMS residual limit 6.50\n"
+                                      "   RAIM slope limit 1000.00 meters\n"
+                                      "   Maximum number of satellites to reject is -1\n"
+                                      "   Memory information IS stored";
+   
+   TUASSERTE(std::string, expectedConfigString, configString);
+
+   TURETURN();
+}
+
 int main()
 {
    PRSolution_T testClass;
@@ -306,6 +656,21 @@ int main()
    errorTotal += testClass.raimComputeUnweightedTest();
    errorTotal += testClass.notEnoughSvsTest();
    errorTotal += testClass.noEphemerisTest();
+   errorTotal += testClass.wtdAveStatsSetAndGetMessage();
+   errorTotal += testClass.wtdAveStatsSetLabel();
+   errorTotal += testClass.wtdAveStatsGetSol();
+   errorTotal += testClass.wtdAveStatsEmptyDump();
+   errorTotal += testClass.prSolutionOutputStringHeader();
+   errorTotal += testClass.prSolutionFixAPSolution();
+   errorTotal += testClass.prSolutionGetAPV();
+   errorTotal += testClass.prSolutionDumpSolution();
+   errorTotal += testClass.prSolutionUpdateAPSolutionEdgeCases();
+   errorTotal += testClass.prSolutionOSStream();
+   errorTotal += testClass.prSolutionOutputPOSString();
+   errorTotal += testClass.prSolutionOutputCLKStringEmpty();
+   errorTotal += testClass.prSolutionOutputCLKString();
+   errorTotal += testClass.prSolutionErrorCodeString();
+   errorTotal += testClass.prSolutionConfigString();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
             << std::endl;
