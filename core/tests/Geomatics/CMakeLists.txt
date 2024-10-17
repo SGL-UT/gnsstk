@@ -201,3 +201,10 @@ add_executable(SunEarthSatGeometry_T SunEarthSatGeometry_T.cpp)
 target_link_libraries(SunEarthSatGeometry_T gnsstk)
 add_test(NAME SunEarthSatGeometry COMMAND $<TARGET_FILE:SunEarthSatGeometry_T>)
 set_property(TEST SunEarthSatGeometry PROPERTY LABELS Geomatics)
+
+################################################################################
+
+add_executable(DiscCorr_T DiscCorr_T.cpp)
+target_link_libraries(DiscCorr_T gnsstk)
+add_test(NAME DiscCorr_T COMMAND $<TARGET_FILE:DiscCorr_T>)
+set_property(TEST DiscCorr_T PROPERTY LABELS Geomatics)
