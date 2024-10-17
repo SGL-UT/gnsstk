@@ -2781,7 +2781,7 @@ long GDCPass::EstimateGFslipFix(list<Segment>::iterator& left,
                   spdvector[i].data[L2]
                         // - (either               left bias - poss. slip : right
                         // bias)
-                     - (i < right->nbeg ? left->bias2 - n1 - (nadj + k - 1)
+                     - (i < right->nbeg ? left->bias2 - n1 - (nadj + (int)k - 1)
                                         : right->bias2),
                      //  use a debiased count
                   spdvector[i].ndt - spdvector[nb].ndt);
@@ -2799,7 +2799,7 @@ long GDCPass::EstimateGFslipFix(list<Segment>::iterator& left,
                }
                rof = // data minus fit
                   spdvector[i].data[L2] -
-                  (i < right->nbeg ? left->bias2 - n1 - (nadj + k - 1)
+                  (i < right->nbeg ? left->bias2 - n1 - (nadj + (int)k - 1)
                                    : right->bias2) -
                   PF[in[k]].Evaluate(spdvector[i].ndt - spdvector[nb].ndt);
                rmsrof[in[k]] += rof * rof;
@@ -2885,7 +2885,7 @@ long GDCPass::EstimateGFslipFix(list<Segment>::iterator& left,
             for (k = 0; k < 3; k++)
                log << " "
                    << spdvector[i].data[L2] -
-                         (i < right->nbeg ? left->bias2 - n1 - (nadj + k - 1)
+                         (i < right->nbeg ? left->bias2 - n1 - (nadj + (int)k - 1)
                                           : right->bias2)
                    << " "
                    << PF[in[k]].Evaluate(spdvector[i].ndt - spdvector[nb].ndt);
