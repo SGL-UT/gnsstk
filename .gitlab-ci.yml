@@ -17,19 +17,22 @@ include:
     ref: main
   - project: 'sgl/ci-control'
     file: 'common/scanning/sonar.yml'
+  - project: 'sgl/ci-control'
+    file: 'common/scanning/fortify.yml'
 
 stages:
-- quality
-- check
-- build
-- test
-- install
-- package
-- push
-- downstream_ci
-- deploy
-- downstream_stack
-- clean
+  - quality
+  - check
+  - build
+  - reporting
+  - test
+  - install
+  - package
+  - push
+  - downstream_ci
+  - deploy
+  - downstream_stack
+  - clean
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -426,6 +429,20 @@ sonar-scan:
   #   - main
   #   - tags
   #   - stable
+
+fortify-scan:
+  extends:
+    - .cpp_fortify
+  needs: []
+  variables:
+    FORTIFY_SCAN_TYPE: '-quick'
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
+    - make all -j 4
+    - !reference [.fortify_post_consolidated_cpp, script]
 
 build_redhat_8:
   stage: build
