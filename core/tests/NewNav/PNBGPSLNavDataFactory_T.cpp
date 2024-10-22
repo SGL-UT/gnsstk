@@ -1041,7 +1041,7 @@ processAlmOrbQZSSTest()
                             gnsstk::CarrierBand::L1, gnsstk::TrackingCode::CA,
                             gnsstk::NavType::GPSLNAV),
       gnsstk::NavMessageType::Health);
-   gnsstk::CommonTime toaExp = gnsstk::GPSWeekSecond(2119,86016);
+   gnsstk::CommonTime toaExp = gnsstk::GPSWeekSecond(2119, 86016, gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime beginExp = toaExp - (70.0 * 3600.0);
    gnsstk::CommonTime endExp = toaExp + (74.0 * 3600.0);
    gnsstk::NavDataPtrList navOut;
