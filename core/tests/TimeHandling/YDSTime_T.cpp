@@ -45,6 +45,46 @@
 using namespace gnsstk;
 using namespace std;
 
+// Simplest abstraction of a TimeTag just to get the code exercised
+class TestTimeTag : public TimeTag {
+public:
+    CommonTime convertToCommonTime() const override {
+        return CommonTime();
+    }
+
+    void convertFromCommonTime(const CommonTime& ct) override {
+    }
+
+    std::string printf(const std::string& fmt) const override {
+        return "SimpleTimeTag output";
+    }
+
+    std::string printError(const std::string& fmt) const override {
+        return "Error in SimpleTimeTag";
+    }
+
+    bool setFromInfo(const IdToValue& info) override {
+        return true;
+    }
+
+    std::string getPrintChars() const override {
+        return "YDS";
+    }
+
+    std::string getDefaultFormat() const override {
+        return "%Y %D %S";
+    }
+
+    bool isValid() const override {
+        return true;
+    }
+
+    void reset() override {
+    }
+};
+
+
+
 class YDSTime_T
 {
 public:
@@ -90,6 +130,16 @@ public:
       testFramework.assert(1 == Assigned.sod,                         "Set Operator did not set the second value properly",   __LINE__);
       testFramework.assert(TimeSystem(2) == Assigned.getTimeSystem(), "Set Operator did not set the TimeSystem properly",     __LINE__);
 
+
+      // Initialization via TimeTag
+      TestTimeTag tt;
+      YDSTime ydsTimeFromTimeTag(tt);
+
+      testFramework.assert(-4713 == ydsTimeFromTimeTag.year,                    "Set Operator did not set the year value properly",     __LINE__);
+      testFramework.assert(1 == ydsTimeFromTimeTag.doy,                         "Set Operator did not set the day value properly",      __LINE__);
+      testFramework.assert(0 == ydsTimeFromTimeTag.sod,                         "Set Operator did not set the second value properly",   __LINE__);
+      testFramework.assert(TimeSystem::Unknown == ydsTimeFromTimeTag.getTimeSystem(),     "Set Operator did not set the TimeSystem properly",     __LINE__);
+
       return testFramework.countFails();
    }
 
@@ -108,8 +158,9 @@ public:
       YDSTime setFromInfo3;
       YDSTime setFromInfo4;
       YDSTime setFromInfo5;
+      YDSTime setFromInfo6;
       YDSTime Compare(2008,2,1,TimeSystem::GPS), Compare2(2006,2,1,TimeSystem::GPS);
-      YDSTime Compare3(0,2,1,TimeSystem::GPS);
+      YDSTime Compare3(1970,2,1,TimeSystem::GPS), Compare4(0,2,1,TimeSystem::GPS);
 
       TimeTag::IdToValue Id;
       Id['Y'] = "2008";
@@ -134,13 +185,23 @@ public:
       testFramework.assert(Compare2 == setFromInfo2,     "setFromInfo did not set all of the values properly",  __LINE__);
 
 
+      Id.erase('Y');
+      Id['y'] = "70";
+
+         //--------------------------------------------------------------------
+         // Does a proper setFromInfo work with 2 digit year?
+         //--------------------------------------------------------------------
+      testFramework.assert(setFromInfo3.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
+      testFramework.assert(Compare3 == setFromInfo3,     "setFromInfo did not set all of the values properly",  __LINE__);
+
+
          // Can we set a three digit year with 'y' option? Answer should be no.
       Id.erase('y');
       Id['y'] = "006";
          //--------------------------------------------------------------------
          // Can a YDSTime object be set with a 3 digit year? Answer should be no. 'y' option is for 2 digit years.
          //--------------------------------------------------------------------
-      testFramework.assert(!setFromInfo3.setFromInfo(Id), "setFromInfo allowed a 3 digit year to be set with 'y' option", __LINE__);
+      testFramework.assert(!setFromInfo4.setFromInfo(Id), "setFromInfo allowed a 3 digit year to be set with 'y' option", __LINE__);
 
 
       Id.erase('y');
@@ -148,15 +209,15 @@ public:
          //--------------------------------------------------------------------
          // Does a proper setFromInfo work with 4 digit year labeled as 2 digits?
          //--------------------------------------------------------------------
-      testFramework.assert(!setFromInfo4.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
+      testFramework.assert(!setFromInfo5.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
 
 
       Id.erase('y');
          //--------------------------------------------------------------------
          // Can a CivilTime object be set without a year?
          //--------------------------------------------------------------------
-      testFramework.assert(setFromInfo5.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
-      testFramework.assert(setFromInfo5 == Compare3,     "setFromInfo did not set all of the values properly",  __LINE__);
+      testFramework.assert(setFromInfo6.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
+      testFramework.assert(setFromInfo6 == Compare4,     "setFromInfo did not set all of the values properly",  __LINE__);
 
       return testFramework.countFails();
    }
@@ -176,6 +237,8 @@ public:
       YDSTime LessThanDOY(2008,1,1);// Initialize with value with a smaller day of year
       YDSTime LessThanSOD(2008,2,0);// Initialize with value with a smaller second of day
       YDSTime CompareCopy(Compare); // Initialize with copy constructor
+
+      YDSTime DiffTimeSystem(2008,2,1,TimeSystem::GPS);
 
          //--------------------------------------------------------------------
          // Does the == Operator function?
@@ -246,6 +309,9 @@ public:
       testFramework.assert(  Compare >= LessThanSOD,   "Greater-than-or-equal-to operator found greater-than second object to not be greater-than-or-equal-to", __LINE__);
       testFramework.assert(  Compare >= CompareCopy,   "Greater-than-or-equal-to operator found equivalent objects to not be greater-than-or-equal-to",         __LINE__);
 
+      // Throw error when comparing different time systems
+      TUTHROW(Compare > DiffTimeSystem);
+
       return testFramework.countFails();
    }
 
@@ -308,6 +374,11 @@ public:
       testFramework.assert(Test2.year == Compare.year,                       "Year provided found to be different after converting to and from CommonTime",       __LINE__);
       testFramework.assert(Test2.doy == Compare.doy,                         "DOY provided found to be different after converting to and from CommonTime",        __LINE__);
       testFramework.assert(Test2.sod == Compare.sod,                         "SOD provided found to be different after converting to and from CommonTime",        __LINE__);
+
+      // Assert isValid can be false
+      YDSTime Compare2(-3000,0,0,TimeSystem::GPS); // Initialize to negative time
+      testFramework.assert(!Compare2.isValid(), "Negative time ended up being valid some how", __LINE__);
+
       return testFramework.countFails();
    }
 
@@ -389,6 +460,39 @@ public:
 
       return testFramework.countFails();
    }
+
+   int ostreamTest (void) {
+      TestUtil testFramework( "YDSTime", "ostream", __FILE__, __LINE__ );
+
+      std::ostringstream stream;
+      YDSTime ydsTime(2008,2,1,TimeSystem::GPS);
+
+      stream << ydsTime;
+
+      testFramework.assert(stream.str() == "2008/002 1.000000 GPS",  "stream is not equal to expected out come", __LINE__);
+
+      return testFramework.countFails();
+   }
+
+   int getPrintCharsTest (void) {
+      TestUtil testFramework( "YDSTime", "getPrintChars", __FILE__, __LINE__ );
+
+      YDSTime ydsTime;
+
+      testFramework.assert(ydsTime.getPrintChars() == "YyjsP",  "stream is not equal to expected out come", __LINE__);
+
+      return testFramework.countFails();
+   }
+
+   int getDefaultFormatTest (void) {
+      TestUtil testFramework( "YDSTime", "getDefaultFormat", __FILE__, __LINE__ );
+
+      YDSTime ydsTime;
+
+      testFramework.assert(ydsTime.getDefaultFormat() == "%04Y/%03j %s %P",  "stream is not equal to expected out come", __LINE__);
+
+      return testFramework.countFails();
+   }
 };
 
 int main() // Main function to initialize and run all tests above
@@ -415,6 +519,15 @@ int main() // Main function to initialize and run all tests above
    errorCounter += check;
 
    check = testClass.printfTest();
+   errorCounter += check;
+
+   check = testClass.ostreamTest();
+   errorCounter += check;
+
+   check = testClass.getPrintCharsTest();
+   errorCounter += check;
+
+   check = testClass.getDefaultFormatTest();
    errorCounter += check;
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
