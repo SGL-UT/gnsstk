@@ -48,6 +48,7 @@ class TimeCorrection_T
 {
 public:
    unsigned testEpochRollover();
+   unsigned testTimeAdjust8BitWeekRollover();
 };
 
 
@@ -108,6 +109,27 @@ unsigned TimeCorrection_T :: testEpochRollover()
    TUASSERTE(long, expected, timeAdjustWeekRollover(123, refWeek));
       // refWeek should have been set to the system clock's time's week
    TUASSERTE(long, cwz.week, refWeek);
+
+   TURETURN();
+}
+
+unsigned TimeCorrection_T :: testTimeAdjust8BitWeekRollover()
+{
+   TUDEF("TestCorrection", "timeAdjust8BitWeekRollover");
+   long refWeek = 0;
+
+   // ref week equals zero
+   refWeek = 0;
+   TUASSERTE(long, 2248, timeAdjust8BitWeekRollover(200, refWeek));
+
+   // small toCorrectWeek
+   refWeek = 2000;
+   TUASSERTE(long, 1992, timeAdjust8BitWeekRollover(200, refWeek));
+
+   // large toCorrectWeek
+   refWeek = 2000;
+   TUASSERTE(long, 2080, timeAdjust8BitWeekRollover(20000, refWeek));
+
    TURETURN();
 }
 
@@ -117,6 +139,7 @@ int main()
    TimeCorrection_T testClass;
    unsigned errorTotal = 0;
    errorTotal += testClass.testEpochRollover();
+   errorTotal += testClass.testTimeAdjust8BitWeekRollover();
    cout << "Total Errors for " << __FILE__ <<": "<< errorTotal << endl;
    return errorTotal;
 }
