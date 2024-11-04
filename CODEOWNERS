@@ -29,7 +29,7 @@ core/lib/GNSSCore/ @anthony @johnk @jmedeiros
 core/lib/GNSSEph/ @johnk @anthony @renfrob
 core/lib/Math/ @anthony @magliocca @malik
 core/lib/NavFilter/ @johnk @anthony @renfrob
-core/lib/NewNav/ @malik @jmedeiros
+core/lib/NewNav/ @malik @jmedeiros @ddavies @bmechler
 core/lib/ORD/ @malik @johnk @rcathriner
 core/lib/PosSol/ @magliocca @renfrob @malik
 core/lib/RefTime/ @magliocca @renfrob
