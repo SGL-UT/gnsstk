@@ -86,6 +86,8 @@ public:
    unsigned rolloverTest();
 
    unsigned changeTimeSystemTest();
+
+   unsigned internalValuesTest();
 private:
 
    double eps;
@@ -583,6 +585,9 @@ operatorTest()
    CommonTime LessThanSecond; LessThanSecond.set(1000,20,0.2); // Initialize with smaller second value
    CommonTime LessThanFSecond; LessThanFSecond.set(1000,200,0.1); // Initialize with smaller fractional second value
    CommonTime CompareCopy(Compare); // Initialize with copy constructor
+   CommonTime GPS1; GPS1.setInternal(100, 20, 0.0001, TimeSystem(2));
+   CommonTime GPS2; GPS2.setInternal(100, 20, 0.0002, TimeSystem(2)); 
+   CommonTime UTC; UTC.setInternal(50, 20, 0., TimeSystem(8));
 
    testFramework.assert( Compare == CompareCopy,    "GPSWeekZCount operator ==, Are equivalent objects equivalent?",     __LINE__ );
    testFramework.assert( !(Compare == LessThanDay), "GPSWeekZCount operator !=, Are non-equivalent objects equivalent?", __LINE__ );
@@ -605,7 +610,21 @@ operatorTest()
    testFramework.assert( !(Compare < LessThanSecond),  "Does the < operator function when left_object > right_object by days?",    __LINE__ );
    testFramework.assert( LessThanFSecond < Compare,    "Does the < operator function when left_object < right_object by seconds?", __LINE__ );
    testFramework.assert( !(Compare < LessThanFSecond), "Does the < operator function when left_object > right_object by seconds?", __LINE__ );
+   testFramework.assert( GPS1 < GPS2, "Does the < operator function when left_object < right_object by fractional seconds?", __LINE__ );
    testFramework.assert( !(Compare < CompareCopy),     "Does the < operator function when left_object = right_object?",            __LINE__ );
+   try
+   {
+      testFramework.assert( !(UTC < GPS1),     "Does the < operator function when time systems do not match?",            __LINE__ );
+      TUFAIL("[testing] < operator with mismatched time systems, exception gnsstk::Exception, [actual] threw no exception");
+   }
+   catch(gnsstk::Exception e)
+   {
+      TUPASS("< operator with too mismatched time systems, should throw a gnsstk::Exception");
+   }
+   catch(...)
+   {
+      TUFAIL("[testing] < operator with mismatched time systems, exception gnsstk::Exception, [actual] threw wrong exception");
+   }
 
       //----------------------------------------
       // Greater than assertions
@@ -860,7 +879,10 @@ changeTimeSystemTest()
    TUASSERTE(bool, true, uut.changeTimeSystem(gnsstk::TimeSystem::GLO,btsc));
    TUASSERTE(gnsstk::CommonTime, uut, exp);
 
-      // conversion using static TimeSystemConverter
+      // conversion using static TimeSystemConverter with tsConv not set
+   TUASSERTE(bool, false, uut.changeTimeSystem(gnsstk::TimeSystem::GPS));
+
+      // conversion using static TimeSystemConverter with tsConv set
    gnsstk::CommonTime::tsConv = btscShared;
    uut = gnsstk::CivilTime(1990,11,6,0,0,0,gnsstk::TimeSystem::UTC);
    exp = gnsstk::CivilTime(1990,11,6,0,0,6,gnsstk::TimeSystem::GPS);
@@ -895,6 +917,59 @@ changeTimeSystemTest()
    TURETURN();
 }
 
+unsigned CommonTime_T ::
+internalValuesTest()
+{ 
+   //----------------------------------------
+      // getInternal --- timeSystem = GPS
+      //----------------------------------------
+      
+   TUDEF("CommonTime", "getInternal");
+   CommonTime GPS;
+   long day;
+   long msod;
+   double fsod;
+   TimeSystem gpsTimeSystem;
+
+   // Testing with timeSystem parameter
+   // Testing default values
+   GPS.getInternal(day, msod, fsod, gpsTimeSystem);
+   TUASSERTE(long, 0, day);
+   TUASSERTE(long, 0, msod);
+   TUASSERTE(double, 0., fsod);
+   TUASSERTE(string, "UNK", StringUtils::asString(gpsTimeSystem));
+
+   GPS.setInternal( 100, 50, 0.0001, TimeSystem(2));
+   GPS.getInternal(day, msod, fsod, gpsTimeSystem);
+   TUASSERTE(long, 100, day);
+   TUASSERTE(long, 50, msod);
+   TUASSERTE(double, 0.0001, fsod);
+   TUASSERTE(string, "GPS", StringUtils::asString(gpsTimeSystem));
+
+   GPS.setInternal( 50, 10, 0.0005, TimeSystem(8));
+   GPS.getInternal(day, msod, fsod, gpsTimeSystem);
+   TUASSERTE(long, 50, day);
+   TUASSERTE(long, 10, msod);
+   TUASSERTE(double, 0.0005, fsod);
+   TUASSERTE(string, "UTC", StringUtils::asString(gpsTimeSystem));
+   
+   // Testing without timeSystem parameter
+   GPS.setInternal(300, 59, 0., TimeSystem(3));
+   GPS.getInternal(day, msod, fsod);
+   TUASSERTE(long, 300, day);
+   TUASSERTE(long, 59, msod);
+   TUASSERTE(double, 0., fsod);
+
+   GPS.setInternal(121, 30, 0.0003, TimeSystem(1));
+   GPS.getInternal(day, msod, fsod);
+   TUASSERTE(long, 121, day);
+   TUASSERTE(long, 30, msod);
+   TUASSERTE(double, 0.0003, fsod);
+
+   TURETURN();
+
+}
+
 
 
 //============================================================
@@ -919,6 +994,7 @@ int main()
    errorTotal += testClass.timeSystemTest();
    errorTotal += testClass.printfTest();
    errorTotal += testClass.changeTimeSystemTest();
+   errorTotal += testClass.internalValuesTest();
 
       //----------------------------------------
       // Echo total fails to stdout
