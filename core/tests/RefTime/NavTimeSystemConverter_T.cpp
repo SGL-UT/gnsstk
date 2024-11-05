@@ -150,6 +150,15 @@ getOffsetTest()
       // expect this to not work
    TUASSERT(!uut.getOffset(gnsstk::TimeSystem::UTC, gnsstk::TimeSystem::BDT,
                            utc35, result));
+
+   double offset = 0;
+   // Returns 0 if same time system
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::GPS, utc35, offset));
+   TUASSERTFEPS(offset, 0.0, 1e-7);
+
+   // Returns false if navLib is null
+   uut.navLib = nullptr;
+   TUASSERT(uut.getOffset(gnsstk::TimeSystem::GPS, gnsstk::TimeSystem::GAL, utc35, offset) == false);
    TURETURN();
 }
 
