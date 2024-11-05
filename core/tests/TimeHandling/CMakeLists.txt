@@ -96,3 +96,8 @@ add_executable(GLONASSTime_T GLONASSTime_T.cpp)
 target_link_libraries(GLONASSTime_T gnsstk)
 add_test(NAME TimeHandling_GLONASSTime COMMAND $<TARGET_FILE:GLONASSTime_T>)
 set_property(TEST TimeHandling_GLONASSTime PROPERTY LABELS TimeHandling TimeStorage)
+
+add_executable(Week_T Week_T.cpp)
+target_link_libraries(Week_T gnsstk)
+add_test(NAME TimeHandling_Week COMMAND $<TARGET_FILE:Week_T>)
+set_property(TEST TimeHandling_Week PROPERTY LABELS TimeHandling TimeStorage)
