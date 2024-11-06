@@ -1,5 +1,5 @@
 [CODEOWNERS]
-CODEOWNERS @kuck @rain
+CODEOWNERS @kuck @dbarber
 
 [Documentation]
 ref/papers/ @renfrob @rain @kuck
@@ -38,7 +38,7 @@ core/lib/TimeHandling/ @anthony @johnk @renfrob
 core/lib/Utilities/ @johnk @anthony
 
 # Core tests
-core/tests/ @johnk @anthony @renfrob
+core/tests/ @code-reviewers/cpp
 
 # Ext -- unsupported & unmaintained, not part of the API
 ext/ @johnk @dbarber

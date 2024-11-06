@@ -60,7 +60,8 @@ variables:
   BLD_VS_STATIC:
     value: "True"
     description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
-  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css'
+  # Adding Geomatics to sonar exclusions
+  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css,core/lib/Geomatics/**'
   SONAR_SOURCES: 'core'
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
