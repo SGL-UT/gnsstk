@@ -19,6 +19,9 @@ include:
     file: 'common/scanning/sonar.yml'
   - project: 'sgl/ci-control'
     file: 'common/scanning/fortify.yml'
+  - project: sgl-tks/ci-control
+    file: /general/fortify-upload.yml
+    ref: main
 
 stages:
   - quality
@@ -67,6 +70,9 @@ variables:
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
   SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7"
+  FORTIFY_SCAN_TYPE:
+    value: '-quick'
+    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low" 
 
 # Template for all normal jobs.
 .normal_build:
@@ -444,6 +450,13 @@ fortify-scan:
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
     - make all -j 4
     - !reference [.fortify_post_consolidated_cpp, script]
+
+fortify-scan-publish:
+  stage: reporting
+  extends: .fortify-scan-publish
+  needs:
+    - job: fortify-scan
+      artifacts: true
 
 build_redhat_8:
   stage: build
