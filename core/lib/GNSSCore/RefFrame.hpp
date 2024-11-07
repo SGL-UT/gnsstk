@@ -58,20 +58,20 @@ namespace gnsstk
          /** Construct a RefFrame from a RefFrameRlz.  The system is
           * set from an assumption based on the specified realization.
           * @see getRefFrameSys().
-          * @post system and realization are set. 
+          * @post system and realization are set.
           * @param[in] rlz The reference frame realization being used. */
       RefFrame(RefFrameRlz rlz);
          /** Construct a RefFrame from a RefFrameSys and a time stamp.
           * The realization is set based on the time of publication.
           * @see getRefFrameRlz().
-          * @post system and realization are set. 
+          * @post system and realization are set.
           * @param[in] sys The reference frame system being used.
           * @param[in] when The timestamp when the reference frame
           *   system was being used, maps to a realization. */
       RefFrame(RefFrameSys sys, const gnsstk::CommonTime& when);
          /** Construct from a string representation of a realization
           * (e.g. from an SP3 file header).
-          * @post system and realization are set. 
+          * @post system and realization are set.
           * @param[in] str The string representation of the ref frame
           *   realization
           * @param[in] when The time the reference frame is being

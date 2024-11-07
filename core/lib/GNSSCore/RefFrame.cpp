@@ -38,6 +38,7 @@
 
 #include "RefFrame.hpp"
 #include "StringUtils.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -46,6 +47,7 @@ namespace gnsstk
          : system(RefFrameSys::Unknown),
            realization(RefFrameRlz::Unknown)
    {
+      DEBUGTRACE_FUNCTION();
    }
 
 
@@ -54,6 +56,7 @@ namespace gnsstk
          : realization(rlz),
            system(getRefFrameSys(rlz))
    {
+      DEBUGTRACE_FUNCTION();
    }
 
 
@@ -62,12 +65,14 @@ namespace gnsstk
          : system(sys),
            realization(getRefFrameRlz(sys,when))
    {
+      DEBUGTRACE_FUNCTION();
    }
 
 
    RefFrame ::
    RefFrame(const std::string& str, const gnsstk::CommonTime& when)
    {
+      DEBUGTRACE_FUNCTION();
       realization = StringUtils::asRefFrameRlz(str);
       if (realization != gnsstk::RefFrameRlz::Unknown)
       {
@@ -85,6 +90,7 @@ namespace gnsstk
    bool RefFrame ::
    operator<(const RefFrame& right) const noexcept
    {
+      DEBUGTRACE_FUNCTION();
       if (system < right.system) return true;
       if (right.system < system) return false;
       if (realization < right.realization) return true;
@@ -95,6 +101,7 @@ namespace gnsstk
    bool RefFrame ::
    operator==(ReferenceFrame orf) const noexcept
    {
+      DEBUGTRACE_FUNCTION();
          // Only compare the reference frame SYSTEMS because that's
          // how it's being used in HelmertTransform.
       return (((orf == ReferenceFrame::Unknown) &&
@@ -113,6 +120,7 @@ namespace gnsstk
    RefFrame ::
    RefFrame(ReferenceFrame orf, const gnsstk::CommonTime& when)
    {
+      DEBUGTRACE_FUNCTION();
       switch (orf)
       {
          case ReferenceFrame::WGS84:
