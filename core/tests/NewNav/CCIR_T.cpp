@@ -72,6 +72,7 @@ public:
                             const gnsstk::CivilTime& when,
                             double Azr, unsigned solarActIdx);
 
+ 
       /// Hold input/truth data for testF2LayerCoeffInterp.
    class TestData
    {
@@ -506,7 +507,7 @@ testF2LayerCoeff()
    testF2LayerCoeffAZr(testFramework, testTime, 0.0, 0);
       // 100.0 = solar flux units
       // 1 = high solar activity array index
-   testF2LayerCoeffAZr(testFramework, testTime, 100.0, 1);
+   testF2LayerCoeffAZr(testFramework, testTime, 100.0, 1); 
    TURETURN();
 }
 
@@ -540,6 +541,19 @@ testF2LayerCoeffAZr(gnsstk::TestUtil& testFramework,
                     uut.cacheFM3[vecidx]);
          vecidx++;
       }
+   }
+
+      // Perform a shallow test where each month is tested, but leaving degree and order fixed at 0
+   vecidx = 0;
+   unsigned degree = 0;
+   unsigned order=0;
+   for (unsigned month = 1; month <= 12; month++) {
+      gnsstk::CivilTime t1(2525, month, 1, 0, 0, 0, gnsstk::TimeSystem::UTC);
+	   TUCATCH(uut.interpolate(t1, Azr));
+      TUASSERTFE(uut.ccirF2(month, solarActIdx, degree, order),
+                 uut.cacheF2[vecidx]);
+      TUASSERTFE(uut.ccirFm3(month, solarActIdx, degree, order),
+                 uut.cacheFM3[vecidx]);               
    }
 }
 
