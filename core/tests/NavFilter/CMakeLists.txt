@@ -9,3 +9,7 @@ add_test(NAME NavFilter_CNavFilter COMMAND $<TARGET_FILE:CNavFilter_T>)
 add_executable(CNav2Filter_T CNav2Filter_T.cpp)
 target_link_libraries(CNav2Filter_T gnsstk)
 add_test(NAME NavFilter_CNav2Filter COMMAND $<TARGET_FILE:CNav2Filter_T>)
+
+add_executable(CNavCrossSourceFilter_T CNavCrossSourceFilter_T.cpp)
+target_link_libraries(CNavCrossSourceFilter_T gnsstk)
+add_test(NAME NavFilter_CNavCrossSourceFilter_T COMMAND $<TARGET_FILE:CNavCrossSourceFilter_T>)
