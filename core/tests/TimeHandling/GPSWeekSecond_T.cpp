@@ -96,7 +96,6 @@ public:
    unsigned setFromInfoTest()
    {
       TUDEF("GPSWeekSecond", "setFromInfo");
-
       GPSWeekSecond setFromInfo1;
       GPSWeekSecond setFromInfo2;
       GPSWeekSecond setFromInfo3;
@@ -118,6 +117,42 @@ public:
          //--------------------------------------------------------------------
       TUASSERT(setFromInfo2.setFromInfo(id));
       TUASSERTE(GPSWeekSecond, compare2, setFromInfo2);
+      TURETURN();
+   }
+
+
+      unsigned setFromInfoAdditionalTest()
+   {
+      TUDEF("GPSWeekSecond", "setFromInfoAdditional");
+
+      // Expect default values
+      GPSWeekSecond testGPSWeekSecond;
+      TUASSERTE(int, 0, testGPSWeekSecond.week);
+      TUASSERTE(double, 0, testGPSWeekSecond.sow);
+      TUASSERTE(TimeSystem, TimeSystem::GPS, testGPSWeekSecond.getTimeSystem());
+
+      // Expect dummy value to do nothing
+      TimeTag::IdToValue info;
+      info['Z'] = "dummy value";
+      testGPSWeekSecond.setFromInfo(info);
+      TUASSERTE(int, 0, testGPSWeekSecond.week);
+      TUASSERTE(double, 0, testGPSWeekSecond.sow);
+      TUASSERTE(TimeSystem, TimeSystem::GPS, testGPSWeekSecond.getTimeSystem());
+      info.erase('Z');
+
+      // Set week and sow via Epoch, modWeek and #days
+      info['E'] = "5"; // 5 Epochs of 1024
+      info['G'] = "100"; // 100 additional weeks
+      info['w'] = "3"; // 3 days of seconds
+      testGPSWeekSecond.setFromInfo(info);
+      // 5 * 1024 + 100 = 5220
+      TUASSERTE(int, 5220, testGPSWeekSecond.week);
+      // 3 * 86400 = 259200
+      TUASSERTE(double, 259200, testGPSWeekSecond.sow);
+      TUASSERTE(TimeSystem, TimeSystem::GPS, testGPSWeekSecond.getTimeSystem());
+      info.erase('E');
+      info.erase('G');
+      info.erase('w');
 
       TURETURN();
    }
@@ -192,6 +227,16 @@ public:
       TUASSERT(  compare >= lessThanWeek);
       TUASSERT(  compare >= lessThanSecond);
       TUASSERT(  compare >= compareCopy);
+
+      TURETURN();
+   }
+
+      unsigned getPrintCharsTest()
+   {
+      TUDEF("GPSWeekSecond", "getPrintChars");
+
+      GPSWeekSecond gpsWeekSecond;
+      TUASSERTE(std::string, "EFGwgP", gpsWeekSecond.getPrintChars())
 
       TURETURN();
    }
@@ -340,6 +385,28 @@ public:
 
       TURETURN();
    }
+
+      unsigned weekRolloverAdjTest()
+   {
+      TUDEF("GPSWeekSecond", "weekRolloverAdj");
+
+      GPSWeekSecond halfPlusWeek(1300,604700,TimeSystem::GPS); //302400L
+      GPSWeekSecond zeroWeek(1300,0,TimeSystem::GPS);
+
+      GPSWeekSecond sameOne(1300,0,TimeSystem::GPS);
+      GPSWeekSecond sameTwo(sameOne);
+      TUASSERTE(GPSWeekSecond, sameOne, sameTwo.weekRolloverAdj(sameOne));
+
+      GPSWeekSecond testHalfWeekDiff(halfPlusWeek);
+      GPSWeekSecond oneWeekLess(1299,604700,TimeSystem::GPS);
+      TUASSERTE(GPSWeekSecond, oneWeekLess, halfPlusWeek.weekRolloverAdj(zeroWeek));
+
+      GPSWeekSecond testNegativeDiff(zeroWeek);
+      GPSWeekSecond oneWeekMore(1300,0,TimeSystem::GPS);
+      TUASSERTE(GPSWeekSecond, oneWeekMore, testNegativeDiff.weekRolloverAdj(halfPlusWeek));
+
+      TURETURN();
+   }
 };
 
 
@@ -350,11 +417,14 @@ int main() //Main function to initialize and run all tests above
 
    errorTotal += testClass.initializationTest();
    errorTotal += testClass.operatorTest();
+   errorTotal += testClass.getPrintCharsTest();
    errorTotal += testClass.setFromInfoTest();
+   errorTotal += testClass.setFromInfoAdditionalTest();
    errorTotal += testClass.resetTest();
    errorTotal += testClass.timeSystemTest();
    errorTotal += testClass.toFromCommonTimeTest();
    errorTotal += testClass.printfTest();
+   errorTotal += testClass.weekRolloverAdjTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
