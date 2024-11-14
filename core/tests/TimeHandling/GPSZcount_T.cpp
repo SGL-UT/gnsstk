@@ -259,6 +259,12 @@ public:
       testFramework.assert(rollWeekB.getWeek() == 9       , "addZcounts() did not roll week backward properly", __LINE__);
       testFramework.assert(rollWeekB.getZcount() == 403198, "addZcounts() did not set zcount properly"        , __LINE__);
 
+         // add zero to week
+      gnsstk::GPSZcount addZeroWeek(10, 0);
+      addZeroWeek.addZcounts(0);
+      testFramework.assert(addZeroWeek.getWeek() == 10       , "addZcounts() did not roll week backward properly", __LINE__);
+      testFramework.assert(addZeroWeek.getZcount() == 0, "addZcounts() did not set zcount properly"        , __LINE__);
+
          // Try to make the week negative
       try
       {
@@ -661,6 +667,12 @@ int main() // Main function to initialize and run all tests above
    errorCounter += check;
 
    check = testClass.inSameTimeBlockTest();
+   errorCounter += check;
+
+   check = testClass.stringTest();
+   errorCounter += check;
+
+   check = testClass.dumpTest();
    errorCounter += check;
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
