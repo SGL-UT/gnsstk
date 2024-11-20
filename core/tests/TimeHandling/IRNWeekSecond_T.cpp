@@ -100,16 +100,27 @@ public:
       IRNWeekSecond setFromInfo1;
       IRNWeekSecond setFromInfo2;
       IRNWeekSecond setFromInfo3;
+      IRNWeekSecond setFromInfo4;
       TimeTag::IdToValue id;
+      TimeTag::IdToValue id2;
       id['O'] = "1300";
       id['g'] = "13500";
       id['P'] = "IRN";
+
+      id2['X'] = "0";
+      id2['o'] = "0";
+      id2['w'] = "0";
+      id2['F'] = "1300"; // value to be ignored, testing default in setFromInfo's switch logic
       IRNWeekSecond compare(1300,13500.,TimeSystem::IRN); //Initialize an object
          //--------------------------------------------------------------------
          //Does a proper setFromInfo work with all information provided?
          //--------------------------------------------------------------------
       TUASSERT(setFromInfo1.setFromInfo(id));
       TUASSERTE(IRNWeekSecond, compare, setFromInfo1);
+
+      TUASSERT(setFromInfo4.setFromInfo(id2));
+      TUASSERTE(int, 0, setFromInfo4.getEpoch());
+      TUASSERTE(int, 0, setFromInfo4.getModWeek());
 
       id.erase('O');
       IRNWeekSecond compare2(0,13500.,TimeSystem::IRN);
@@ -337,6 +348,18 @@ public:
          //--------------------------------------------------------------------
       TUASSERTE(string, "BadIRNepoch BadIRNmweek BadIRNdow BadIRNfweek BadIRNsow BadIRNsys", IRN1.printError("%X %o %w %04O %05g %02P"));
       TUASSERTE(string, "BadIRNepoch BadIRNmweek BadIRNdow BadIRNfweek BadIRNsow BadIRNsys", UTC1.printError("%X %o %w %04O %05g %02P"));
+
+      //--------------------------------------------------------------------
+         //Verify getPrintChars() matches expectation
+         //--------------------------------------------------------------------
+      TUASSERTE(string, "XOowgP", IRN1.getPrintChars());
+      TUASSERTE(string, "XOowgP", UTC1.getPrintChars());
+
+      //--------------------------------------------------------------------
+         //Verify getDefaultFormat() matches expectation
+         //--------------------------------------------------------------------
+      TUASSERTE(string, "%O %g %P", IRN1.getDefaultFormat());
+      TUASSERTE(string, "%O %g %P", UTC1.getDefaultFormat());
 
       TURETURN();
    }
