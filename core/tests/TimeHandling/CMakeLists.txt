@@ -106,3 +106,8 @@ add_executable(Week_T Week_T.cpp)
 target_link_libraries(Week_T gnsstk)
 add_test(NAME TimeHandling_Week COMMAND $<TARGET_FILE:Week_T>)
 set_property(TEST TimeHandling_Week PROPERTY LABELS TimeHandling TimeStorage)
+
+add_executable(GALWeekSecond_T GALWeekSecond_T.cpp)
+target_link_libraries(GALWeekSecond_T gnsstk)
+add_test(NAME TimeHandling_GALWeekSecond COMMAND $<TARGET_FILE:GALWeekSecond_T>)
+set_property(TEST TimeHandling_GALWeekSecond PROPERTY LABELS TimeHandling TimeStorage)
