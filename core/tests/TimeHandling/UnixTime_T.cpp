@@ -57,6 +57,8 @@ class UnixTime_T
 
 
 		UnixTime Compare(1350000,1,TimeSystem(2)); //Initialize an object
+		timeval t = {1200000, 2};
+		UnixTime Compare2(t); // Initialize an object using timeval constructor
 
 		//---------------------------------------------------------------------
 		//Were the attributes set to expectation with the explicit constructor?
@@ -64,6 +66,13 @@ class UnixTime_T
 		testFramework.assert(1350000 == Compare.tv.tv_sec,             "Explicit constructor did not set the tv_sec value properly",   __LINE__);
 		testFramework.assert(1 == Compare.tv.tv_usec,                  "Explicit constructor did not set the tv_usec value properly",  __LINE__);
 		testFramework.assert(TimeSystem(2) == Compare.getTimeSystem(), "Explicit constructor did not set the TimeSystem properly",     __LINE__);
+
+		//---------------------------------------------------------------------
+		//Were the attributes set to expectation with the explicit constructor with timeval struct?
+		//---------------------------------------------------------------------
+		testFramework.assert(1200000 == Compare2.tv.tv_sec,             "Explicit constructor with timeval struct did not set the tv_sec value properly",   __LINE__);
+		testFramework.assert(2 == Compare2.tv.tv_usec,                  "Explicit constructor with timeval struct did not set the tv_usec value properly",  __LINE__);
+		testFramework.assert(TimeSystem::Unknown == Compare2.getTimeSystem(), "Explicit constructor with timeval struct did not set the TimeSystem properly",     __LINE__);
 
 
 		testFramework.changeSourceMethod("ConstructorCopy");
@@ -107,6 +116,7 @@ class UnixTime_T
 		Id['U'] = "1350000";
 		Id['u'] = "1";
 		Id['P'] = "GPS";
+		Id['x'] = "5"; // value to be ignored, testing default in setFromInfo's switch logic
 
 
 		//---------------------------------------------------------------------
@@ -141,6 +151,8 @@ class UnixTime_T
 		UnixTime LessThanSec(1340000, 100); //Initialize with fewer seconds
 		UnixTime LessThanMicroSec(1350000,0); //Initialize with fewer microseconds
 		UnixTime CompareCopy(Compare); // Initialize with copy constructor
+		UnixTime GPS(1200000, 20, TimeSystem::GPS);
+		UnixTime UTC(1200000, 20, TimeSystem::UTC);
 
 		//---------------------------------------------------------------------
 		//Does the == Operator function?
@@ -166,6 +178,7 @@ class UnixTime_T
 		testFramework.assert(!(Compare < LessThanSec),        "Less-than operator found greater-than second object to be less-than",       __LINE__);
 		testFramework.assert(!(Compare < LessThanMicroSec),   "Less-than operator found greater-than microsecond object to be less-than",  __LINE__);
 		testFramework.assert(!(Compare < CompareCopy),        "Less-than operator found equivalent object to be less-than",                __LINE__);
+		TUTHROW(GPS < UTC);
 
 
 		testFramework.changeSourceMethod("OperatorGreaterThan");
@@ -337,6 +350,18 @@ class UnixTime_T
 		//---------------------------------------------------------------------
   		testFramework.assert(GPS1.printError("%07U %02u %02P") == (std::string)"ErrorBadTime ErrorBadTime ErrorBadTime", "printError did not output in the proper format", __LINE__);
   		testFramework.assert(UTC1.printError("%07U %02u %02P") == (std::string)"ErrorBadTime ErrorBadTime ErrorBadTime", "printError did not output in the proper format", __LINE__);
+
+		//---------------------------------------------------------------------
+		//Verify getPrintChars() matches expectation
+		//---------------------------------------------------------------------
+  		testFramework.assert(GPS1.getPrintChars() == ("UuP"), "getPrintChars() result does not match expectation", __LINE__);
+  		testFramework.assert(UTC1.getPrintChars() == ("UuP"), "getPrintChars() result does not match expectation", __LINE__);
+
+		//---------------------------------------------------------------------
+		//Verify getDefaultFormat() matches expectation
+		//---------------------------------------------------------------------
+  		testFramework.assert(GPS1.getDefaultFormat() == ("%U %u %P"), "getDefaultFormat() result does not match expectation", __LINE__);
+  		testFramework.assert(UTC1.getDefaultFormat() == ("%U %u %P"), "getDefaultFormat() result does not match expectation", __LINE__);
 
 		return testFramework.countFails();
 	}
