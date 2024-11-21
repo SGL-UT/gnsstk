@@ -49,6 +49,7 @@
 #include "GNSSconstants.hpp"
 #include "TimeString.hpp"
 #include "ObsRngDev.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -68,6 +69,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
       computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
@@ -92,6 +94,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
       computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       Position gx(rxpos);
       gx.asGeodetic(&em);
@@ -117,6 +120,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
       computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
    }
@@ -137,6 +141,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
       computeOrd(prange, rxpos, navLib, em, svTime, order, xmitHealth, valid);
       computeTrop(tm);
       Position gx(rxpos);
@@ -161,6 +166,7 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
       // for dual-frequency see IS-GPS-200, section 20.3.3.3.3.3
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
@@ -191,6 +197,8 @@ namespace gnsstk
       NavValidityType valid)
          : obstime(time), svid(svid), ord(0), wonky(false)
    {
+      DEBUGTRACE_FUNCTION();
+      DEBUGTRACE("time: " << time)
       // for dual-frequency see IS-GPS-200, section 20.3.3.3.3.3
       double icpr = (prange2 - gamma * prange1)/(1-gamma);
       iono = prange1 - icpr;
@@ -209,6 +217,7 @@ namespace gnsstk
       SVHealth xmitHealth,
       NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
       CorrectedEphemerisRange cer;
       rho = cer.ComputeAtTransmitTime(obstime,obs, rxpos, svid, navLib, order,
                                       xmitHealth, valid);
@@ -247,6 +256,7 @@ namespace gnsstk
       SVHealth xmitHealth,
       NavValidityType valid)
    {
+      DEBUGTRACE_FUNCTION();
       CorrectedEphemerisRange cer;
       rho = cer.ComputeAtTransmitSvTime(obstime, obs, rxpos, svid, navLib,
                                         order, xmitHealth, valid);
@@ -277,6 +287,7 @@ namespace gnsstk
 
    void ObsRngDev::computeTrop(const TropModel& tm)
    {
+      DEBUGTRACE_FUNCTION();
       trop = tm.correction(elevation);
       ord -= trop;
    }

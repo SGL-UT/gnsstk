@@ -41,6 +41,7 @@
 
 #include "OrbitDataKepler.hpp"
 #include "GPSEllipsoid.hpp"
+#include "DebugTrace.hpp"
 
 namespace gnsstk
 {
@@ -64,6 +65,7 @@ namespace gnsstk
       bool getXvt(const CommonTime& when, Xvt& xvt,
                   const ObsID& oid = ObsID()) override
       {
+         DEBUGTRACE_FUNCTION();
          GPSEllipsoid ell;
          return OrbitDataKepler::getXvt(when, ell, xvt, oid);
       }
@@ -74,6 +76,7 @@ namespace gnsstk
           */
       double svRelativity(const CommonTime& when) const override
       {
+         DEBUGTRACE_FUNCTION();
          GPSEllipsoid ell;
          return OrbitDataKepler::svRelativity(when, ell);
       }
