@@ -1,5 +1,52 @@
 // convert output gnsstk::NavDataPtr references
 
+%typemap(in, numinputs=0) std::list<std::shared_ptr<gnsstk::NavData>> &navOut (std::list<std::shared_ptr<gnsstk::NavData>> result)
+{
+   $1 = &result;
+}
+
+%typemap(argout) std::list<std::shared_ptr<gnsstk::NavData>> &
+{
+      // What this does is change the python interface to the C++
+      // method so that you get a list containing the original C++
+      // return value (typically a bool) and the resulting NavData
+      // object.
+      // The shared_ptr<NavData> object needs to be converted to the
+      // leaf class in order for python to be able to use it properly.
+   if (!PyList_Check(resultobj))
+   {
+         // Turn the return value into a list and add the original
+         // return value as the first member of the list.
+      PyObject *temp = resultobj;
+      resultobj = PyList_New(2);
+      PyList_SetItem(resultobj, 0, temp);
+      temp = nullptr;
+
+      PyObject *navlist = PyList_New(0);
+      for (std::shared_ptr<gnsstk::NavData> nd : (*$1))
+      {
+         std::shared_ptr<gnsstk::NavData> *np = new std::shared_ptr<gnsstk::NavData>(nd);
+
+            // The NavData tree has a getClassName() method that
+            // returns the qualified class name,
+            // e.g. gnsstk::GPSLNavEph.  We add the shared_ptr
+            // qualifiers in order for SWIG_TypeQuery to get the
+            // correct python data type that we need to return.
+         std::string cn = "std::shared_ptr< " + nd->getClassName() + " > *";
+         swig_type_info *desc = SWIG_TypeQuery(cn.c_str());
+            // We have a valid python type, so now we can create a
+            // SWIG pointer that properly identifies the derived
+            // shared_ptr<NavData> object.
+         temp = SWIG_NewPointerObj(SWIG_as_voidptr(np), desc, SWIG_POINTER_OWN);
+         PyList_Append(navlist, temp);
+         Py_DECREF(temp);
+      }
+
+         // Add the derived shared_ptr<NavData> object to the return list
+      PyList_SetItem(resultobj, 1, navlist);
+   }
+}
+
 %typemap(in, numinputs=0) std::shared_ptr<gnsstk::NavData> &navOut ()
 {
    std::shared_ptr<gnsstk::NavData> *smartresult =
