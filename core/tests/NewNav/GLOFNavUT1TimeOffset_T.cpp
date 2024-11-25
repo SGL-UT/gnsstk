@@ -59,6 +59,8 @@ public:
    unsigned getUserTimeTest();
    unsigned getOffsetTest();
    unsigned getConversionsTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -157,6 +159,56 @@ getConversionsTest()
 }
 
 
+unsigned GLOFNavUT1TimeOffset_T ::
+dumpTest ()
+{
+   TUDEF("GLOFNavUT1TimeOffset", "dump");
+   gnsstk::GLOFNavUT1TimeOffset uut;
+   uut.timeStamp.setTimeSystem (gnsstk::TimeSystem::GLO); //Set this to avoid assert fail in getOffset()
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::Terse, 
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief,
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false); 
+   }
+
+   TURETURN();
+}
+
+
+unsigned GLOFNavUT1TimeOffset_T ::isSameDataTest() {
+   TUDEF("GLOFNavUT1TimeOffset", "isSameData");
+
+   // set up objects making sure to set NaN values to 0.0 since NaN == NaN is false
+   gnsstk::GLOFNavUT1TimeOffset uut;
+   uut.tauc = 0.0;
+   uut.B1 = 0.0;
+   uut.B2 = 0.0;
+
+   auto uut2 = std::make_shared<gnsstk::GLOFNavUT1TimeOffset>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOFNavUT1TimeOffset_T testClass;
@@ -167,6 +219,8 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getConversionsTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest(); 
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

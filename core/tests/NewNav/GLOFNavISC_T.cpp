@@ -78,6 +78,8 @@ public:
    unsigned getISCSFTest();
       /// Dual frequency ISC test
    unsigned getISCDFTest();
+      /// Check isSameData() 
+   unsigned isSameDataTest();
 
    gnsstk::ObsID oid1, oid2, oid3, oid4;
 };
@@ -170,6 +172,27 @@ getISCDFTest()
 }
 
 
+unsigned GLOFNavISC_T ::isSameDataTest() {
+   TUDEF("GLOFNavISC", "isSameData");
+
+   // set up objects
+   gnsstk::GLOFNavISC uut;
+
+   //Create uut2 with setting any NaN values to 0 since NaN == NaN  is false.
+   uut.isc = 0.0;
+   auto uut2 = std::make_shared<gnsstk::GLOFNavISC>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOFNavISC_T testClass;
@@ -180,6 +203,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getISCSFTest();
    errorTotal += testClass.getISCDFTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
