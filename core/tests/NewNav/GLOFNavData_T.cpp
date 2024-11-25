@@ -73,6 +73,7 @@ class GLOFNavData_T
 public:
    unsigned constructorTest();
    unsigned validateTest();
+   unsigned isSameDataTest();   
 };
 
 
@@ -105,6 +106,25 @@ validateTest()
 }
 
 
+unsigned GLOFNavData_T ::isSameDataTest() {
+   TUDEF("GLOFNavData", "isSameData");
+
+   // set up objects
+   TestClass uut;
+
+   //Create uut2
+   auto uut2 = std::make_shared<TestClass>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -113,6 +133,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.validateTest();
+   errorTotal += testClass.isSameDataTest();    
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
