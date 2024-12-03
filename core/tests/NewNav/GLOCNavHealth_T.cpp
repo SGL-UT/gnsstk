@@ -60,6 +60,9 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getHealthTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
+
 };
 
 
@@ -107,6 +110,52 @@ getHealthTest()
 }
 
 
+unsigned GLOCNavHealth_T ::
+dumpTest ()
+{
+   TUDEF("GLOCNavHealth", "dump");
+   gnsstk::GLOCNavHealth uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      //gnsstk::DumpDetail::Terse,    // Not implemented at this time.
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false);  
+   }
+
+   TURETURN();
+}
+
+unsigned GLOCNavHealth_T ::isSameDataTest() {
+   TUDEF("GLOCNavHealth", "isSameData");
+
+   // set up GLOFNavEph objects
+   gnsstk::GLOCNavHealth uut;
+
+   //Create uut2
+   auto uut2 = std::make_shared<gnsstk::GLOCNavHealth>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOCNavHealth_T testClass;
@@ -115,6 +164,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
