@@ -372,13 +372,13 @@ factorToSigmaTest ()
    TUDEF("GLOCNavEph", "factorToSigma");
    gnsstk::GLOCNavEph uut;
 
-   std::vector<float> expectedResults = {
+   std::vector<double> expectedResults = {
       .01, .02, .03, .04, .06, .08, .1, .15, .2, .3, .4, .6, .7, .8, .9,
       1, 2, 2.5, 4, 5, 7, 10, 12, 14, 16, 32, 64, 128, 256, 512
    };   
 
    for (int i = -15; i <= 14; ++i) {
-        float result = uut.factorToSigma(i);
+        double result = uut.factorToSigma(i);
         TUASSERTE(bool, result == expectedResults[i + 15], true); // Adjust index for expectedResults
     }
 
