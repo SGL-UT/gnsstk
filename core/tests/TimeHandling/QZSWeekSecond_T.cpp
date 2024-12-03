@@ -130,7 +130,7 @@ public:
       test.reset();
 
       // Set TimeSystem
-      info['P'] = "2"; // time system
+      info['P'] = "GPS"; // time system
       info['F'] = "0"; // value to be ignored, testing default in setFromInfo's switch logic
       test.setFromInfo(info);
       TUASSERTE(TimeSystem, TimeSystem::GPS, test.getTimeSystem());
