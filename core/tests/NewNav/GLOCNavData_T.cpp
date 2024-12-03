@@ -36,85 +36,94 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
-#include <math.h>
 #include "TestUtil.hpp"
-#include "GLOCNavLTDMP.hpp"
+#include "GLOCNavData.hpp"
+#include "GLOCBits.hpp"
 
 
-class GLOCNavLTDMP_T
+namespace gnsstk
+{
+   std::ostream& operator<<(std::ostream& s, SVHealth h)
+   {
+      s << StringUtils::asString(h);
+      return s;
+   }
+}
+
+
+/// Make a testable non-abstract class
+class TestClass : public gnsstk::GLOCNavData
 {
 public:
-   unsigned constructorTest();
-   unsigned isSVIDTest();
-   unsigned dumpTest();
+    bool getXvt(const gnsstk::CommonTime& t, gnsstk::Xvt& xvt,
+               const gnsstk::ObsID& oid = gnsstk::ObsID()) override
+    { return false; }
+    gnsstk::NavDataPtr clone() const override
+    { return std::make_shared<TestClass>(*this); }
 };
 
 
-unsigned GLOCNavLTDMP_T ::
+class GLOCNavData_T
+{
+public:
+    unsigned constructorTest();
+    unsigned validateTest();
+    unsigned isSameDataTest();
+};
+
+
+unsigned GLOCNavData_T ::
 constructorTest()
 {
-   TUDEF("GLOCNavLTDMP", "GLOCNavLTDMP");
-   gnsstk::GLOCNavLTDMP uut;
-   TUASSERTE(int, 1, isnan(uut.dax0));
-   TUASSERTE(int, 1, isnan(uut.day0));
-   TUASSERTE(int, 1, isnan(uut.daz0));
-   TUASSERTE(int, 1, isnan(uut.ax1));
-   TUASSERTE(int, 1, isnan(uut.ay1));
-   TUASSERTE(int, 1, isnan(uut.az1));
-   TUASSERTE(int, 1, isnan(uut.ax2));
-   TUASSERTE(int, 1, isnan(uut.ay2));
-   TUASSERTE(int, 1, isnan(uut.az2));
-   TUASSERTE(int, 1, isnan(uut.ax3));
-   TUASSERTE(int, 1, isnan(uut.ay3));
-   TUASSERTE(int, 1, isnan(uut.az3));
-   TUASSERTE(int, 1, isnan(uut.ax4));
-   TUASSERTE(int, 1, isnan(uut.ay4));
-   TUASSERTE(int, 1, isnan(uut.az4));
-   TURETURN();
+    TUDEF("GLOCNavData", "GLOCNavData()");
+    TestClass uut;
+    TUASSERTE(bool, uut.timeStamp.getTimeSystem() == gnsstk::TimeSystem::Any, true)
+    TURETURN();
 }
 
 
-unsigned GLOCNavLTDMP_T ::
-isSVIDTest()
+unsigned GLOCNavData_T ::
+validateTest()
 {
-   TUDEF("GLOCNavLTDMP", "isSVID");
-   gnsstk::GLOCNavLTDMP uut;
-   TUASSERTE(bool, false, uut.isSVID(9));
-   uut.header31.svid = 9;
-   TUASSERTE(bool, false, uut.isSVID(9));
-   uut.header32.svid = 9;
-   TUASSERTE(bool, true, uut.isSVID(9));
-   TURETURN();
+    TUDEF("GLOCNavData", "validate()");
+    TestClass uut;
+
+    uut.header.dataInvalid = false;
+    uut.header.preamble = gnsstk::gloc::valPreamble; 
+    TUASSERTE(bool, true, uut.validate());
+    TURETURN();
 }
 
 
-unsigned GLOCNavLTDMP_T ::
-dumpTest ()
-{
-   TUDEF("GLOCNavLTDMP", "dump");
-   gnsstk::GLOCNavLTDMP uut;
- 
-   // set up an stringstream objects to pass into dump()
-   std::stringstream dumpOutputStream;
+unsigned GLOCNavData_T ::isSameDataTest() {
+    TUDEF("GLOCNavData", "isSameData()");
 
-   uut.dump(dumpOutputStream);
-   TUASSERTE(bool, dumpOutputStream.str().empty(), false);   
+    // set up GLOCNavData objects
+    TestClass uut;
+    auto uut2 = std::make_shared<TestClass>(uut);
 
-   TURETURN();
+    // Test that it compares
+    TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+    // Test that it fails
+    uut.signal.messageType = gnsstk::NavMessageType::Last;
+    TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+    TURETURN();
 }
 
 
 int main()
 {
-   GLOCNavLTDMP_T testClass;
-   unsigned errorTotal = 0;
+    GLOCNavData_T testClass;
+    unsigned errorTotal = 0;
 
-   errorTotal += testClass.constructorTest();
-   errorTotal += testClass.isSVIDTest();
-   errorTotal += testClass.dumpTest();   
+    errorTotal += testClass.constructorTest();
+    errorTotal += testClass.validateTest();
+    errorTotal += testClass.isSameDataTest();
 
-   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 
-   return errorTotal;
+    return errorTotal;
 }

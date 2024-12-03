@@ -60,6 +60,8 @@ public:
    unsigned getUserTimeTest();
    unsigned getOffsetTest();
    unsigned getConversionsTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -146,6 +148,61 @@ getConversionsTest()
 }
 
 
+unsigned GLOCNavUT1TimeOffset_T ::
+dumpTest ()
+{
+   TUDEF("GLOCNavUT1TimeOffset", "dump");
+   gnsstk::GLOCNavUT1TimeOffset uut;
+
+   uut.refTime.setTimeSystem (gnsstk::TimeSystem::GLO); //Set this to avoid assert fail in getOffset()
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);  
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false);  
+   }
+
+   // Now do Terse dump, since that is implemented via seperate dumpTerse()
+   dumpOutputStream.str(std::string());
+   uut.dumpTerse(dumpOutputStream);
+   TUASSERTE(bool, dumpOutputStream.str().empty(), false);  
+
+
+   TURETURN();
+}
+
+unsigned GLOCNavUT1TimeOffset_T ::isSameDataTest() {
+   TUDEF("GLOCNavUT1TimeOffset", "isSameData");
+
+   // set up GLOCNavEph objects
+   gnsstk::GLOCNavUT1TimeOffset uut;
+
+   //Create uut2 with  all NaN values set to 0.0, since NaN == NaN always fails.
+   uut.UTCTAI = 0.0;   
+
+   auto uut2 = std::make_shared<gnsstk::GLOCNavUT1TimeOffset>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that it fails
+   uut.UTCTAI = 1.0; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOCNavUT1TimeOffset_T testClass;
@@ -156,6 +213,8 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getConversionsTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest(); 
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

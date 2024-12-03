@@ -464,6 +464,11 @@ target_link_libraries(GLOCNavAlm_T gnsstk)
 add_test(NAME GLOCNavAlm_T COMMAND $<TARGET_FILE:GLOCNavAlm_T>)
 set_property(TEST GLOCNavAlm_T PROPERTY LABELS NewNav)
 
+add_executable(GLOCNavData_T GLOCNavData_T.cpp)
+target_link_libraries(GLOCNavData_T gnsstk)
+add_test(NAME GLOCNavData_T COMMAND $<TARGET_FILE:GLOCNavData_T>)
+set_property(TEST GLOCNavData_T PROPERTY LABELS NewNav)
+
 add_executable(GLOCNavEph_T GLOCNavEph_T.cpp)
 target_link_libraries(GLOCNavEph_T gnsstk)
 add_test(NAME GLOCNavEph_T COMMAND $<TARGET_FILE:GLOCNavEph_T>)

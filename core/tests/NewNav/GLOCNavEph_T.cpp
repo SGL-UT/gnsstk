@@ -79,6 +79,9 @@ public:
    unsigned getXvtLTTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned dumpTest();
+   unsigned factorToSigmaTest();  
+   unsigned isSameDataTest();
    unsigned haveLTDMPTest();
 };
 
@@ -336,6 +339,80 @@ haveLTDMPTest()
    TURETURN();
 }
 
+unsigned GLOCNavEph_T ::
+dumpTest ()
+{
+   TUDEF("GLOCNavEph", "dump");
+   gnsstk::GLOCNavEph uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::Terse, 
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false);  
+   }
+
+   TURETURN();
+}
+
+
+unsigned GLOCNavEph_T ::
+factorToSigmaTest ()
+{
+   TUDEF("GLOCNavEph", "factorToSigma");
+   gnsstk::GLOCNavEph uut;
+
+   std::vector<float> expectedResults = {
+      .01, .02, .03, .04, .06, .08, .1, .15, .2, .3, .4, .6, .7, .8, .9,
+      1, 2, 2.5, 4, 5, 7, 10, 12, 14, 16, 32, 64, 128, 256, 512
+   };   
+
+   for (int i = -15; i <= 14; ++i) {
+        float result = uut.factorToSigma(i);
+        TUASSERTE(bool, result == expectedResults[i + 15], true); // Adjust index for expectedResults
+    }
+
+   TURETURN();
+}
+
+
+unsigned GLOCNavEph_T ::isSameDataTest() {
+   TUDEF("GLOCNavEph", "isSameData");
+
+   // set up GLOCNavEph objects
+   gnsstk::GLOCNavEph uut;
+
+   //Create uut2 with  all NaN values set to 0.0, since NaN == NaN always fails.
+   uut.freqBias = 0.0;   
+   uut.clkBias = 0.0;
+   uut.tauDelta = 0.0;
+   uut.driftRate = 0.0;
+   uut.tauc = 0.0;
+   uut.taucdot = 0.0;
+   uut.tauGPS = 0.0;
+   auto uut2 = std::make_shared<gnsstk::GLOCNavEph>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that it fails
+   uut.N4 = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+ 
+
 
 int main()
 {
@@ -350,6 +427,9 @@ int main()
    errorTotal += testClass.getXvtLTTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.factorToSigmaTest();   
+   errorTotal += testClass.isSameDataTest();   
    errorTotal += testClass.haveLTDMPTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
