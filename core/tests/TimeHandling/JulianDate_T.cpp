@@ -37,6 +37,7 @@
 //==============================================================================
 
 #include "JulianDate.hpp"
+#include "MJD.hpp"
 #include "TimeTag.hpp"
 #include "TestUtil.hpp"
 #include <iostream>
@@ -52,7 +53,7 @@ using namespace std;
 class JulianDate_T
 {
 	public:
-	JulianDate_T() {eps = 1E-12;}
+	JulianDate_T() {eps = 1e-12;}
 	~JulianDate_T() {}
 
 //==========================================================================================================================
@@ -60,7 +61,7 @@ class JulianDate_T
 //==========================================================================================================================
 	int  initializationTest (void)
 	{
-		TestUtil testFramework( "JulianDate", "Constructor", __FILE__, __LINE__ );
+		TUDEF("JulianDate", "Constructor");
 
 
 	  	JulianDate Compare(1350000,TimeSystem(2)); //Initialize an object
@@ -68,29 +69,37 @@ class JulianDate_T
 		//---------------------------------------------------------------------
 		//Were the attributes set to expectation with the explicit constructor?
 		//---------------------------------------------------------------------
-		testFramework.assert(fabs((long double)1350000 - Compare.jd) < eps,  "Explicit constructor did not set the jd value properly",   __LINE__);
-		testFramework.assert(TimeSystem(2) == Compare.getTimeSystem(),       "Explicit constructor did not set the TimeSystem properly", __LINE__);
+		TUASSERTFEPS(1350000, Compare.jd, static_cast<long double>(eps));
+		TUASSERTE(TimeSystem, TimeSystem(2), Compare.getTimeSystem());
 
 
-		testFramework.changeSourceMethod("ConstructorCopy");
+		TUCSM("ConstructorCopy");
 		JulianDate Copy(Compare); // Initialize with copy constructor
 		//---------------------------------------------------------------------
 		//Were the attributes set to expectation with the copy constructor?
 		//---------------------------------------------------------------------
-		testFramework.assert(fabs((long double)1350000 - Copy.jd) < eps, "Copy constructor did not set the jd value properly",   __LINE__);
-		testFramework.assert(TimeSystem(2) == Copy.getTimeSystem(),      "Copy constructor did not set the TimeSystem properly", __LINE__);
+		TUASSERTE(JulianDate, Compare, Copy);
 
 
-		testFramework.changeSourceMethod("OperatorSet");
+		TUCSM("OperatorSet");
 		JulianDate Assigned;
 		Assigned = Compare;
 		//---------------------------------------------------------------------
 		//Were the attributes set to expectation with the Set Operator?
 		//---------------------------------------------------------------------
-		testFramework.assert(fabs((long double)1350000 - Assigned.jd) < eps, "Set Operator did not set the jd value properly",   __LINE__);
-		testFramework.assert(TimeSystem(2) == Assigned.getTimeSystem(),      "Set Operator did not set the TimeSystem properly", __LINE__);
+		TUASSERTE(JulianDate, Compare, Assigned);
 
-		return testFramework.countFails();
+
+		TUCSM("FromTimeTag");
+		//---------------------------------------------------------------------
+		//Were the attributes set from TimeTag
+		//---------------------------------------------------------------------
+                MJD mjdTT(51544.66250L, TimeSystem(2));   // Jan. 1, 2000 15:54:00
+                JulianDate JDfromTT(mjdTT);
+                TUASSERTFEPS(51544.66250L + MJD_TO_JD, JDfromTT.jd, static_cast<long double>(eps));
+                TUASSERTE(TimeSystem, TimeSystem(2), JDfromTT.getTimeSystem());
+
+		TURETURN();
 	}
 
 
@@ -126,6 +135,14 @@ class JulianDate_T
 		testFramework.assert(setFromInfo2.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
 		testFramework.assert(Compare2 == setFromInfo2,     "setFromInfo did not set all of the values properly",  __LINE__);
 
+		Id['Z'] = "dummy value";
+		//---------------------------------------------------------------------
+		//Does a proper setFromInfo work when non-applicable identifier values are used?
+		//---------------------------------------------------------------------
+		testFramework.assert(setFromInfo2.setFromInfo(Id), "setFromInfo experienced an error and returned false", __LINE__);
+		testFramework.assert(Compare2 == setFromInfo2,     "setFromInfo did not set all of the values properly",  __LINE__);
+		
+
 		return testFramework.countFails();
 	}
 
@@ -142,6 +159,7 @@ class JulianDate_T
 		JulianDate Compare(1350000); // Initialize with value
 		JulianDate LessThanJD(134000); // Initialize with value
 		JulianDate CompareCopy(Compare); // Initialize with copy constructor
+		JulianDate diffTimeSystem(1350000, TimeSystem(4)); // Initialize with value
 
 		//---------------------------------------------------------------------
 		//Does the == Operator function?
@@ -165,6 +183,7 @@ class JulianDate_T
 		testFramework.assert(  LessThanJD < Compare,   "Less-than operator found less-than jd object to not be less than",   __LINE__);
 		testFramework.assert(!(Compare < LessThanJD),  "Less-than operator found greater-than jd object to be less than",    __LINE__);
 		testFramework.assert(!(Compare < CompareCopy), "Less-than operator found equivalent object to be less than",         __LINE__);
+		TUTHROW(Compare < diffTimeSystem);
 
 
 		testFramework.changeSourceMethod("OperatorGreaterThan");
@@ -335,6 +354,16 @@ class JulianDate_T
 		return testFramework.countFails();
 	}
 
+	int getPrintCharsTest ()
+	{
+                TUDEF("JulianDate", "getPrintChars");
+
+		JulianDate testJulianDate;
+                TUASSERTE(string, "JP", testJulianDate.getPrintChars());
+
+		TURETURN();
+	}
+
 	private:
 		double eps;
 };
@@ -364,6 +393,9 @@ int main() //Main function to initialize and run all tests above
 	errorCounter += check;
 
 	check = testClass.printfTest();
+	errorCounter += check;
+
+	check = testClass.getPrintCharsTest();
 	errorCounter += check;
 
 	std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
