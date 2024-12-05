@@ -78,6 +78,10 @@ public:
    unsigned getISCSFTest();
       /// Dual frequency ISC test
    unsigned getISCDFTest();
+      /// dumpCorrections test
+   unsigned dumpCorrectionsTest();
+      /// isSameData test
+   unsigned isSameDataTest();
 
    gnsstk::ObsID oid1, oid2, oid3, oid4;
 };
@@ -186,6 +190,41 @@ getISCDFTest()
 }
 
 
+unsigned BDSD2NavISC_T ::
+dumpCorrectionsTest()
+{
+   TUDEF("BDSD2NavISC", "dumpCorrections");
+
+   gnsstk::BDSD2NavISC uut;
+   std::stringstream dumpOut;
+
+   uut.dumpCorrections(dumpOut);
+   TUASSERTE(bool, true, dumpOut.str().length() != 0);
+
+   TURETURN();
+}
+
+
+unsigned BDSD2NavISC_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavISC", "isSameData");
+
+   gnsstk::BDSD2NavISC uut;
+   // set values that are initialized as std::numeric_limits<double>::quiet_NaN() to a double that compares correctly
+   uut.isc = 0.0;
+   uut.tgd1 = 0.0;
+   uut.tgd2 = 0.0;
+   auto uut2 = std::make_shared<gnsstk::BDSD2NavISC>(uut);
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.tgd1 = 1.0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD2NavISC_T testClass;
@@ -196,6 +235,8 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getISCSFTest();
    errorTotal += testClass.getISCDFTest();
+   errorTotal += testClass.dumpCorrectionsTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

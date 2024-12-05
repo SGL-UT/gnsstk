@@ -56,6 +56,7 @@ public:
       /// Make sure constructor behavior remains unchanged.
    unsigned constructorTest();
    unsigned validateTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -91,6 +92,22 @@ validateTest()
 }
 
 
+unsigned BDSD2NavData_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavData", "isSameData");
+
+   TestClass uut;
+   auto uut2 = std::make_shared<TestClass>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.Cuc = 1.0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD2NavData_T testClass;
@@ -98,6 +115,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.validateTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
