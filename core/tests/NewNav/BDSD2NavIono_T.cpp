@@ -56,6 +56,8 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getIonoCorrTest();
+   unsigned validateTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -120,6 +122,39 @@ getIonoCorrTest()
 }
 
 
+unsigned BDSD2NavIono_T ::
+validateTest()
+{
+   TUDEF("BDSD2NavIono", "validate");
+   gnsstk::BDSD2NavIono uut;
+   TUASSERTE(bool, false, uut.validate()); // invalid by default
+   uut.fraID = 1; // valid
+   uut.pre = 0x712; // valid
+   TUASSERTE(bool, true, uut.validate());
+   uut.pre = 0; // valid
+   TUASSERTE(bool, true, uut.validate());
+   uut.pre = 0x22c; // invalid
+   TUASSERTE(bool, false, uut.validate());
+   TURETURN();
+}
+
+
+unsigned BDSD2NavIono_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavIono", "isSameData");
+
+   gnsstk::BDSD2NavIono uut;
+   auto uut2 = std::make_shared<gnsstk::BDSD2NavIono>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.alpha[1] = 1;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD2NavIono_T testClass;
@@ -128,6 +163,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getIonoCorrTest();
+   errorTotal += testClass.validateTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

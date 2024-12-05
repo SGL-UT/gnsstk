@@ -60,6 +60,8 @@ public:
    unsigned validateTest();
    unsigned getAODTest();
    unsigned getXvtTest();
+   unsigned dumpSVStatusTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -168,6 +170,40 @@ getXvtTest()
 }
 
 
+unsigned BDSD2NavEph_T ::
+dumpSVStatusTest()
+{
+   TUDEF("BDSD2NavEph", "dumpSVStatus");
+
+   gnsstk::BDSD2NavEph uut;
+   std::stringstream dumpOut;
+
+   uut.dumpSVStatus(dumpOut);
+   TUASSERTE(bool, true, dumpOut.str().length() != 0);
+
+   TURETURN();
+}
+
+
+unsigned BDSD2NavEph_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavEph", "isSameData");
+
+   gnsstk::BDSD2NavEph uut;
+   // these values default to std::numeric_limits<double>::quiet_NaN(), which doesn't compare well
+   uut.tgd1 = 0.0;
+   uut.tgd2 = 0.0;
+   auto uut2 = std::make_shared<gnsstk::BDSD2NavEph>(uut);
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.health = gnsstk::SVHealth::Healthy;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD2NavEph_T testClass;
@@ -179,6 +215,8 @@ int main()
    errorTotal += testClass.validateTest();
    errorTotal += testClass.getAODTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.dumpSVStatusTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

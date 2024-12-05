@@ -59,6 +59,7 @@ public:
    unsigned getUserTimeTest();
    unsigned getOffsetTest();
    unsigned getConversionsTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -164,6 +165,22 @@ getConversionsTest()
 }
 
 
+unsigned BDSD2NavTimeOffset_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavTimeOffset", "isSameData");
+
+   gnsstk::BDSD2NavTimeOffset uut;
+   auto uut2 = std::make_shared<gnsstk::BDSD2NavTimeOffset>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.a0 = 1.0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD2NavTimeOffset_T testClass;
@@ -174,6 +191,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getConversionsTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
