@@ -58,6 +58,8 @@ public:
    unsigned getUserTimeTest();
    unsigned fixFitTest();
    unsigned getXvtTest();
+   unsigned dumpSVStatusTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -126,6 +128,37 @@ getXvtTest()
 }
 
 
+unsigned BDSD1NavAlm_T ::
+dumpSVStatusTest()
+{
+   TUDEF("BDSD1NavAlm", "dump");
+
+   gnsstk::BDSD1NavAlm uut;
+   std::stringstream dumpOut;
+
+   uut.dumpSVStatus(dumpOut);
+   TUASSERTE(bool, true, dumpOut.str().length() != 0);
+
+   TURETURN();
+}
+
+
+unsigned BDSD1NavAlm_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD1NavAlm", "isSameData");
+
+   gnsstk::BDSD1NavAlm uut;
+   auto uut2 = std::make_shared<gnsstk::BDSD1NavAlm>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.health = gnsstk::SVHealth::Healthy;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    BDSD1NavAlm_T testClass;
@@ -135,6 +168,8 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.dumpSVStatusTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
