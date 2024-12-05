@@ -61,6 +61,8 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getHealthTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -127,6 +129,52 @@ getHealthTest()
 }
 
 
+unsigned BDSD1NavHealth_T ::
+dumpTest()
+{
+   TUDEF("BDSD1NavHealth", "dump");
+   gnsstk::BDSD1NavHealth uut;
+
+   // set up an stringstream objects to pass into dump()
+   std::stringstream oneLineStream;
+   std::stringstream briefStream;
+   std::stringstream fullStream;
+
+   // we'll check that our dump strings are not empty
+   // OneLine dump
+   uut.dump(oneLineStream, gnsstk::DumpDetail::OneLine);
+   TUASSERTE(bool, true, oneLineStream.str().length() != 0);
+
+   // Brief dump
+   uut.dump(briefStream, gnsstk::DumpDetail::Brief); 
+   TUASSERTE(bool, true, briefStream.str().length() != 0);
+
+   // Full dump
+   uut.dump(fullStream, gnsstk::DumpDetail::Full); 
+   TUASSERTE(bool, true, fullStream.str().length() != 0);
+
+   TURETURN();
+}
+
+
+unsigned BDSD1NavHealth_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD1NavHealth", "isSameData");
+
+   // set up BDSD1NavHealth objects
+   gnsstk::BDSD1NavHealth uut;
+   auto uut2 = std::make_shared<gnsstk::BDSD1NavHealth>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   // flip the health bit so that BDSD1NavHealth objects no longer match
+   uut.svHealth = 0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+
+}
+
 int main()
 {
    BDSD1NavHealth_T testClass;
@@ -135,6 +183,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
