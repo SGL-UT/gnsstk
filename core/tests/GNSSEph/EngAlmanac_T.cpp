@@ -634,6 +634,20 @@ public:
 
    }
 
+
+   int dumpTest (void)
+   {
+      TUDEF("EngAlmanac", "dump");
+      std::stringstream dumpOutputStream;
+      bool checkFlag = true;   // calls check() function within the dump when true
+
+      alm.dump(dumpOutputStream, checkFlag);
+
+      TUASSERTE(bool, false, dumpOutputStream.str().empty()); 
+      TURETURN();
+   };
+
+
 private:
    double eps;
    std::string testMesg;
@@ -660,6 +674,9 @@ int main() //Main function to initialize and run all tests above
    errorCounter += check;
 
    check = testClass.getTest(); // Tests the get methods and if subframes stored the correct data
+   errorCounter += check;
+
+   check = testClass.dumpTest(); // Tests the dump methods
    errorCounter += check;
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter <<
