@@ -371,12 +371,13 @@ namespace gnsstk
       {
          eph->top.setTimeSystem(gnsstk::TimeSystem::QZS);
       }
+      eph->integStat = ephSF[ephM10]->asBool(esbInt);
       eph->xmit11 = ephSF[ephM11]->getTransmitTime();
       eph->xmitClk = ephSF[ephMClk]->getTransmitTime();
-      eph->uraNED0= ephSF[csiURAned0]->asLong(csbURAned0,cnbURAned0,cscURAned0);
-      eph->uraNED1= ephSF[csiURAned1]->asUnsignedLong(csbURAned1,cnbURAned1,
+      eph->uraNED0 = ephSF[csiURAned0]->asLong(csbURAned0,cnbURAned0,cscURAned0);
+      eph->uraNED1 = ephSF[csiURAned1]->asUnsignedLong(csbURAned1,cnbURAned1,
                                                       cscURAned1);
-      eph->uraNED2= ephSF[csiURAned2]->asUnsignedLong(csbURAned2,cnbURAned2,
+      eph->uraNED2 = ephSF[csiURAned2]->asUnsignedLong(csbURAned2,cnbURAned2,
                                                       cscURAned2);
       eph->fixFit();
       // cerr << "add CNAV eph" << endl;

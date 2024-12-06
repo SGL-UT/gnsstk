@@ -59,8 +59,84 @@ public:
    unsigned fixFitTest();
    unsigned validateTest();
    unsigned getXvtTest();
+   unsigned testURA();
+   unsigned testURABadIndices();
 };
 
+unsigned GPSCNavEph_T ::
+testURA()
+{
+   TUDEF("GPSCNavEph", "compositeIAURAUpperBound");
+   gnsstk::GPSCNavEph uut;
+   uut.top = gnsstk::CivilTime{2024, 10, 31};
+   uut.uraED = 0;
+   uut.uraNED0 = 0;
+   uut.uraNED1 = 0;
+   uut.uraNED2 = 0;
+
+   // All results were hand computed based on the IS-GPS-200N description of composite IAURA
+
+   // Case: time == top and elevation == 0
+   double result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 0);
+   TUASSERTFEPS(3.3941, result, 0.0001);
+   
+   // case: time == top and elevation == 90
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 90);
+   TUASSERTFEPS(2.4, result, 0.0001);
+
+   // case: time == top + 93,600 seconds and elevation == 0
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 11, 1, 2}, 0);
+   TUASSERTFEPS(8.4604, result, 0.0001);
+
+   // case: time == top + 93,700 seconds and elevation == 0
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 11, 1, 2, 1, 40}, 0);
+   TUASSERTFEPS(8.4663, result, 0.0001);
+
+   // Change the rate and acceleration URA ned parameters
+   uut.uraNED1 = 3;
+   uut.uraNED2 = 7;
+
+   // case: time == top + 93,700 seconds and elevation == 0
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 11, 1, 2, 1, 40}, 0);
+   TUASSERTFEPS(3.9322, result, 0.0001);
+
+   TURETURN();
+}
+
+
+unsigned GPSCNavEph_T ::
+testURABadIndices()
+{
+   TUDEF("GPSCNavEph", "compositeIAURAUpperBound");
+   gnsstk::GPSCNavEph uut; 
+   uut.top = gnsstk::CivilTime{2024, 10, 31};
+   uut.uraED = 0;
+   uut.uraNED0 = 0;
+   uut.uraNED1 = 0;
+   uut.uraNED2 = 0;
+
+   uut.uraED = -16;
+   double result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 0);
+   TUASSERT(std::isnan(result));
+   uut.uraED = 0;
+
+   uut.uraED = 15;
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 0);
+   TUASSERT(std::isnan(result));
+   uut.uraED = 0;
+   
+   uut.uraNED0 = -16;
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 0);
+   TUASSERT(std::isnan(result));
+   uut.uraNED0 = 0;
+   
+   uut.uraNED0 = 15;
+   result = uut.compositeIAURAUpperBound(gnsstk::CivilTime{2024, 10, 31}, 0);
+   TUASSERT(std::isnan(result));
+   uut.uraNED0 = 0;
+
+   TURETURN();
+}
 
 unsigned GPSCNavEph_T ::
 constructorTest()
@@ -190,6 +266,8 @@ int main()
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.validateTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.testURA();
+   errorTotal += testClass.testURABadIndices();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
