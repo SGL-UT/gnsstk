@@ -44,6 +44,8 @@
 #ifndef GNSSTK_GPS_URA_HPP
 #define GNSSTK_GPS_URA_HPP
 
+#include "CommonTime.hpp"
+#include "GNSSconstants.hpp"
 #include "Exception.hpp"
 #include "RinexSatID.hpp"
 #include <cmath>
@@ -98,7 +100,21 @@ namespace gnsstk
       /// constant for gps nom index table offset
    const int SV_CNAV_INDEX_OFFSET = 15;
 
-      /// map from SV accuracy/URA flag to maximum accuracy values in m
+      /** Map from SV accuracy/URA flag to maximum accuracy values in m
+       * 
+       * Broadcast URA index values are from -16 to 15 but this map is index
+       * from 0 to 30. In order index into this map, add 
+       * SV_CNAV_ACCURACY_GPS_MAX_INDEX_VALUE to the the URA index. The -16 index
+       * is not included in this map as it has no defined upper bound URA value.
+       * 
+       * These URA values are used for elevation-dependent and non-elevation-dependent
+       * URA terms in both GPS CNav and GPS CNav-2
+       * 
+       * Further details in
+       * * IS-GPS-200N 30.3.3.1.1.4
+       * * IS-GPS-705J 20.3.3.1.1.4
+       * * IS-GPS-800J 3.5.3.5
+       */ 
    const double SV_CNAV_ACCURACY_GPS_MAX_INDEX[] = {0.01, 0.02, 0.03, 0.04, 0.06,
                                                     0.08, 0.11, 0.15, 0.21, 0.30,
                                                     0.43, 0.60, 0.85, 1.20, 1.7,
@@ -106,6 +122,35 @@ namespace gnsstk
                                                     13.65, 24.0, 48.0, 96.0, 192.0,
                                                     384.0, 768.0, 1536.0, 3072.0,
                                                     6144.0, 9.999999999999e99};
+
+
+      /** The minimum and maximum index values of URA_NED1 and URA_NED2 index values.
+       * 
+       * This applies to both GPS CNav and GPS CNav-2.
+       * 
+       * Further details 
+       * * IS-GPS-200N 30.3.3.2.4
+       * * IS-GPS-705J 20.3.3.2.4
+       * * IS-GPS-800J 3.5.3.8
+       * 
+       */
+   const int CNAV_URA_NED_INDEX_MIN = 0;
+   const int CNAV_URA_NED_INDEX_MAX = 7;
+
+      /** The minimum and maximum index values of URA_ED and URA_NED0
+       * 
+       * This applies to both GPS CNav and GPS CNav-2.
+       * 
+       * Further details:
+       * * IS-GPS-200N 30.3.3.1.1.4
+       * * IS-GPS-200N 30.3.3.2.4 
+       * * IS-GPS-705J 20.3.3.1.1.4
+       * * IS-GPS-705J 20.3.3.2.4 
+       * * IS-GPS-800J 3.5.3.5
+       * * IS-GPS-800J 3.5.3.8
+       */
+   const int CNAV_URA_INDEX_MIN = -16;
+   const int CNAV_URA_INDEX_MAX = 15;
 
 
    inline
@@ -186,6 +231,140 @@ namespace gnsstk
          GNSSTK_THROW(exc);
       }
       return SV_CNAV_ACCURACY_GPS_NOM_INDEX[ndx];
+   }
+
+   namespace details
+   {
+         /// Returns true if v is between, or equal to, low and high 
+      template<typename T>
+      bool isInBounds(const T& v, const T& low, const T& high)
+      {
+         return (v >= low) && (v <= high);
+      }
+   }
+
+
+      /** Compute the upper bound of the Non-Elevation-Dependent (NED) User Range Accuracy (URA) in meters.
+       * 
+       * This applies to both GPS CNav and GPS CNav-2.
+       * 
+       * Further details:
+       * * IS-GPS-200N 30.3.3.2.4
+       * * IS-GPS-705J 20.3.3.2.4
+       * * IS-GPS-800J 3.5.3.8
+       *
+       * @param[in] when the time to evaulate the URA function at.
+       * @param[in] top time of propagation
+       * @param[in] uraNED0Index must be between, or equal, -16 and 15
+       * @param[in] uraNED1Index must be between, or equal, 0 and 7
+       * @param[in] uraNED2Index must be between, or equal, 0 and 7
+       * @return the upper bound Non-Elevation-Dependent URA in meters.
+       * @throws InvalidRequest if indices are not within required ranges.
+       */
+   inline
+   double cnavURANEDUpperBound(
+      const CommonTime& when, 
+      const CommonTime& top, 
+      int uraNED0Index, 
+      int uraNED1Index, 
+      int uraNED2Index)
+   {
+      using namespace details;
+         // There is no upper bound URA defined for the minimum and maximum uraNED0Index
+         // so shrink the range of the check by 1 on both ends.
+      if (!isInBounds(uraNED0Index, CNAV_URA_INDEX_MIN + 1, CNAV_URA_INDEX_MAX - 1) ||
+          !isInBounds(uraNED1Index, CNAV_URA_NED_INDEX_MIN, CNAV_URA_NED_INDEX_MAX) ||
+          !isInBounds(uraNED2Index, CNAV_URA_NED_INDEX_MIN, CNAV_URA_NED_INDEX_MAX))
+      {
+         InvalidRequest exc("URA index out of range");
+         GNSSTK_THROW(exc);
+      }
+
+      double ura = 0;  // m
+      double uraNED0 = ura2CNAVaccuracy(uraNED0Index);  // m
+      double uraNED1 = 1.0 / std::pow(2.0, (14.0 + uraNED1Index));  // m/s
+      double uraNED2 = 1.0 / std::pow(2.0, (28.0 + uraNED2Index));  // m/s^2
+      double deltaT = when - top;  // s
+      if(deltaT <= 93600)
+      {
+         ura = (uraNED0 + uraNED1 * deltaT);
+      }
+      else
+      {
+         ura = (uraNED0 + uraNED1 * deltaT + uraNED2 * std::pow((deltaT - 93600), 2.0));
+      }
+      return ura;
+   }
+
+
+      /** Compute the upper bound of the Elevation-Dependent (ED) User Range Accuracy (URA) in meters.
+       *
+       * This applies to both GPS CNav and GPS CNav-2.
+       * 
+       * Further details:
+       * * IS-GPS-200N 30.3.3.1.1.4
+       * * IS-GPS-705J 20.3.3.1.1.4
+       * * IS-GPS-800J 3.5.3.5
+       *
+       * @param[in] elevation the elevation, in degrees, to evaluate the
+       *    elevation-dependent URA.
+       * @param[in] uraEDIndex must be between, or equal, -16 and 15
+       * @return the upper bound Elevation-Dependent URA in meters.
+       * @throws InvalidRequest if indices are not within required ranges.
+       */
+   inline
+   double cnavURAEDUpperBound(
+      double elevation,
+      int uraEDIndex)
+   {
+      using namespace details;
+         // There is no upper bound URA defined for the minimum and maximum uraNED0Index
+         // so shrink the range of the check by 1 on both ends.
+      if (!isInBounds(uraEDIndex, CNAV_URA_INDEX_MIN + 1, CNAV_URA_INDEX_MAX - 1))
+      {
+         InvalidRequest exc("URA index out of range");
+         GNSSTK_THROW(exc);
+      }
+      double ura = ura2CNAVaccuracy(uraEDIndex) * std::sin((elevation + 90.0) * DEG2RAD);
+      return ura;
+   }
+
+
+      /** Compute the composite Integrity Assured (IA) User Range Accuracy (URA) in meters
+       * 
+       * This applies to both GPS CNav and GPS CNav-2.
+       * 
+       * The IAURA is the RSS of the URA_ED and the URA_NED.
+       * 
+       * Further details:
+       * * IS-GPS-200N 30.3.3.1.1
+       * * IS-GPS-705J 20.3.3.1.1
+       * * IS-GPS-800J 3.5.3.10
+       *
+       * @param[in] when the time to evaulate the URA function at.
+       * @param[in] top time of propagation
+       * @param[in] elevation the elevation, in degrees, to evaluate the
+       *    elevation-dependent URA.
+       * @param[in] uraEDIndex must be between, or equal, -16 and 15
+       * @param[in] uraNED0Index must be between, or equal, -16 and 15
+       * @param[in] uraNED1Index must be between, or equal, 0 and 7
+       * @param[in] uraNED2Index must be between, or equal, 0 and 7
+       * @return the composite IAURA in meters.
+       * @throws InvalidRequest if indices are not within required ranges.
+       */
+   inline
+   double cnavCompositeIAURAUpperBound(
+      const gnsstk::CommonTime& when,
+      const gnsstk::CommonTime& top,
+      double elevation,
+      int uraEDIndex,
+      int uraNED0Index,
+      int uraNED1Index,
+      int uraNED2Index)
+   {
+      double ed = cnavURAEDUpperBound(elevation, uraEDIndex);
+      double ned = cnavURANEDUpperBound(when, top, uraNED0Index, uraNED1Index, uraNED2Index);
+      return std::sqrt(ed * ed + ned * ned);
    }
 
       //@}

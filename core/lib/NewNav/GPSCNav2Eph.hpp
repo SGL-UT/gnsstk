@@ -81,6 +81,19 @@ namespace gnsstk
           * @param[in,out] s The stream to write the data to. */
       void dumpSVStatus(std::ostream& s) const override;
 
+         /** Compute the composite upper bound URA.
+          *
+          * The composite Integrity Assured URA (IAURA) is the 
+          * RSS of the Non-Elevation-Dependent URA and the Elevation-Dependent URA.
+          *
+          * @param[in] when the time to evaluate the URA function at.
+          * @param[in] elevation the elevation, in degrees, to evaulate the 
+          *    elevation-dependent URA.
+          * @return the upper bound IAURA in meters, or NaN if the URA indices
+          *    are out of bounds.
+          */
+      double compositeIAURAUpperBound(const gnsstk::CommonTime &when, double elevation) const;
+
       /*! @copydoc OrbitDataKepler::isSameData()
       *
       * Additional Checks at the GPSCNav2Eph Level

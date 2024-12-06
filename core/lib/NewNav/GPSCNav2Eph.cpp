@@ -36,6 +36,7 @@
 //                            release, distribution is unlimited.
 //
 //==============================================================================
+#include "GPS_URA.hpp"
 #include "GPSCNav2Eph.hpp"
 #include "GPSWeekSecond.hpp"
 #include "TimeString.hpp"
@@ -110,6 +111,19 @@ namespace gnsstk
       if (!isNominalToe)
       {
          endFit += 300;
+      }
+   }
+
+   double GPSCNav2Eph ::
+   compositeIAURAUpperBound(const gnsstk::CommonTime &t, double elevation) const
+   {
+      try
+      {
+         return cnavCompositeIAURAUpperBound(t, top, elevation, uraED, uraNED0, uraNED1, uraNED2);
+      }
+      catch(const InvalidRequest& exc)
+      {
+         return std::numeric_limits<double>::quiet_NaN();
       }
    }
 
