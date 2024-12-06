@@ -118,3 +118,8 @@ add_executable(Rinex3ObsHeader_T Rinex3ObsHeader_T.cpp)
 target_link_libraries(Rinex3ObsHeader_T gnsstk)
 add_test(NAME FileHandling_Rinex3ObsHeader COMMAND $<TARGET_FILE:Rinex3ObsHeader_T>)
 set_property(TEST FileHandling_Rinex3ObsHeader PROPERTY LABELS FileHandling)
+
+add_executable(SinexTypes_T SinexTypes_T.cpp)
+target_link_libraries(SinexTypes_T gnsstk)
+add_test(NAME FileHandling_SinexTypes COMMAND $<TARGET_FILE:SinexTypes_T>)
+set_property(TEST FileHandling_SinexTypes PROPERTY LABELS FileHandling)
