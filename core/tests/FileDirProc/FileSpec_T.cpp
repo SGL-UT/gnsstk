@@ -113,6 +113,9 @@ public:
       // test FileSpec method hasTimeField()
    unsigned testHasTimeField();
 
+      // test FileSpec method dump()
+   unsigned testDump();
+
 }; // class FileSpec_T
 
 
@@ -1115,6 +1118,88 @@ unsigned FileSpec_T :: testSortList()
       oss << "unexpected exception: " << fse;
       TUFAIL(oss.str());
    }
+      
+   try // sort a list with versions
+   {
+      FileSpec spec("test.v%02v");
+      vector<string>  sortedFileList;
+         // Add files with versions.
+      sortedFileList.push_back("test.v07");
+      sortedFileList.push_back("test.v08");
+      sortedFileList.push_back("test.v09");
+      sortedFileList.push_back("test.v10");
+      sortedFileList.push_back("test.v11");
+      vector<string>  fileList;
+      fileList.push_back(sortedFileList[2]);
+      fileList.push_back(sortedFileList[3]);
+      fileList.push_back(sortedFileList[1]);
+      fileList.push_back(sortedFileList[4]);
+      fileList.push_back(sortedFileList[0]);
+         // This filters down to the latest version.
+      spec.sortList(fileList);
+         // Only the v11 entry should remain.
+      TUASSERTE(string, fileList.at(0), sortedFileList.back());
+   }
+   catch (FileSpecException& fse)
+   {
+      ostringstream  oss;
+      oss << "unexpected exception: " << fse;
+      TUFAIL(oss.str());
+   }
+
+   try // sort a list with version in the middle and an additional FSElement.
+   {
+      FileSpec spec("test%03j.v%02vfoo");
+      vector<string>  sortedFileList;
+         // Add files with version, plus 'day' which influences sort order.
+      sortedFileList.push_back("test003.v07foo");
+      sortedFileList.push_back("test071.v08foo");
+      sortedFileList.push_back("test071.v09foo");  //will cause v08 entry to be filtered.
+      sortedFileList.push_back("test122.v10foo");
+      sortedFileList.push_back("test204.v11foo");
+      vector<string>  fileList;
+      fileList.push_back(sortedFileList[4]);
+      fileList.push_back(sortedFileList[3]);
+      fileList.push_back(sortedFileList[2]);
+      fileList.push_back(sortedFileList[1]);
+      fileList.push_back(sortedFileList[0]);
+      spec.sortList(fileList);
+        // Erase the 2nd item; it will have been filtered during the sort.
+      sortedFileList.erase(sortedFileList.begin()+1);
+      TUASSERT(fileList == sortedFileList)
+   }
+   catch (FileSpecException& fse)
+   {
+      ostringstream  oss;
+      oss << "unexpected exception: " << fse;
+      TUFAIL(oss.str());
+   }
+
+   // This section tests using FileSpec with directories; however this functionality
+   // in FileSpec::sortList() is not working. Uncomment this code when using directories is fixed.
+   //
+   // try // sort a list with versions and slashes/directories.
+   // {
+   //    FileSpec spec("dir1" + std::string(1, slash) + "test.v%02v");
+   //    vector<string>  sortedFileList;
+   //       // Add files with versions with different directories
+   //    sortedFileList.push_back("dir1" + std::string(1, slash) + "test.v01");
+   //    sortedFileList.push_back("dir1" + std::string(1, slash) + "test.v02");
+   //       // Create unsorted list from sortedFileList
+   //    vector<string>  fileList;
+   //    fileList.push_back(sortedFileList[1]);
+   //    fileList.push_back(sortedFileList[0]);
+   //    spec.sortList(fileList);
+   //       // Erase all elements except the last one due to version filtering
+   //    sortedFileList.erase(sortedFileList.begin(), sortedFileList.end() - 1);         
+   //    TUASSERT(equal(fileList.begin(), fileList.end(), sortedFileList.begin()));
+   // }
+   // catch (FileSpecException& fse)
+   // {
+   //    ostringstream  oss;
+   //    oss << "unexpected exception: " << fse;
+   //    TUFAIL(oss.str());
+   // }
 
    TURETURN();
 }
@@ -1162,6 +1247,19 @@ testHasTimeField()
 }
 
 
+unsigned FileSpec_T ::
+testDump ()
+{
+   TUDEF("FileSpec", "dump");
+   FileSpec  spec("Test");
+   std::stringstream dumpOutputStream;
+   spec.dump(dumpOutputStream);
+   TUASSERTE(bool, false, dumpOutputStream.str().empty());   
+   
+   TURETURN();
+}
+
+
 /** Run the program.
  *
  * @return Total error count for all tests
@@ -1185,6 +1283,7 @@ int main(int argc, char *argv[])
    errorTotal += testClass.testToString();
    errorTotal += testClass.testSortList();
    errorTotal += testClass.testHasTimeField();
+   errorTotal += testClass.testDump();   
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
