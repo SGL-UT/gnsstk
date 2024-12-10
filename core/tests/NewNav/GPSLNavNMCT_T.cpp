@@ -63,6 +63,7 @@ public:
    unsigned validateTest();
    unsigned updateTNMCTTest();
    unsigned cloneTest();
+   unsigned dumpTest();
    unsigned isSameDataTest();
 };
 
@@ -205,6 +206,33 @@ cloneTest()
    TURETURN();
 }
 
+
+unsigned GPSLNavNMCT_T ::
+dumpTest()
+{
+   TUDEF("GPSLNavNMCT", "dump");
+   gnsstk::GPSLNavNMCT uut;
+
+   std::stringstream dumpOut;
+   std::vector<gnsstk::DumpDetail> dumpTypes =
+   {
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Terse,
+      gnsstk::DumpDetail::Brief,
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes)
+   {
+      dumpOut.str(std::string());
+      uut.dump(dumpOut, dtype);
+      TUASSERTE(bool, false, dumpOut.str().empty());
+   }
+
+   TURETURN();
+}
+
+
 unsigned GPSLNavNMCT_T ::
 isSameDataTest()
 {
@@ -230,6 +258,7 @@ int main()
    errorTotal += testClass.validateTest();
    errorTotal += testClass.updateTNMCTTest();
    errorTotal += testClass.cloneTest();
+   errorTotal += testClass.dumpTest();
    errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

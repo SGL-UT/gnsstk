@@ -61,6 +61,8 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getHealthTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -107,6 +109,48 @@ getHealthTest()
 }
 
 
+unsigned GPSCNav2Health_T ::
+dumpTest()
+{
+   TUDEF("GPSCNav2Health", "dump");
+   gnsstk::GPSCNav2Health uut;
+   
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOut;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes)
+   {
+      dumpOut.str(std::string());
+      uut.dump(dumpOut, dtype);
+      TUASSERTE(bool, false, dumpOut.str().empty());
+   }
+
+   TURETURN();
+}
+
+
+unsigned GPSCNav2Health_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNav2Health", "isSameData");
+   gnsstk::GPSCNav2Health uut;
+
+   auto uut2 = std::make_shared<gnsstk::GPSCNav2Health>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.health = false;
+   TUASSERTE(bool, false, uut.isSameData(uut2, false));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSCNav2Health_T testClass;
@@ -115,6 +159,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

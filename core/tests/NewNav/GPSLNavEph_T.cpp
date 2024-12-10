@@ -68,6 +68,8 @@ public:
    unsigned getClassNameTest();
    unsigned getXvtTest();
    unsigned svRelativityTest();
+   unsigned dumpTest();
+   unsigned dumpSVStatusTest();
 };
 
 
@@ -351,6 +353,48 @@ svRelativityTest()
 }
 
 
+unsigned GPSLNavEph_T ::
+dumpTest()
+{
+   TUDEF("GPSLNavEph", "dump");
+
+   gnsstk::GPSLNavEph uut;
+
+   // set up a stringstream object to pass into dump() and a vector of relevant DumpDetails
+   std::stringstream dumpOut;
+   std::vector<gnsstk::DumpDetail> dumpTypes =
+   {
+      // this dump method only distinguishes between Terse not-Terse
+      gnsstk::DumpDetail::Terse,
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes)
+   {
+      dumpOut.str(std::string());
+      uut.dump(dumpOut, dtype);
+      TUASSERTE(bool, false, dumpOut.str().empty());
+   }
+
+   TURETURN();
+}
+
+
+unsigned GPSLNavEph_T ::
+dumpSVStatusTest()
+{
+   TUDEF("GPSLNavEph", "dumpSVStatus");
+
+   gnsstk::GPSLNavEph uut;
+   std::stringstream dumpOut;
+
+   uut.dumpSVStatus(dumpOut);
+   TUASSERTE(bool, false, dumpOut.str().empty());
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSLNavEph_T testClass;
@@ -362,6 +406,8 @@ int main()
    errorTotal += testClass.validateTest();
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.svRelativityTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.dumpSVStatusTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -84,14 +84,18 @@ public:
                  gnsstk::CarrierBand::G1,
                  gnsstk::TrackingCode::CA)
    {}
-      /// Make sure constructor initializes data members correctly.
+   /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned validateTest();
    unsigned getUserTimeTest();
-      /// Single frequency ISC test
+   /// Single frequency ISC test
    unsigned getISCSFTest();
-      /// Dual frequency ISC test
+   /// Dual frequency ISC test
    unsigned getISCDFTest();
+   /// dumpCorrections test
+   unsigned dumpCorrectionsTest();
+   /// isSameData test
+   unsigned isSameDataTest();
 
    gnsstk::ObsID oid1, oid2, oid3, oid4, oid5, oid6, oid7, oid8, oid9, oid10;
 };
@@ -230,6 +234,43 @@ getISCDFTest()
 }
 
 
+unsigned GPSCNavISC_T ::
+dumpCorrectionsTest()
+{
+   TUDEF("GPSCNavISC", "dumpCorrections");
+
+   gnsstk::GPSCNavISC uut;
+   std::stringstream dumpOut;
+
+   uut.dumpCorrections(dumpOut);
+   TUASSERTE(bool, false, dumpOut.str().empty())
+
+   TURETURN();
+}
+
+
+unsigned GPSCNavISC_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNavISC", "isSameData");
+
+   gnsstk::GPSCNavISC uut;
+   // these values default to quiet_NaN, which doesn't compare well, so we set concrete values here
+   uut.iscL1CA = 0.0;
+   uut.iscL2C = 0.0;
+   uut.iscL5I5 = 0.0;
+   uut.iscL5Q5 = 0.0;
+   uut.isc = 0.0;
+   auto uut2 = std::make_shared<gnsstk::GPSCNavISC>(uut);
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.iscL1CA = 1.0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSCNavISC_T testClass;
@@ -240,6 +281,8 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getISCSFTest();
    errorTotal += testClass.getISCDFTest();
+   errorTotal += testClass.dumpCorrectionsTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
