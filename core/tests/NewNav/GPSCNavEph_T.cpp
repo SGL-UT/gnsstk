@@ -53,7 +53,7 @@ namespace gnsstk
 class GPSCNavEph_T
 {
 public:
-      /// Make sure constructor initializes data members correctly.
+   /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
@@ -61,6 +61,8 @@ public:
    unsigned getXvtTest();
    unsigned testURA();
    unsigned testURABadIndices();
+   unsigned dumpSVStatusTest();
+   unsigned isSameDataTest();
 };
 
 unsigned GPSCNavEph_T ::
@@ -255,6 +257,34 @@ getXvtTest()
    TURETURN();
 }
 
+unsigned GPSCNavEph_T ::
+dumpSVStatusTest()
+{
+   TUDEF("GPSCNavEph", "dump");
+   gnsstk::GPSCNavEph uut;
+   std::stringstream dumpOut;
+
+   uut.dumpSVStatus(dumpOut);
+   TUASSERTE(bool, false, dumpOut.str().empty());
+
+   TURETURN();
+}
+
+
+unsigned GPSCNavEph_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNavEph", "isSameData");
+   gnsstk::GPSCNavEph uut;
+   auto uut2 = std::make_shared<gnsstk::GPSCNavEph>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.healthL1 = false;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -268,6 +298,8 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.testURA();
    errorTotal += testClass.testURABadIndices();
+   errorTotal += testClass.dumpSVStatusTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

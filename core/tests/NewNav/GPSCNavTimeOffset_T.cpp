@@ -59,6 +59,7 @@ public:
    unsigned getUserTimeTest();
    unsigned getOffsetTest();
    unsigned getConversionsTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -178,6 +179,22 @@ getConversionsTest()
 }
 
 
+unsigned GPSCNavTimeOffset_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNavTimeOffset", "isSameData");
+
+   gnsstk::GPSCNavTimeOffset uut;
+   auto uut2 = std::make_shared<gnsstk::GPSCNavTimeOffset>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2));
+   uut.a0 = 1.0;
+   TUASSERTE(bool, false, uut.isSameData(uut2));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSCNavTimeOffset_T testClass;
@@ -188,6 +205,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getConversionsTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

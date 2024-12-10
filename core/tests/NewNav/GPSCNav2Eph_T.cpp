@@ -61,6 +61,8 @@ public:
    unsigned getXvtTest();
    unsigned testURA();
    unsigned testURABadIndices();
+   unsigned dumpSVStatusTest();
+   unsigned isSameDataTest();
 };
 
 unsigned GPSCNav2Eph_T ::
@@ -230,6 +232,38 @@ getXvtTest()
 }
 
 
+unsigned GPSCNav2Eph_T ::
+dumpSVStatusTest()
+{
+   TUDEF("GPSCNav2Eph", "dumpSVStatus");
+
+   gnsstk::GPSCNav2Eph uut;
+   std::stringstream dumpOut;
+
+   uut.dumpSVStatus(dumpOut);
+   TUASSERTE(bool, false, dumpOut.str().empty())
+
+   TURETURN();
+}
+
+
+unsigned GPSCNav2Eph_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNav2Eph", "isSameData");
+
+   gnsstk::GPSCNav2Eph uut;
+   auto uut2 = std::make_shared<gnsstk::GPSCNav2Eph>(uut);
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.healthL1C = false;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
+
 int main()
 {
    GPSCNav2Eph_T testClass;
@@ -242,6 +276,8 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.testURA();
    errorTotal += testClass.testURABadIndices();
+   errorTotal += testClass.dumpSVStatusTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
