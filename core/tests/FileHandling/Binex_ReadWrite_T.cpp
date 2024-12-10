@@ -64,6 +64,7 @@ public:
 
       // test methods
       // @return  number of failures, i.e., 0=PASS, !0=FAIL
+   int dumpTest();
    int doForwardTests();
    int doReverseTests();
 
@@ -285,6 +286,25 @@ bool BinexReadWrite_T :: createRecs()
    return true;
 }
 
+int BinexReadWrite_T :: dumpTest()
+{
+   TUDEF("BinexData", "dumpTest");
+
+   BinexData uut;
+   stringstream testStream;
+
+   uut.setRecordID(1);
+   uut.setRecordFlags(BinexData::DEFAULT_RECORD_FLAGS);
+   size_t offset = 0;
+   std::string testMessage = "test message";
+   uut.updateMessageData(offset, testMessage, testMessage.size());
+
+   uut.dump(testStream);
+
+   TUASSERTE(bool, false, testStream.str().empty());
+
+   TURETURN();
+}
 
 int BinexReadWrite_T :: doForwardTests()
 {
@@ -393,7 +413,8 @@ int main(int argc, char *argv[])
    int  errorTotal = 0;
 
    BinexReadWrite_T  testClass;  // test data is loaded here
-
+   
+   errorTotal += testClass.dumpTest();
    errorTotal += testClass.doForwardTests();
 
       //errorTotal += testClass.doReverseTests();
