@@ -69,7 +69,7 @@ variables:
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
-  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7"
+  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7 -Dsonar.sourceEncoding=UTF-8"
   FORTIFY_SCAN_TYPE:
     value: '-quick'
     description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low" 
@@ -403,7 +403,7 @@ build_conda_py3.9:
   extends: .build_conda
 
 sonar-scan:
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   stage: quality
   needs: []
   extends:
@@ -420,22 +420,13 @@ sonar-scan:
     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
     - ctest -j 4
     - cd ..
-    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --print-summary -o coverage-cpp.xml -r .
-    - for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done
+    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
+    - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
     - !reference [.scan-c++, script]
-    - touch $CI_PROJECT_DIR/success
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable" || $CI_COMMIT_REF_NAME =~/^bugfix\/ci_.*$/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-  # Sonar Quality Profile will fail since code coverage is below 80%
-  # Allowing job to fail so sonar scan doesn't fail the pipeline for nightly big chain.
+  # Sonar Quality Profile will fail since code coverage is below 80%.
+  # Currently, allowing job to fail so sonar scan doesn't fail the pipeline.
+  # This will be removed once coverge is >= 80% and pipeline successful will be enforced for MR.
   allow_failure: true
-  # only:
-  #   - merge_requests
-  #   - main
-  #   - tags
-  #   - stable
 
 fortify-scan:
   extends:
