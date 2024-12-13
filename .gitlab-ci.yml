@@ -11,17 +11,14 @@
 include:
   - project: sgl-tks/ci-control
     file: /gnsstk/ci_downstrm_chain.yml
-    ref: main
   - project: sgl-tks/ci-control
     file: /general/artifactory-upload.yml
-    ref: main
   - project: 'sgl/ci-control'
     file: 'common/scanning/sonar.yml'
   - project: 'sgl/ci-control'
     file: 'common/scanning/fortify.yml'
   - project: sgl-tks/ci-control
     file: /general/fortify-upload.yml
-    ref: main
 
 stages:
   - quality
@@ -72,7 +69,7 @@ variables:
   SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7 -Dsonar.sourceEncoding=UTF-8"
   FORTIFY_SCAN_TYPE:
     value: '-quick'
-    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low" 
+    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low"
 
 # Template for all normal jobs.
 .normal_build:
@@ -119,7 +116,7 @@ static_analysis:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - ./lint_test.sh
@@ -132,7 +129,7 @@ sgllint_lint:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -151,7 +148,7 @@ submodule_check:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   variables:
     GIT_SUBMODULE_UPDATE_FLAGS: --remote
   only:
@@ -165,7 +162,7 @@ protected_term_lint:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -185,7 +182,7 @@ protected_history_lint:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -206,7 +203,7 @@ generate_documentation:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     # Install GraphViz
@@ -225,7 +222,7 @@ build_debian_10:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - mkdir -p build
@@ -243,7 +240,7 @@ build_debian_11:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -260,7 +257,7 @@ build_ubuntu_20.04:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
@@ -277,7 +274,7 @@ build_ext_noswig:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -292,7 +289,7 @@ build_noext_noswig:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -308,7 +305,7 @@ build_swig_noext:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -324,7 +321,7 @@ build_debian_10_virtualenv:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
@@ -344,7 +341,7 @@ build_debian_11_virtualenv:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
@@ -363,7 +360,7 @@ build_debian_11_virtualenv:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -409,7 +406,7 @@ sonar-scan:
   extends:
     - .sonarqube-check
   tags:
-    - docker-executor
+    - standard
   script:
     - apt-get install gcovr lcov -y
     # Install gnsstk from latest deb CI artifacts first.
@@ -454,7 +451,7 @@ build_redhat_8:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - mkdir -p build
@@ -531,7 +528,7 @@ test_debian_10:
   needs: [build_debian_10]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
@@ -550,7 +547,7 @@ test_debian_11:
   needs: [build_debian_11]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
@@ -569,7 +566,7 @@ test_ubuntu_20.04:
   needs: [build_ubuntu_20.04]
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -588,7 +585,7 @@ test_debian_10_virtualenv:
   needs: [build_debian_10_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
@@ -609,7 +606,7 @@ test_debian_11_virtualenv:
   needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
@@ -628,7 +625,7 @@ test_debian_11_virtualenv:
   stage: test
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -681,7 +678,7 @@ test_redhat_8:
   needs: [build_redhat_8]
   extends: .normal_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -775,7 +772,7 @@ user_install_debian_10:
   needs: [build_debian_10]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
@@ -794,7 +791,7 @@ user_install_debian_11:
   needs: [build_debian_11]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
@@ -812,7 +809,7 @@ user_install_ubuntu_20.04:
   needs: [build_ubuntu_20.04]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -830,7 +827,7 @@ virtualenv_install_debian_10:
   needs: [build_debian_10_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
@@ -848,7 +845,7 @@ virtualenv_install_debian_11:
   needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
@@ -865,7 +862,7 @@ user_install_redhat_8:
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -960,7 +957,7 @@ system_install_redhat_8:
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -986,7 +983,7 @@ package_debian_10:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -1023,7 +1020,7 @@ package_debian_11:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -1060,7 +1057,7 @@ package_ubuntu_20.04:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -1090,7 +1087,7 @@ package_conda:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -1118,7 +1115,7 @@ package_redhat_8:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
@@ -1135,7 +1132,7 @@ package_redhat_8_py36:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
@@ -1212,7 +1209,7 @@ deploy_debian_10:
   needs: [package_debian_10]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - pushd debs
@@ -1231,7 +1228,7 @@ deploy_debian_11:
   needs: [package_debian_11]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - pushd debs
@@ -1250,7 +1247,7 @@ deploy_ubuntu_20.04:
   needs: [package_ubuntu_20.04]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - pushd debs
@@ -1269,7 +1266,7 @@ deploy_redhat_8:
   needs: [package_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1284,7 +1281,7 @@ deploy_redhat_py36:
   needs: [package_redhat_8, package_redhat_8_py36]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1305,3 +1302,4 @@ push_artifacts:
   stage: push
   needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
   dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+
