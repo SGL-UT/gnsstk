@@ -501,7 +501,7 @@ build_windows:
     - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
-    - build/
+      - build/
       - "*.{in,cmake,h}"
       - "**/CMakeLists.txt"
     expire_in: 4 days
