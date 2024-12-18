@@ -156,6 +156,7 @@ submodule_check:
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - (! git status --porcelain | grep 'M data')
+  retry: 2
 
 protected_term_lint:
   stage: check
@@ -216,6 +217,7 @@ generate_documentation:
     paths:
       - docs/
     expire_in: 4 days
+  retry: 2
 
 build_debian_10:
   stage: build
@@ -234,6 +236,7 @@ build_debian_10:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_debian_11:
   stage: build
@@ -251,13 +254,14 @@ build_debian_11:
   artifacts:
     paths:
       - build/
+  retry: 2
 
 build_ubuntu_20.04:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
@@ -268,6 +272,7 @@ build_ubuntu_20.04:
   artifacts:
     paths:
       - build/
+  retry: 2
 
 build_ext_noswig:
   stage: build
@@ -283,6 +288,7 @@ build_ext_noswig:
     - cmake -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
+  retry: 2
 
 build_noext_noswig:
   stage: build
@@ -298,6 +304,7 @@ build_noext_noswig:
     - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test ! -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
+  retry: 2
 
 # this should print a warning and continue by flipping BUILD_EXT on
 build_swig_noext:
@@ -315,6 +322,7 @@ build_swig_noext:
     # ext is implicitly enabled if you request swig and not ext
     - test -d CMakeFiles/gnsstk.dir/ext
     - test -d swig
+  retry: 2
 
 build_debian_10_virtualenv:
   stage: build
@@ -335,6 +343,7 @@ build_debian_10_virtualenv:
       - myenv/
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_debian_11_virtualenv:
   stage: build
@@ -354,6 +363,7 @@ build_debian_11_virtualenv:
     paths:
       - myenv/
       - build/
+  retry: 2
 
 .build_conda:
   stage: build
@@ -378,6 +388,7 @@ build_debian_11_virtualenv:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_conda_py3.6:
   variables:
@@ -406,7 +417,7 @@ sonar-scan:
   extends:
     - .sonarqube-check
   tags:
-    - standard
+    - extra-large
   script:
     - apt-get install gcovr lcov -y
     # Install gnsstk from latest deb CI artifacts first.
@@ -424,10 +435,13 @@ sonar-scan:
   # Currently, allowing job to fail so sonar scan doesn't fail the pipeline.
   # This will be removed once coverge is >= 80% and pipeline successful will be enforced for MR.
   allow_failure: true
+  retry: 2
 
 fortify-scan:
   extends:
     - .cpp_fortify
+  tags:
+    - extra-large
   needs: []
   variables:
     FORTIFY_SCAN_TYPE: '-quick'
@@ -451,7 +465,7 @@ build_redhat_8:
   needs: []
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - mkdir -p build
@@ -463,6 +477,7 @@ build_redhat_8:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_windows_vs2019_dll:
   variables:
@@ -546,6 +561,7 @@ test_debian_10:
     - build/swig/
   dependencies:
     - build_debian_10
+  retry: 2
 
 test_debian_11:
   stage: test
@@ -565,13 +581,14 @@ test_debian_11:
     - build/swig/
   dependencies:
     - build_debian_11
+  retry: 2
 
 test_ubuntu_20.04:
   stage: test
   needs: [build_ubuntu_20.04]
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -584,13 +601,14 @@ test_ubuntu_20.04:
     - build/swig/
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 test_debian_10_virtualenv:
   stage: test
   needs: [build_debian_10_virtualenv]
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
@@ -605,13 +623,14 @@ test_debian_10_virtualenv:
     expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
+  retry: 2
 
 test_debian_11_virtualenv:
   stage: test
   needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
@@ -625,6 +644,7 @@ test_debian_11_virtualenv:
     - build/swig/
   dependencies:
     - build_debian_11_virtualenv
+  retry: 2
 
 .test_conda:
   stage: test
@@ -648,6 +668,7 @@ test_debian_11_virtualenv:
     - build/Testing/Temporary/
     - build/swig/
     expire_in: 4 days
+  retry: 2
 
 
 test_conda_py3.6:
@@ -683,7 +704,7 @@ test_redhat_8:
   needs: [build_redhat_8]
   extends: .normal_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -695,6 +716,7 @@ test_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
+  retry: 2
 
 test_windows:
   variables:
@@ -775,7 +797,7 @@ user_install_debian_10:
   needs: [build_debian_10]
   extends: .big_build
   tags:
-    - standard
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
@@ -788,13 +810,14 @@ user_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10
+  retry: 2
 
 user_install_debian_11:
   stage: install
   needs: [build_debian_11]
   extends: .big_build
   tags:
-    - standard
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
@@ -806,13 +829,14 @@ user_install_debian_11:
       - build/install
   dependencies:
     - build_debian_11
+  retry: 2
 
 user_install_ubuntu_20.04:
   stage: install
   needs: [build_ubuntu_20.04]
   extends: .big_build
   tags:
-    - standard
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -824,6 +848,7 @@ user_install_ubuntu_20.04:
       - build/install
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 virtualenv_install_debian_10:
   stage: install
@@ -842,6 +867,7 @@ virtualenv_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
+  retry: 2
 
 virtualenv_install_debian_11:
   stage: install
@@ -859,13 +885,14 @@ virtualenv_install_debian_11:
       - myenv
   dependencies:
     - build_debian_11_virtualenv
+  retry: 2
 
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -878,6 +905,7 @@ user_install_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
+  retry: 2
 
 user_install_windows:
   stage: install
@@ -959,7 +987,7 @@ system_install_redhat_8:
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - standard
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -968,6 +996,7 @@ system_install_redhat_8:
     - sudo make install -j 4
   dependencies:
     - build_redhat_8
+  retry: 2
 
 # Package Stage
 # Tests packaging of Gnsstk on all platforms
@@ -1007,6 +1036,7 @@ package_debian_10:
   timeout:  90m
   dependencies:
     - build_debian_10
+  retry: 2
 
 package_debian_11:
   stage: package
@@ -1044,6 +1074,7 @@ package_debian_11:
   timeout:  90m
   dependencies:
     - build_debian_11
+  retry: 2
 
 package_ubuntu_20.04:
   stage: package
@@ -1084,6 +1115,7 @@ package_ubuntu_20.04:
   timeout:  90m
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 package_conda:
   stage: package
@@ -1112,6 +1144,7 @@ package_conda:
   parallel:
     matrix:
       - PYTHON_VERSION: ["3.6", "3.7", "3.8", "3.9"]
+  retry: 2
 
 package_redhat_8:
   stage: package
@@ -1129,6 +1162,7 @@ package_redhat_8:
       - rpm_files/RPMS/x86_64/gnsstk-*
       - rpm_files/SRPMS/gnsstk-*
   dependencies: []
+  retry: 2
 
 package_redhat_8_py36:
   stage: package
@@ -1146,6 +1180,7 @@ package_redhat_8_py36:
       - rpm_files/RPMS/x86_64/python3-gnsstk-*
       - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
+  retry: 2
 
 package_windows:
   variables:
@@ -1227,6 +1262,7 @@ deploy_debian_10:
     - gnsstk-config --includedir
   dependencies:
     - package_debian_10
+  retry: 2
 
 deploy_debian_11:
   stage: deploy
@@ -1246,6 +1282,7 @@ deploy_debian_11:
     - gnsstk-config --includedir
   dependencies:
     - package_debian_11
+  retry: 2
 
 deploy_ubuntu_20.04:
   stage: deploy
@@ -1265,13 +1302,14 @@ deploy_ubuntu_20.04:
     - gnsstk-config --includedir
   dependencies:
     - package_ubuntu_20.04
+  retry: 2
 
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
   extends: .big_build
   tags:
-    - standard
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1280,13 +1318,14 @@ deploy_redhat_8:
     - gnsstk-config --includedir
   dependencies:
     - package_redhat_8
+  retry: 2
 
 deploy_redhat_py36:
   stage: deploy
   needs: [package_redhat_8, package_redhat_8_py36]
   extends: .big_build
   tags:
-    - standard
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1297,6 +1336,7 @@ deploy_redhat_py36:
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
+  retry: 2
 
 push_artifacts:
   extends: .push_selected_artifacts
