@@ -53,6 +53,8 @@ public:
    unsigned copyTTest();
    unsigned getUserTimeTest();
    unsigned getXvtTest();
+   unsigned testDump();
+   unsigned testIsSameData();
 
    gnsstk::CivilTime civ;
    gnsstk::CommonTime ct;
@@ -337,6 +339,53 @@ getXvtTest()
    TURETURN();
 }
 
+unsigned OrbitDataSP3_T::testDump()
+{
+   TUDEF("OrbitDataSP3", "dump");
+
+   // Initialize classes
+   gnsstk::OrbitDataSP3 orbitData;
+
+   std::stringstream orbit_s;
+
+   gnsstk::DumpDetail details[3] = {
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief,
+      gnsstk::DumpDetail::Full };
+
+   for (auto detail : details)
+   {
+      // Function Call
+      orbitData.dump(orbit_s, detail);
+      TUASSERTE(bool, false, orbit_s.str().empty());
+
+      // Reset orbit_s
+      orbit_s.str().clear();
+   }
+
+   TURETURN();
+}
+
+unsigned OrbitDataSP3_T::testIsSameData()
+{
+   TUDEF("OrbitDataSP3", "isSameData");
+
+   // Initialize variables
+   std::shared_ptr<gnsstk::OrbitDataSP3>
+      uut1 = std::make_shared<gnsstk::OrbitDataSP3>(),
+      uut3 = std::make_shared<gnsstk::OrbitDataSP3>();
+
+   gnsstk::NavDataPtr uut2 = uut1->clone();
+
+   // Run true case
+   TUASSERTE(bool, true, uut1->isSameData(uut2, true));
+
+   // Run false case
+   uut3->clkDrift = 0.01;
+   TUASSERTE(bool, false, uut1->isSameData(uut3, true));
+
+   TURETURN();
+}
 
 int main()
 {
@@ -348,10 +397,13 @@ int main()
    errorTotal += testClass.copyTTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.testDump();
+   errorTotal += testClass.testIsSameData();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
 
    return errorTotal;
 }
+
 
