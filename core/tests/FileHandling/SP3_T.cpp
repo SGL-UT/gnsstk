@@ -40,6 +40,7 @@
 #include "SP3Header.hpp"
 #include "SP3Data.hpp"
 #include "SP3Stream.hpp"
+#include "CivilTime.hpp"
 #include <iostream>
 
 class SP3_T
@@ -294,6 +295,67 @@ public:
       return ( checkStream.eof() ? 0 : (lineNumber << 8) );
    }
 
+   unsigned testDumps()
+   {
+      TUDEF("SP3", "dump");
+
+      // Initialize classes
+      gnsstk::SP3Data data;
+      gnsstk::SP3Header header;
+
+      // Set up stringstream
+      std::stringstream data_s;
+      data.time = gnsstk::CivilTime(2006, 1, 31, 2, 0, 0, gnsstk::TimeSystem::GPS);
+      
+      // Function call for SP3Data
+      data.dump(data_s, true);
+      TUASSERTE(bool, false, data_s.str().empty());
+
+      // Set up stringstream
+      std::stringstream header_s;
+      header.setVersion(gnsstk::SP3Header::Version::SP3c);
+
+      // Function call for SP3Header
+      header.dump(header_s);
+      TUASSERTE(bool, false, header_s.str().empty());
+
+      TURETURN();
+   }
+
+   unsigned testVersion()
+   {
+      TUDEF("SP3", "testVersion");
+
+      gnsstk::SP3Header::Version versions[5] = {
+         gnsstk::SP3Header::Version::SP3a,
+         gnsstk::SP3Header::Version::SP3b,
+         gnsstk::SP3Header::Version::SP3c,
+         gnsstk::SP3Header::Version::SP3d,
+         gnsstk::SP3Header::Version::undefined 
+      };
+      char expectedChars[5] = {'a', 'b', 'c', 'd', 'U'};
+      std::string expectedStrings[5] = {"SP3a", "SP3b", "SP3c", "SP3d", "Undefined"};
+
+      gnsstk::SP3Header uut;
+      int idx = 0;
+
+      for(auto version : versions)
+      {
+         uut.setVersion(version);
+
+         // versionChar
+         char resultChar = uut.versionChar();
+         TUASSERTE(char, resultChar, expectedChars[idx]);
+
+         // versionString
+         std::string resultString = uut.versionString();
+         TUASSERTE(std::string, resultString, expectedStrings[idx]);
+
+         idx++;
+      }
+      
+      TURETURN();
+   }
 }; // class SP3_T
 
 
@@ -321,6 +383,10 @@ int main()  //Main function to initialize and run all tests above
       errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex4");
       errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex5");
       errorTotal += testClass.doReadWriteTests(gnsstk::SP3Header::SP3c, "SP3c_mgex6");
+
+      // Test dump functions
+      errorTotal += testClass.testDumps();
+      errorTotal += testClass.testVersion();
    }
    catch (gnsstk::Exception& e)
    {
