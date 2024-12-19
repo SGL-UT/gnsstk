@@ -68,6 +68,8 @@ public:
    unsigned constructorTest();
    unsigned getOffsetTest();
    unsigned getConversionsTest();
+   unsigned effectivityTimeTest();
+   unsigned dumpTests();
 };
 
 
@@ -193,6 +195,31 @@ getConversionsTest()
    TURETURN();
 }
 
+unsigned StdNavTimeOffset_T ::
+effectivityTimeTest()
+{
+   TUDEF("StdNavTimeOffset", "effectivityTime");
+   TestClass uut;
+   double sixHoursInSec = 6 * 60 * 60;
+   TUASSERTE(double, sixHoursInSec, uut.effStart());
+   TUASSERTE(double, sixHoursInSec, uut.effEnd());
+   TURETURN();
+}
+
+unsigned StdNavTimeOffset_T ::
+dumpTests()
+{
+   TUDEF("StdNavTimeOffset", "dumpTests");
+   TestClass uut;
+   vector<gnsstk::DumpDetail> dumpDetailTypes = {gnsstk::DumpDetail::OneLine, gnsstk::DumpDetail::Brief, gnsstk::DumpDetail::Full};
+   for (gnsstk::DumpDetail detailType : dumpDetailTypes) {
+      stringstream testStream;
+      uut.dump(testStream, detailType);
+      TUASSERTE(bool, false, testStream.str().empty());
+   }
+   TURETURN();
+}
+
 
 int main()
 {
@@ -202,6 +229,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getOffsetTest();
    errorTotal += testClass.getConversionsTest();
+   errorTotal += testClass.effectivityTimeTest();
+   errorTotal += testClass.dumpTests();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
