@@ -68,6 +68,7 @@ public:
    unsigned addDataVecByteAlignedTest();
    unsigned overInitialCapacity();
    unsigned addBitVecTest();
+   unsigned dumpTest();
 
    double eps;
 };
@@ -966,6 +967,17 @@ addBitVecTest()
    TURETURN();
 }
 
+unsigned PackedNavBits_T::dumpTest()
+{
+   TUDEF("PackedNavBits", "dump");
+
+   PackedNavBits uut;
+   std::stringstream testOp;
+   testOp << uut;
+   TUASSERTE(bool, false, testOp.str().empty());
+
+   TURETURN();
+}
 
 int main()
 {
@@ -981,6 +993,7 @@ int main()
    errorTotal += testClass.addDataVecByteAlignedTest();
    errorTotal += testClass.overInitialCapacity();
    errorTotal += testClass.addBitVecTest();
+   errorTotal += testClass.dumpTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 
