@@ -116,3 +116,8 @@ add_executable(QZSWeekSecond_T QZSWeekSecond_T.cpp)
 target_link_libraries(QZSWeekSecond_T gnsstk)
 add_test(NAME TimeHandling_QZSWeekSecond COMMAND $<TARGET_FILE:QZSWeekSecond_T>)
 set_property(TEST TimeHandling_QZSWeekSecond PROPERTY LABELS TimeHandling TimeStorage)
+
+add_executable(Epoch_T Epoch_T.cpp)
+target_link_libraries(Epoch_T gnsstk)
+add_test(NAME TimeHandling_Epoch COMMAND $<TARGET_FILE:Epoch_T>)
+set_property(TEST TimeHandling_Epoch PROPERTY LABELS TimeHandling )
