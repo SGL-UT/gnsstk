@@ -431,10 +431,6 @@ sonar-scan:
     - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
     - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
     - !reference [.scan-c++, script]
-  # Sonar Quality Profile will fail since code coverage is below 80%.
-  # Currently, allowing job to fail so sonar scan doesn't fail the pipeline.
-  # This will be removed once coverge is >= 80% and pipeline successful will be enforced for MR.
-  allow_failure: true
   retry: 2
 
 fortify-scan:
