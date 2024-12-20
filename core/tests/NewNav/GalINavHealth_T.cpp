@@ -72,6 +72,8 @@ public:
    unsigned getUserTimeTest();
       /// explicitly test getHealth, implicitly test galHealth
    unsigned getHealthTest();
+   unsigned testDump();
+   unsigned testIsSameData();
 };
 
 
@@ -135,6 +137,49 @@ getHealthTest()
    TURETURN();
 }
 
+unsigned GalINavHealth_T::testDump()
+{
+   TUDEF("GalINavHealth", "dump");
+
+   // Initialize variables
+   gnsstk::GalINavHealth testObj;
+
+   gnsstk::DumpDetail details[3];
+   details[0] = gnsstk::DumpDetail::OneLine;
+   details[1] = gnsstk::DumpDetail::Brief;
+   details[2] = gnsstk::DumpDetail::Full;
+
+   for (auto detail : details)
+   {
+      std::stringstream dump_s;
+
+      // Function Call
+      testObj.dump(dump_s, detail);
+      TUASSERTE(bool, false, dump_s.str().empty());
+   }
+
+   TURETURN();
+}
+
+unsigned GalINavHealth_T::testIsSameData()
+{
+   TUDEF("GalINavHealth", "isSameData");
+
+   // Initialize variables
+   std::shared_ptr<gnsstk::GalINavHealth>
+      uut1 = std::make_shared<gnsstk::GalINavHealth>(),
+      uut3 = std::make_shared<gnsstk::GalINavHealth>();
+   gnsstk::NavDataPtr uut2 = uut1->clone();
+
+   // Run true case
+   TUASSERTE(bool, true, uut1->isSameData(uut2, true));
+
+   // Run false case
+   uut3->sigHealthStatus = gnsstk::GalHealthStatus::OutOfService;
+   TUASSERTE(bool, false, uut1->isSameData(uut3, true));
+
+   TURETURN();
+}
 
 int main()
 {
@@ -144,6 +189,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.testDump();
+   errorTotal += testClass.testIsSameData();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
