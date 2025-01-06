@@ -1,3 +1,151 @@
+# Version 14.6.0   Monday January 06, 2025
+
+Modifications by Author
+-----------------------
+     Alec Brand <abrand@arlut.utexas.edu> (6):
+           Test Coverage for SunEarthSatGeometry.cpp
+           BDSD1NavHealth coverage
+           Bugfix/ci test bdsd1 new nav
+           NewNav/BDSD2 test coverage
+           Test coverage for IonoNav classes
+           GPS/GPSC/GPSL tests
+
+     Andrew Kuck <kuck@arlut.utexas.edu> (1):
+           Use EKS Gitlab Runners
+
+     Benji Hillard <bhillard@arlut.utexas.edu> (23):
+           ObsClockModel Test Coverage
+           ObsRngDev test coverage
+           edit copyright
+           ObsEpochMap test coverage
+           LinearClockModel test coverage.
+           Add Debug to ORD test
+           Test Coverage for BasicTimeSystemConverter
+           Added coverage to ReferenceFrame.cpp
+           Add Coverage to TimeSystem
+           unit test for wtdAveStat
+           Add Test coverage for YDSTime class
+           Added test coverage to Week class
+           Add coverage to gps week
+           Add Test coverage for TimeSystemCorr
+           Add test coverage to GSPWeekZCount
+           Add test coverage to GPSZCount
+           Add test coverage to GPSWeekSecond
+           Add Coverage to GALWeekSeconds
+           Add test coverage to JulianDate
+           Add Coverage to Sinex Types dump debug
+           Add testing to PosixTime
+           Add Coverage to Sinex Header
+           Add Dump testing to BinexData
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Spa 544 new nav readme
+
+     Dave Gettier <dave.gettier@arlut.utexas.edu> (9):
+           CCIR/NewNav: update TestF2LayerCoeff to test all months
+           Adding dump test to GLOFNavEph
+           Adding GLOF tests
+           GLOC Dumps tests
+           Fixing introduced bug with factorToSigma in GLOCNavEph.cpp
+           Adding dump test for Yuma
+           Adding Unit Test for EngAlmanac dump
+           Test of FileSpec.cpp
+           Initial refactor of PowerSum_T
+
+     David Barber <dbarber@arlut.utexas.edu> (14):
+           Feature/ci test new gl windows runner
+           cmake swig test fix for window using python3.8+
+           add fortify scan job
+           Feature/ci test fortify issues
+           Exclude geomatics from sonarqube analysis and update CODEOWNERS for revIewing tests
+           Bugfix/ci pub fortify
+           Updating gnsstk-data submodule ref
+           Add dump tests for FileHandling Ionex
+           Update sonar scan job
+           add new windows gitlab runners
+           fix gitlab yaml indentation issue
+           update pipeline job retries
+           update fortify job retry to 2
+           turn on pipeline sonar quality check
+
+     Gio Eloja <gio.eloja@arlut.utexas.edu> (10):
+           Test coverage for CommonTime
+           Test coverage for CNavCrossSourceFilter
+           Test coverage for MJD TimeHandling
+           Test coverage for IRNWeekSecond
+           Adding test coverage for UnixTime
+           Test coverage for QZSWeekSecond.hpp
+           Test coverage for GLONASSTime
+           Test coverage for LNavFilterData
+           Add coverage to StdNavTimeOffset
+           Test coverage for InterSigCorr NewNav
+
+     Jisop Lee <jisop.lee@arlut.utexas.edu> (14):
+           ClockModel/ORDEpoch tests
+           Update CMakeLists.txt
+           Bugfix/ci combinations
+           Bugfix/ci helmert transform.cpp
+           add coverage to nav time system converter
+           Bugfix/ci sp3
+           Bugfix/ci packed nav bits
+           Bugfix/ci gal nav health
+
+     Jisop Lee <jisopl@msndev2.arlut.utexas.edu> (6):
+           Tests passed, initial commit
+           Removed logs, changed assert macro
+           Fixes per code review
+           Initial commit
+           Undid commits from previous MR
+           I wanted 100% coverage lol
+
+     Jon Little <littlej@arlut.utexas.edu> (2):
+           more debugtrace
+           more debug
+
+     Josh Yuan <jyuan@arlut.utexas.edu> (4):
+           coverage for a lot of stuff in the core/lib/Math directory
+           filehandling tests, Sinex read/write and Rinex3ObsHeader
+           CommandLine/CommandLine.cpp unit tests
+           SpecialFuncs_T.cpp to test Geomatics/SpecialFuncs.cpp
+
+     Latha Subramanian <latha.subramanian@arlut.utexas.edu> (4):
+           Add unit tests for AntennaStore.cpp
+           Added tests for AntexData.cpp
+           Add unit tests  for EOPPrediction.cpp
+           Add unit tests for Epoch.cpp
+
+     Matthew Acosta <macosta@arlut.utexas.edu> (1):
+           Add/Update unit tests for RINEX dir to increase code coverage
+
+     Sankara Muthukrishnan <sankara.m@arlut.utexas.edu> (1):
+           Make inputFormat param for QZSWeekSecond consistent with other WeekSecond types
+
+     Taben Malik <malik@arlut.utexas.edu> (16):
+           Undefined initialization was causing odd issues
+           Fixing LNav fit interval computation.
+           A few tests for PRSolution
+           A few simple tests for Geomatics/gdc
+           Ignore editor cruft
+           Almanac is not the only data that has a different xmitSat from the subjSat
+           Parse NMCT from GPSLNav bits
+           Reorganizing NMC data into single NMCT object
+           Supporting terse output of NMCT
+           NMCT is actually page 13, not page 18, of subframe 4
+           QZSS almanac timestamps should be in QZS time system
+           A few simple tests for Geomatics/DiscCorr
+           Exposing previously hidden undocumented enum values
+           New codeowners for reviewing NewNav
+           Fix findAll python interface to be usable for Python users
+           Implementing CNav IAURA algorithm
+
+     Tony Hughes <anthony@arlut.utexas.edu> (1):
+           Minor fixes from review.
+
+     bhillard <bhillard@arlut.utexas.edu> (1):
+           ADD test coverage TimeCorrection
+
+
+
 # Version 14.5.0   Thursday September 05, 2024
 
 Modifications by Author
