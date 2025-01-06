@@ -189,7 +189,7 @@ namespace gnsstk
                   sow = gnsstk::StringUtils::asDouble( i->second );
                   break;
                case 'P':
-                  timeSystem = static_cast<TimeSystem>(gnsstk::StringUtils::asInt( i->second ));
+                  timeSystem = gnsstk::StringUtils::asTimeSystem( i->second );
                   break;
                default:
                      // do nothing

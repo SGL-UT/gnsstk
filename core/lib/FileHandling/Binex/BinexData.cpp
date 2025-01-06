@@ -1711,16 +1711,16 @@ namespace gnsstk
    // -------------------------------------------------------------------------
    void BinexData::dump(ostream& s) const
    {
-      std::cout << "RecordID:    " << recID     << std::endl;
-      std::cout << "SyncByte:    " << (unsigned short)syncByte << std::endl;
-      std::cout << "MessageLen:  " << msg.size() << std::endl;
-      std::cout << "MessageData: " << std::endl;
+      s << "RecordID:    " << recID     << endl;
+      s << "SyncByte:    " << (unsigned short)syncByte << endl;
+      s << "MessageLen:  " << msg.size() << endl;
+      s << "MessageData: " << endl;
       for (size_t i = 0; i < msg.size(); i++)
       {
-         unsigned short s = msg[i];
-         std::cout << s << " ";
+         unsigned short charAsShort = msg[i];
+         s << charAsShort << " ";
       }
-      std::cout << std::endl;
+      s << endl;
    }
 
 

@@ -48,6 +48,8 @@
 #include "GPSLNavISC.hpp"
 #include "GPSLNavIono.hpp"
 #include "GPSLNavTimeOffset.hpp"
+#include "GPSLNavNMCT.hpp"
+#include "GPSNMCTAI.hpp"
 #include "GPSNavConfig.hpp"
 #include "NavMessageID.hpp"
 #include "NavMessageType.hpp"
@@ -111,11 +113,13 @@ namespace gnsstk
          {
             case 1:
             case 2:
+               rv = processNMCT(sfid, navIn, navOut);
             case 3:
                   //cerr << "sfid " << sfid << " = ephemeris" << endl;
                rv = processEph(sfid, navIn, navOut);
                break;
             case 4:
+               rv = processNMCT(sfid, navIn, navOut);
             case 5:
                svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
                dataID = navIn->asUnsignedLong(asbDataID,anbDataID,ascDataID);
@@ -507,10 +511,15 @@ namespace gnsstk
             // only situation where it's used.
          double toa = navIn->asUnsignedDouble(asbtoa51,anbtoa51,asctoa51);
          unsigned shortWNa = navIn->asUnsignedLong(asbWNa51,anbWNa51,ascWNa51);
+         TimeSystem ts = TimeSystem::GPS;
+         if (navIn->getsatSys().system == gnsstk::SatelliteSystem::QZSS)
+         {
+            ts = TimeSystem::QZS;
+         }
          GPSWeekSecond ws(navIn->getTransmitTime());
          long refWeek = ws.week;
          unsigned fullWNa = timeAdjust8BitWeekRollover(shortWNa, refWeek);
-         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa,toa);
+         fullWNaMap[xmitSat.id] = GPSWeekSecond(fullWNa, toa, ts);
          fullWNaMap[xmitSat.id].weekRolloverAdj(ws);
          // cerr << "page 51 WNa = " << shortWNa << "  toa = " << toa
          //      << "  WNx = " << (ws.week & 0x0ff) << "  tox = " << ws.sow
@@ -750,6 +759,102 @@ namespace gnsstk
          // return results.
       // cerr << "add LNAV page 56 time offset" << endl;
       navOut.push_back(p0);
+      return true;
+   }
+
+
+   bool PNBGPSLNavDataFactory ::
+   processNMCT(unsigned sfid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      DEBUGTRACE_FUNCTION();
+      if (processSys)
+      {
+         DEBUGTRACE("User wants NMCT.")
+         NavSatelliteID key(navIn->getsatSys().id, navIn->getsatSys(),
+                         navIn->getobsID(), navIn->getNavID());
+
+         if (nmctAcc.find(key) == nmctAcc.end())
+         {
+            DEBUGTRACE("Creating accumulation storage for " << key);
+            nmctAcc[key].resize(2);
+         }
+
+         if (sfid == 1 || sfid == 2)
+         {
+            DEBUGTRACE("Storing sfid " << sfid << " for " << key);
+            nmctAcc[key][sfid-1] = navIn;
+            return true;
+         }
+
+         unsigned svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
+         if (sfid != 4 || svid != 52)
+         {
+            DEBUGTRACE("This is not a subframe 4 page 13.");
+            return true;
+         }
+
+         std::vector<PackedNavBitsPtr> &ephSF(nmctAcc[key]);
+         if (!ephSF[sf1] || !ephSF[sf2] ||
+            (ephSF[sf1]->getNumBits() != 300) ||
+            (ephSF[sf2]->getNumBits() != 300))
+         {
+            DEBUGTRACE("Don't have both sf1 and sf2 to be able to process subframe 4 page 13.");
+            return true;
+         }
+
+         DEBUGTRACE("Processing subframe 4 page 13.");
+         SatID xmitSat(navIn->getsatSys());
+         SatID wildSubj(xmitSat.system);
+
+         NavDataPtr p0 = std::make_shared<GPSLNavNMCT>();
+         GPSLNavNMCT *nmct = dynamic_cast<GPSLNavNMCT*>(p0.get());
+         nmct->timeStamp = navIn->getTransmitTime();
+         NavSatelliteID sat(wildSubj, xmitSat, navIn->getobsID(), navIn->getNavID());
+         nmct->signal = NavMessageID(sat, NavMessageType::System);
+         double toe = ephSF[esitoe]->asUnsignedDouble(esbtoe,enbtoe,esctoe);
+         unsigned wn = ephSF[esiWN]->asUnsignedLong(esbWN,enbWN,escWN);
+         GPSWeekSecond refTime(nmct->timeStamp);
+         long refWeek = refTime.week;
+         wn = timeAdjustWeekRollover(wn, refWeek);
+
+         nmct->Toe = GPSWeekSecond(wn,toe).weekRolloverAdj(refTime);
+         nmct->aodo = ephSF[esiAODO]->asUnsignedLong(esbAODO,enbAODO,escAODO);
+         nmct->updateTNMCT();
+
+         nmct->availabilityIndicator = static_cast<GPSNMCTAI>(navIn->asUnsignedLong(nsbAI, nnbAI, nscAI));
+         
+         int prn = 1;
+         unsigned startBit = nsbERD;
+            // There are only 30 ERD slots.
+         for (unsigned erdi = 1; erdi < 31; ++erdi)
+         {
+               // The xmitting satellite does not xmit it's own ERD.
+            if (erdi == key.sat.id)
+            {
+               ++prn;
+            }
+
+            if ((erdi + 1) % 4 == 0)
+            {
+               unsigned startBitLSB = startBit + nnbERDm + fnbParity1;
+                  // The NMCT object handles further parsing
+               nmct->erds[prn] = navIn->asUnsignedLong(startBit, nnbERDm, startBitLSB, nnbERDl, 1);
+               startBit += nnbERDm + fnbParity1 + nnbERDl;
+            }
+            else
+            {
+                  // The NMCT object handles further parsing
+               nmct->erds[prn] = navIn->asUnsignedLong(startBit, nnbERD, 1);
+               startBit += nnbERD;
+            }
+
+            ++prn;
+         }
+
+         navOut.push_back(p0);
+         nmctAcc.erase(key);
+      }
+
       return true;
    }
 

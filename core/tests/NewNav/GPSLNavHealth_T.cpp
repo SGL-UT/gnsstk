@@ -61,6 +61,7 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getHealthTest();
+   unsigned dumpTest();
 };
 
 
@@ -120,6 +121,31 @@ getHealthTest()
 }
 
 
+unsigned GPSLNavHealth_T ::
+dumpTest()
+{
+   TUDEF("GPSLNavHealth", "dumpTest");
+   gnsstk::GPSLNavHealth uut;
+
+   std::stringstream dumpOut;
+   std::vector<gnsstk::DumpDetail> dumpTypes =
+   {
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief,
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes)
+   {
+      dumpOut.str(std::string());
+      uut.dump(dumpOut, dtype);
+      TUASSERTE(bool, false, dumpOut.str().empty())
+   }
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSLNavHealth_T testClass;
@@ -128,6 +154,7 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.dumpTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

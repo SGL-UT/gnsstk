@@ -77,6 +77,10 @@ public:
    unsigned getXvtTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
+
+
       /// Not getting the same results. Why not?
    void reproduce();
    unsigned reproduce2();
@@ -242,7 +246,6 @@ constructorTest()
    TUASSERTE(gnsstk::GLOCOrbitType, gnsstk::GLOCOrbitType::Unknown,
              uut.orbitType);
    TUASSERTE(unsigned, 0, uut.numSVs);
-   TUASSERTE(unsigned, 0, uut.aoa);
    TUASSERTE(unsigned, 0, uut.NA);
    TUASSERTE(unsigned, 0, uut.statusReg);
    TUASSERTE(gnsstk::GLOCSatType, gnsstk::GLOCSatType::Unknown,
@@ -663,6 +666,61 @@ DeltasTest()
    TURETURN();
 }
 
+unsigned GLOCNavAlm_T ::
+dumpTest ()
+{
+   TUDEF("GLOCNavAlm", "dump");
+   gnsstk::GLOCNavAlm uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::Terse, 
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false);   
+   }
+
+   TURETURN();
+}
+
+unsigned GLOCNavAlm_T ::isSameDataTest() {
+   TUDEF("GLOCNavAlm", "isSameData");
+
+   // set up GLOFNavEph objects
+   gnsstk::GLOCNavAlm uut;
+
+   //Create uut2 with all NaN values set to 0.0, since NaN == NaN always fails.
+   uut.tau = 0.0;
+   uut.lambda = 0.0;
+   uut.tLambda = 0.0;
+   uut.deltai = 0.0;
+   uut.ecc = 0.0;
+   uut.omega = 0.0;
+   uut.deltaT = 0.0;
+   uut.deltaTdot = 0.0;
+
+   //Create uut2 with  all NaN values set to 0.0, since NaN == NaN always fails.
+   auto uut2 = std::make_shared<gnsstk::GLOCNavAlm>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -678,6 +736,8 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest();   
    errorTotal += testClass.NumberCruncherTest();
    errorTotal += testClass.DeltasTest();
    errorTotal += testClass.UncorrectedTest();

@@ -70,6 +70,8 @@ public:
          TUASSERTE(gnsstk::ReferenceFrame, i, e);
       }
 
+      TUASSERTE(std::string, "???", StringUtils::asString(ReferenceFrame::Last));
+
       TURETURN();
    }
 

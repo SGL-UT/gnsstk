@@ -63,6 +63,8 @@ public:
    unsigned getXvtTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
       /** This isn't a real test, it was code implemented in an
        * attempt to track down bugs in the library code through
        * duplication.  Disabled for now, but leaving it here JIC. */
@@ -341,6 +343,61 @@ blahTest()
 }
 
 
+unsigned GLOFNavAlm_T ::
+dumpTest ()
+{
+   TUDEF("GLOFNavAlm", "dump");
+   gnsstk::GLOFNavAlm uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+   std::vector<gnsstk::DumpDetail> dumpTypes = 
+   {
+      gnsstk::DumpDetail::Terse, 
+      gnsstk::DumpDetail::OneLine,
+      gnsstk::DumpDetail::Brief, 
+      gnsstk::DumpDetail::Full
+   };
+
+   for (const auto& dtype: dumpTypes) 
+   {
+      dumpOutputStream.str(std::string());
+      uut.dump(dumpOutputStream, dtype);
+      TUASSERTE(bool, dumpOutputStream.str().empty(), false);   
+   }
+
+   TURETURN();
+}
+
+
+unsigned GLOFNavAlm_T ::isSameDataTest() {
+   TUDEF("GLOFNavAlm", "isSameData");
+
+   // set up objects
+   gnsstk::GLOFNavAlm uut;
+
+   //Create uut2  with setting NaN values to something other than NaN since NaN == NaN is false.
+   uut.taunA = 0;
+   uut.lambdanA  = 0;
+   uut.deltainA  = 0;
+   uut.eccnA  = 0;
+   uut.omeganA  = 0;
+   uut.tLambdanA  = 0;
+   uut.deltaTnA  = 0;
+   uut.deltaTdotnA  = 0;
+   auto uut2 = std::make_shared<gnsstk::GLOFNavAlm>(uut);
+
+   // Test that it compares
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+   // Test that if fails
+   uut.signal.sat.id = 1; // change something to assure it fails
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOFNavAlm_T testClass;
@@ -351,6 +408,8 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest(); 
    // errorTotal += testClass.blahTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal

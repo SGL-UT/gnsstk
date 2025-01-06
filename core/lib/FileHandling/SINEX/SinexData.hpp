@@ -90,10 +90,9 @@ namespace gnsstk
             /// Block storage
          Blocks  blocks;
 
-      protected:
-
             /// Mappings from block titles to create functions
          static BlockFactory   blockFactory;
+      protected:
 
             /**
              * Initializes the block factory with mappings from block titles

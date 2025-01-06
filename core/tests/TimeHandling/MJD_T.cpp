@@ -58,13 +58,13 @@ class MJD_T
 		TestUtil testFramework( "MJD", "Constructor", __FILE__, __LINE__ );
 
 
-	  	MJD Compare(135000.0,TimeSystem(2)); //Initialize an object
+	  	MJD Compare(135000.0,TimeSystem::GPS); //Initialize an object
 
 		//---------------------------------------------------------------------
 		//Were the attributes set to expectation with the explicit constructor?
 		//---------------------------------------------------------------------
 		testFramework.assert(fabs((long double)135000.0 - Compare.mjd) < eps, "Explicit constructor did not set the mjd value properly",  __LINE__);
-		testFramework.assert(TimeSystem(2) == Compare.getTimeSystem(),        "Explicit constructor did not set the TimeSystem properly", __LINE__);
+		testFramework.assert(TimeSystem::GPS == Compare.getTimeSystem(),        "Explicit constructor did not set the TimeSystem properly", __LINE__);
 
 
 		testFramework.changeSourceMethod("ConstructorCopy");
@@ -73,7 +73,7 @@ class MJD_T
 		//Were the attributes set to expectation with the copy constructor?
 		//---------------------------------------------------------------------
 		testFramework.assert(fabs((long double)135000. - Copy.mjd) < eps, "Copy constructor did not set the mjd value properly",  __LINE__);
-		testFramework.assert(TimeSystem(2) == Copy.getTimeSystem(),       "Copy constructor did not set the TimeSystem properly", __LINE__);
+		testFramework.assert(TimeSystem::GPS == Copy.getTimeSystem(),       "Copy constructor did not set the TimeSystem properly", __LINE__);
 
 
 		testFramework.changeSourceMethod("OperatorSet");
@@ -83,7 +83,7 @@ class MJD_T
 		//Were the attributes set to expectation with the Set Operator?
 		//---------------------------------------------------------------------
 		testFramework.assert(fabs((long double)135000. - Assigned.mjd) < eps, "Set Operator did not set the mjd value properly",  __LINE__);
-		testFramework.assert(TimeSystem(2) == Assigned.getTimeSystem(),       "Set Operator did not set the TimeSystem properly", __LINE__);
+		testFramework.assert(TimeSystem::GPS == Assigned.getTimeSystem(),       "Set Operator did not set the TimeSystem properly", __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -100,10 +100,11 @@ class MJD_T
 
 		MJD setFromInfo1;
 		MJD setFromInfo2;
-		MJD Compare(135000.0,TimeSystem(2)), Compare2(0.0,TimeSystem(2));
+		MJD Compare(135000.0,TimeSystem::GPS), Compare2(0.0,TimeSystem::GPS);
 		TimeTag::IdToValue Id;
 		Id['Q'] = "135000.0";
 		Id['P'] = "GPS";
+		Id['F'] = "0"; // value to be ignored, testing default in setFromInfo's switch logic
 		//---------------------------------------------------------------------
 		//Does a proper setFromInfo work with all information provided?
 		//---------------------------------------------------------------------
@@ -134,6 +135,8 @@ class MJD_T
 		gnsstk::MJD Compare(135000); // Initialize with value
 		gnsstk::MJD LessThanMJD(134000); // Initialize with value
 		gnsstk::MJD CompareCopy(Compare); // Initialize with copy constructor
+		gnsstk::MJD GPS(135000,TimeSystem::GPS);
+  		gnsstk::MJD UTC(135000,TimeSystem::UTC);
 
 		//---------------------------------------------------------------------
 		//Does the == Operator function?
@@ -157,6 +160,7 @@ class MJD_T
 		testFramework.assert(  LessThanMJD < Compare,   "Less-than operator found less-than mjd object to not be less than",   __LINE__);
 		testFramework.assert(!(Compare < LessThanMJD),  "Less-than operator found greater-than mjd object to be less than",    __LINE__);
 		testFramework.assert(!(Compare < CompareCopy),  "Less-than operator found equivalent object to be less than",          __LINE__);
+		TUTHROW(GPS < UTC);
 
 
 		testFramework.changeSourceMethod("OperatorGreaterThan");
@@ -197,7 +201,7 @@ class MJD_T
 		TestUtil testFramework( "MJD", "reset", __FILE__, __LINE__ );
 
 
-	  	MJD Compare(135000,TimeSystem(2)); //Initialize an object
+	  	MJD Compare(135000,TimeSystem::GPS); //Initialize an object
 
 	  	Compare.reset(); // Reset it
 
@@ -205,7 +209,7 @@ class MJD_T
 		//Were the attributes reset to expectation?
 		//---------------------------------------------------------------------
 		testFramework.assert(Compare.mjd==0,                            "reset() did not set the mjd value to 0",    __LINE__);
-		testFramework.assert(TimeSystem(0) == Compare.getTimeSystem(),  "reset() did not set the TimeSystem to UNK", __LINE__);
+		testFramework.assert(TimeSystem::Unknown == Compare.getTimeSystem(),  "reset() did not set the TimeSystem to UNK", __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -219,7 +223,7 @@ class MJD_T
 		TestUtil testFramework( "MJD", "isValid", __FILE__, __LINE__ );
 
 
-	  	MJD Compare(135000,TimeSystem(2)); //Initialize an object
+	  	MJD Compare(135000,TimeSystem::GPS); //Initialize an object
 
 		//---------------------------------------------------------------------
 		//Is the time after the BEGINNING_OF_TIME?
@@ -257,12 +261,12 @@ class MJD_T
 		TestUtil testFramework( "MJD", "OperatorEquivalentWithDifferingTimeSystem", __FILE__, __LINE__ );
 
 
-  		MJD GPS1(135000,TimeSystem(2));
-  		MJD GPS2(134000,TimeSystem(2));
-  		MJD UTC1(135000,TimeSystem(5));
-  		MJD UNKNOWN(135000,TimeSystem(0));
-  		MJD ANY(135000,TimeSystem(1));
-  		MJD ANY2(134000,TimeSystem(1));
+  		MJD GPS1(135000,TimeSystem::GPS);
+  		MJD GPS2(134000,TimeSystem::GPS);
+  		MJD UTC1(135000,TimeSystem::UTC);
+  		MJD UNKNOWN(135000,TimeSystem::Unknown);
+  		MJD ANY(135000,TimeSystem::Any);
+  		MJD ANY2(134000,TimeSystem::Any);
 
 		//---------------------------------------------------------------------
 		//Verify differing TimeSystem sets equivalence operator to false
@@ -289,11 +293,11 @@ class MJD_T
 		testFramework.assert(GPS2 < ANY,"Less than object with GPS TimeSystem is not found to be less-than a greater object with Any TimeSystem", __LINE__);
 
 		testFramework.changeSourceMethod("setTimeSystem");
-  		UNKNOWN.setTimeSystem(TimeSystem(2)); //Set the Unknown TimeSystem
+  		UNKNOWN.setTimeSystem(TimeSystem::GPS); //Set the Unknown TimeSystem
 		//---------------------------------------------------------------------
 		//Ensure resetting a Time System changes it
 		//---------------------------------------------------------------------
-		testFramework.assert(UNKNOWN.getTimeSystem()==TimeSystem(2), "setTimeSystem was unable to set the TimeSystem", __LINE__);
+		testFramework.assert(UNKNOWN.getTimeSystem()==TimeSystem::GPS, "setTimeSystem was unable to set the TimeSystem", __LINE__);
 
 		return testFramework.countFails();
 	}
@@ -323,6 +327,18 @@ class MJD_T
 		//---------------------------------------------------------------------
 		testFramework.assert(GPS1.printError("%08Q %02P") == (std::string)"ErrorBadTime ErrorBadTime", "printError did not output in the proper format", __LINE__);
 		testFramework.assert(UTC1.printError("%08Q %02P") == (std::string)"ErrorBadTime ErrorBadTime", "printError did not output in the proper format", __LINE__);
+
+		//---------------------------------------------------------------------
+		//Verify getPrintChars() matches expectation
+		//---------------------------------------------------------------------
+		testFramework.assert(GPS1.getPrintChars() == (std::string)"QP", "getPrintChars did not match expectation", __LINE__);
+		testFramework.assert(UTC1.getPrintChars() == (std::string)"QP", "getPrintChars did not match expectation", __LINE__);
+
+		//---------------------------------------------------------------------
+		//Verify getDefaultFormat() matches expectation
+		//---------------------------------------------------------------------
+		testFramework.assert(GPS1.getDefaultFormat() == (std::string)"%.9Q %P", "getDefaultFormat did not match expectation", __LINE__);
+		testFramework.assert(UTC1.getDefaultFormat() == (std::string)"%.9Q %P", "getDefaultFormat did not match expectation", __LINE__);
 
 		return testFramework.countFails();
 	}

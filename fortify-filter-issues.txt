@@ -1,0 +1,22 @@
+These are the specific Rule IDs that should be excluded from fortify reporting. Ex. False positives, Irrelevant source files, etc.
+These values are found in the *scan_issues.csv fortify job pipeline artifact.
+See https://www.microfocus.com/documentation/fortify-static-code-analyzer-and-tools/2310/SCA_Help_23.1.0/index.htm#FilterFiles/FilterFileExample.htm
+  for more details. You can also include categories instead of specific Rule IDs.
+For readability, each issue should span two lines:
+  First line is <Category> <Line affected>
+  Second line is Issue ID.  Note: Issue ID is the only thing that is needed to actually exclude an issue. First line is for information purposes.
+
+Path Manipulation usr/include/c++/8/fstream:627
+31C026DF9A40A23D25FAD304B21E58E3
+
+Path Manipulation usr/include/c++/8/fstream:517
+5285F459AD4D3F73AF850F7FF90DF0F2
+
+String Termination Error builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:81
+67B30A9F68EB593D925DD30B4B2CC0D9
+
+String Termination Error builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:81
+A175D9AD61CEE4B00B7E4A8202F4F523
+
+Path Manipulation usr/include/c++/8/fstream:517
+D24EC54B80E608495B128D878D6FEC29

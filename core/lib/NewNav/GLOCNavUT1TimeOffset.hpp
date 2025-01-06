@@ -114,11 +114,11 @@ namespace gnsstk
       bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
       CommonTime refTime; ///< Reference time for computation.
-      unsigned NB;   ///< Day since the most recent leap year-aligned 4 years.
-      double B0;     ///< Time bias in seconds.
-      double B1;     ///< Time drift in s/s.
-      double B2;     ///< Time drift rate in s/s**2.
-      double UTCTAI; ///< Leap seconds - not really used.
+      unsigned NB = 0;   ///< Day since the most recent leap year-aligned 4 years.
+      double B0 = 0.0;     ///< Time bias in seconds.
+      double B1 = 0.0;     ///< Time drift in s/s.
+      double B2 = 0.0;     ///< Time drift rate in s/s**2.
+      double UTCTAI = 0.0; ///< Leap seconds - not really used.
    };
 
       //@}

@@ -132,6 +132,24 @@ class TestNavLibrary(unittest.TestCase):
         self.assertEqual(True, rv)
         self.assertEqual(7, nd.iode)
 
+    def test_findAll(self):
+        navLib = gnsstk.NavLibrary()
+        ndf = gnsstk.RinexNavDataFactory()
+        navLib.addFactory(ndf)
+        ndf.addDataSource(args.input_dir + '/arlm2000.15n')
+
+        sat = gnsstk.NavSatelliteID(10, 10, gnsstk.SatelliteSystem.GPS,
+                                    gnsstk.CarrierBand.L1,
+                                    gnsstk.TrackingCode.CA, gnsstk.NavType.GPSLNAV)
+        timerange = gnsstk.TimeRange(gnsstk.CivilTime(2015, 7, 19, 0, 0, 0, gnsstk.TimeSystem.GPS).toCommonTime(),
+                                     gnsstk.CivilTime(2015, 7, 20, 0, 0, 0, gnsstk.TimeSystem.GPS).toCommonTime())
+        nmide = gnsstk.NavMessageID(sat, gnsstk.NavMessageType.Ephemeris)
+        success, navlist = navLib.findAll(nmide, timerange, False, gnsstk.SVHealth.Any, gnsstk.NavValidityType.ValidOnly)
+
+        self.assertEqual(True, success)
+        self.assertEqual(5, len(navlist))
+        self.assertTrue(isinstance(navlist[0], gnsstk.GPSLNavEph))
+
     def test_setValidityFilter(self):
         navLib = gnsstk.NavLibrary()
         ndf = gnsstk.RinexNavDataFactory()

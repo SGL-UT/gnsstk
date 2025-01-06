@@ -61,6 +61,8 @@
 #include <io.h>
 #endif
 
+#include "DebugTrace.hpp"
+
 using namespace std;
 namespace gnsstk
 {
@@ -85,6 +87,7 @@ namespace gnsstk
 #ifdef WIN32
       inline int makeDir(const std::string& path, unsigned mode)
       {
+        DEBUGTRACE_FUNCTION();
         std::string temppath = path;
 
         //Clean up windows file path
@@ -108,6 +111,7 @@ namespace gnsstk
             //  #ifdef __sun
             //      mkdirp(path.c_str(), mode);
             //  #else
+         DEBUGTRACE_FUNCTION();
          std::string::size_type i = 0;
 
          while ((i = path.find('/',i+1)) != std::string::npos)
@@ -151,6 +155,7 @@ namespace gnsstk
       inline bool fileAccessCheck(const char* fname,
                                   std::ios::openmode mode=std::ios::in)
       {
+         DEBUGTRACE_FUNCTION();
          std::fstream test(fname, mode);
          return !test.fail();
       }

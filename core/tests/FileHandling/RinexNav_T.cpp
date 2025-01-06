@@ -150,6 +150,8 @@ public:
        * follow the guidance in the Table A4 footnote regarding
        * transmission times and those that don't. */
    unsigned xmitReadTest();
+   unsigned stableTextTest();
+   unsigned toListTest();
 
 private:
 
@@ -646,6 +648,46 @@ unsigned RinexNav_T :: xmitReadTest()
    TURETURN();
 }
 
+unsigned RinexNav_T::stableTextTest()
+{
+   TUDEF("RinexNavData", "stableText");
+
+   try
+   {
+      RinexNavStream rinexInputStream(inputRinexNavExample.c_str() );
+      RinexNavData data;
+      // Skip reading the header since we just want the data dump
+      rinexInputStream >> data;
+      const std::string& dump = data.stableText();
+      TUASSERT(!dump.empty());
+   }
+   catch(...)
+   {
+      TUFAIL("Unexpected exception");
+   }
+
+   TURETURN();
+
+}
+
+unsigned RinexNav_T::toListTest()
+{
+   TUDEF("RinexNavData", "toList");
+   try
+   {
+      RinexNavStream rinexInputStream(inputRinexNavExample.c_str() );
+      RinexNavData data;
+      // Skip reading the header since we just want the data dump
+      rinexInputStream >> data;
+      TUASSERT(!data.toList().empty());
+   }
+   catch(...)
+   {
+      TUFAIL("Unexpected exception");
+   }
+
+   TURETURN();
+}
 
 //============================================================
 // Run all the test methods defined above
@@ -663,6 +705,8 @@ int main()
    errorTotal += testClass.filterOperatorsTest();
    errorTotal += testClass.castTest();
    errorTotal += testClass.xmitReadTest();
+   errorTotal += testClass.stableTextTest();
+   errorTotal += testClass.toListTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

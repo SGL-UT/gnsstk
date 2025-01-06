@@ -11,25 +11,28 @@
 include:
   - project: sgl-tks/ci-control
     file: /gnsstk/ci_downstrm_chain.yml
-    ref: main
   - project: sgl-tks/ci-control
     file: /general/artifactory-upload.yml
-    ref: main
   - project: 'sgl/ci-control'
     file: 'common/scanning/sonar.yml'
+  - project: 'sgl/ci-control'
+    file: 'common/scanning/fortify.yml'
+  - project: sgl-tks/ci-control
+    file: /general/fortify-upload.yml
 
 stages:
-- quality
-- check
-- build
-- test
-- install
-- package
-- push
-- downstream_ci
-- deploy
-- downstream_stack
-- clean
+  - quality
+  - check
+  - build
+  - reporting
+  - test
+  - install
+  - package
+  - push
+  - downstream_ci
+  - deploy
+  - downstream_stack
+  - clean
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -57,12 +60,16 @@ variables:
   BLD_VS_STATIC:
     value: "True"
     description: "If True, then build Windows Static Libraries (VS2019 only, VS2015 always builds static)"
-  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css'
+  # Adding Geomatics to sonar exclusions
+  SONAR_EXCLUSIONS: '**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css,core/lib/Geomatics/**'
   SONAR_SOURCES: 'core'
   SONAR_TEST_SOURCES: 'core/tests'
   SONAR_TEST_INCLUSION: 'core/tests'
   SONAR_PROJECT_KEY: gnsstk
-  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7"
+  SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7 -Dsonar.sourceEncoding=UTF-8"
+  FORTIFY_SCAN_TYPE:
+    value: '-quick'
+    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low"
 
 # Template for all normal jobs.
 .normal_build:
@@ -109,7 +116,7 @@ static_analysis:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - ./lint_test.sh
@@ -122,7 +129,7 @@ sgllint_lint:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -141,7 +148,7 @@ submodule_check:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   variables:
     GIT_SUBMODULE_UPDATE_FLAGS: --remote
   only:
@@ -149,13 +156,14 @@ submodule_check:
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - (! git status --porcelain | grep 'M data')
+  retry: 2
 
 protected_term_lint:
   stage: check
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -175,7 +183,7 @@ protected_history_lint:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:python3
   script:
     - '######'
@@ -196,7 +204,7 @@ generate_documentation:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     # Install GraphViz
@@ -209,13 +217,14 @@ generate_documentation:
     paths:
       - docs/
     expire_in: 4 days
+  retry: 2
 
 build_debian_10:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - mkdir -p build
@@ -227,13 +236,14 @@ build_debian_10:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_debian_11:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -244,13 +254,14 @@ build_debian_11:
   artifacts:
     paths:
       - build/
+  retry: 2
 
 build_ubuntu_20.04:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
@@ -261,13 +272,14 @@ build_ubuntu_20.04:
   artifacts:
     paths:
       - build/
+  retry: 2
 
 build_ext_noswig:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -276,13 +288,14 @@ build_ext_noswig:
     - cmake -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
+  retry: 2
 
 build_noext_noswig:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -291,6 +304,7 @@ build_noext_noswig:
     - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test ! -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
+  retry: 2
 
 # this should print a warning and continue by flipping BUILD_EXT on
 build_swig_noext:
@@ -298,7 +312,7 @@ build_swig_noext:
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - mkdir -p build
@@ -308,13 +322,14 @@ build_swig_noext:
     # ext is implicitly enabled if you request swig and not ext
     - test -d CMakeFiles/gnsstk.dir/ext
     - test -d swig
+  retry: 2
 
 build_debian_10_virtualenv:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
@@ -328,13 +343,14 @@ build_debian_10_virtualenv:
       - myenv/
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_debian_11_virtualenv:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
@@ -347,13 +363,14 @@ build_debian_11_virtualenv:
     paths:
       - myenv/
       - build/
+  retry: 2
 
 .build_conda:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -371,6 +388,7 @@ build_debian_11_virtualenv:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_conda_py3.6:
   variables:
@@ -393,13 +411,13 @@ build_conda_py3.9:
   extends: .build_conda
 
 sonar-scan:
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   stage: quality
   needs: []
   extends:
     - .sonarqube-check
   tags:
-    - docker-executor
+    - extra-large
   script:
     - apt-get install gcovr lcov -y
     # Install gnsstk from latest deb CI artifacts first.
@@ -410,29 +428,41 @@ sonar-scan:
     - build-wrapper-linux-x86-64 --out-dir . make all -j 4
     - ctest -j 4
     - cd ..
-    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --print-summary -o coverage-cpp.xml -r .
-    - for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done
+    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
+    - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
     - !reference [.scan-c++, script]
-    - touch $CI_PROJECT_DIR/success
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main" || $CI_COMMIT_REF_NAME == "stable" || $CI_COMMIT_REF_NAME =~/^bugfix\/ci_.*$/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: manual
-  # Sonar Quality Profile will fail since code coverage is below 80%
-  # Allowing job to fail so sonar scan doesn't fail the pipeline for nightly big chain.
-  allow_failure: true
-  # only:
-  #   - merge_requests
-  #   - main
-  #   - tags
-  #   - stable
+  retry: 2
+
+fortify-scan:
+  extends:
+    - .cpp_fortify
+  tags:
+    - extra-large
+  needs: []
+  variables:
+    FORTIFY_SCAN_TYPE: '-quick'
+  script:
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
+    - make all -j 4
+    - !reference [.fortify_post_consolidated_cpp, script]
+  retry: 2
+
+fortify-scan-publish:
+  stage: reporting
+  extends: .fortify-scan-publish
+  needs:
+    - job: fortify-scan
+      artifacts: true
 
 build_redhat_8:
   stage: build
   needs: []
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - mkdir -p build
@@ -444,6 +474,7 @@ build_redhat_8:
     paths:
       - build/
     expire_in: 4 days
+  retry: 2
 
 build_windows_vs2019_dll:
   variables:
@@ -457,13 +488,15 @@ build_windows_vs2019_dll:
     - mkdir build
     - cd build
     - cmake -DBUILD_SHARED_LIBS=TRUE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
-    - cmake --build . --config Release -- /m
+    - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
       - build/
+      - swig/*.cmake
+      - swig/**/*.in
+      - "*.{in,cmake,h}"
+      - "**/CMakeLists.txt"
     expire_in: 4 days
-  allow_failure: false
-  timeout: 180m
 
 build_windows:
   variables:
@@ -472,15 +505,17 @@ build_windows:
   needs: []
   extends: .normal_build
   tags:
-    - win10-vs2019
+    - win10-vs2015
   script:
     - mkdir build
     - cd build
     - cmake -DCMAKE_INSTALL_PREFIX=install -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
-    - cmake --build . --config Release -- /m
+    - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
-    - build/
+      - build/
+      - "*.{in,cmake,h}"
+      - "**/CMakeLists.txt"
     expire_in: 4 days
 
 build_windows_vs2019:
@@ -495,12 +530,13 @@ build_windows_vs2019:
     - mkdir build
     - cd build
     - cmake -DBUILD_SHARED_LIBS=FALSE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
-    - cmake --build . --config Release -- /m
+    - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
       - build/
+      - "*.{in,cmake,h}"
+      - "**/CMakeLists.txt"
     expire_in: 4 days
-  allow_failure: false
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
@@ -509,7 +545,7 @@ test_debian_10:
   needs: [build_debian_10]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
@@ -522,13 +558,14 @@ test_debian_10:
     - build/swig/
   dependencies:
     - build_debian_10
+  retry: 2
 
 test_debian_11:
   stage: test
   needs: [build_debian_11]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
@@ -541,13 +578,14 @@ test_debian_11:
     - build/swig/
   dependencies:
     - build_debian_11
+  retry: 2
 
 test_ubuntu_20.04:
   stage: test
   needs: [build_ubuntu_20.04]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -560,13 +598,14 @@ test_ubuntu_20.04:
     - build/swig/
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 test_debian_10_virtualenv:
   stage: test
   needs: [build_debian_10_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
@@ -581,13 +620,14 @@ test_debian_10_virtualenv:
     expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
+  retry: 2
 
 test_debian_11_virtualenv:
   stage: test
   needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
@@ -601,12 +641,13 @@ test_debian_11_virtualenv:
     - build/swig/
   dependencies:
     - build_debian_11_virtualenv
+  retry: 2
 
 .test_conda:
   stage: test
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -624,6 +665,7 @@ test_debian_11_virtualenv:
     - build/Testing/Temporary/
     - build/swig/
     expire_in: 4 days
+  retry: 2
 
 
 test_conda_py3.6:
@@ -659,7 +701,7 @@ test_redhat_8:
   needs: [build_redhat_8]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -671,16 +713,18 @@ test_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
+  retry: 2
 
 test_windows:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: test
   needs: [build_windows]
   extends: .normal_build
   tags:
-    - win10-vs2019
+    - win10-vs2015
   script:
     - cd build
     - cmake --build . --target RUN_TESTS --config Release
@@ -693,13 +737,12 @@ test_windows:
   dependencies:
     - build_windows
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
 
 test_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: test
   needs: [build_windows_vs2019]
   extends: .vs2019_build
@@ -717,13 +760,12 @@ test_windows_vs2019:
   dependencies:
     - build_windows_vs2019
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
 
 test_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: test
   needs: [build_windows_vs2019_dll]
   extends: .vs2019_dll_build
@@ -731,6 +773,8 @@ test_windows_vs2019_dll:
     - win10-vs2019
   script:
     - cd build
+    # Added COPY_GNSSTK_DLL target for workaround with python 3.8+ not honoring DLLs found in windows PATH variable.
+    - cmake --build . --target COPY_GNSSTK_DLL --config Release
     - cmake --build . --target RUN_TESTS --config Release
   artifacts:
     when: on_failure
@@ -741,8 +785,6 @@ test_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline. See INDEV-1475
-  allow_failure: true
 
 # User_Install Stage
 
@@ -752,7 +794,7 @@ user_install_debian_10:
   needs: [build_debian_10]
   extends: .big_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - cd build
@@ -765,13 +807,14 @@ user_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10
+  retry: 2
 
 user_install_debian_11:
   stage: install
   needs: [build_debian_11]
   extends: .big_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - cd build
@@ -783,13 +826,14 @@ user_install_debian_11:
       - build/install
   dependencies:
     - build_debian_11
+  retry: 2
 
 user_install_ubuntu_20.04:
   stage: install
   needs: [build_ubuntu_20.04]
   extends: .big_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - cd build
@@ -801,13 +845,14 @@ user_install_ubuntu_20.04:
       - build/install
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 virtualenv_install_debian_10:
   stage: install
   needs: [build_debian_10_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - source myenv/bin/activate
@@ -819,13 +864,14 @@ virtualenv_install_debian_10:
     expire_in: 4 days
   dependencies:
     - build_debian_10_virtualenv
+  retry: 2
 
 virtualenv_install_debian_11:
   stage: install
   needs: [build_debian_11_virtualenv]
   extends: .normal_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - source myenv/bin/activate
@@ -836,13 +882,14 @@ virtualenv_install_debian_11:
       - myenv
   dependencies:
     - build_debian_11_virtualenv
+  retry: 2
 
 user_install_redhat_8:
   stage: install
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -855,19 +902,21 @@ user_install_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
+  retry: 2
 
 user_install_windows:
   stage: install
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   needs: [build_windows,test_windows]
   extends: .normal_build
   tags:
-    - win10-vs2019
+    - win10-vs2015
   script:
     - cd build
-    - cmake --build . --config Release --target install
+    - cmake --build . --config Release --target install -j 10
     - cd ..
     - dir build\install
   artifacts:
@@ -877,15 +926,14 @@ user_install_windows:
   dependencies:
     - build_windows
     - test_windows
-  timeout: 20m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
+  timeout: 30m
   retry: 2
 
 user_install_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: install
   needs: [build_windows_vs2019,test_windows_vs2019]
   extends: .vs2019_build
@@ -893,7 +941,7 @@ user_install_windows_vs2019:
     - win10-vs2019
   script:
     - cd build
-    - cmake --build . --config Release --target install
+    - cmake --build . --config Release --target install -j 10
     - cd ..
     - dir build\install
   artifacts:
@@ -903,13 +951,13 @@ user_install_windows_vs2019:
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
-  allow_failure: false
-  timeout: 20m
+  timeout: 30m
 
 user_install_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: install
   needs: [build_windows_vs2019_dll,test_windows_vs2019_dll]
   extends: .vs2019_dll_build
@@ -917,7 +965,7 @@ user_install_windows_vs2019_dll:
     - win10-vs2019
   script:
     - cd build
-    - cmake --build . --config Release --target install
+    - cmake --build . --config Release --target install -j 10
     - cd ..
     - dir build\install
   artifacts:
@@ -927,8 +975,7 @@ user_install_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
     - test_windows_vs2019_dll
-  allow_failure: false
-  timeout: 20m
+  timeout: 30m
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
@@ -937,7 +984,7 @@ system_install_redhat_8:
   needs: [build_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
@@ -946,6 +993,7 @@ system_install_redhat_8:
     - sudo make install -j 4
   dependencies:
     - build_redhat_8
+  retry: 2
 
 # Package Stage
 # Tests packaging of Gnsstk on all platforms
@@ -963,7 +1011,7 @@ package_debian_10:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -985,6 +1033,7 @@ package_debian_10:
   timeout:  90m
   dependencies:
     - build_debian_10
+  retry: 2
 
 package_debian_11:
   stage: package
@@ -1000,7 +1049,7 @@ package_debian_11:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -1022,6 +1071,7 @@ package_debian_11:
   timeout:  90m
   dependencies:
     - build_debian_11
+  retry: 2
 
 package_ubuntu_20.04:
   stage: package
@@ -1037,7 +1087,7 @@ package_ubuntu_20.04:
         BUILD_TYPE: debug
     - when: on_success
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
@@ -1062,12 +1112,13 @@ package_ubuntu_20.04:
   timeout:  90m
   dependencies:
     - build_ubuntu_20.04
+  retry: 2
 
 package_conda:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
@@ -1090,12 +1141,13 @@ package_conda:
   parallel:
     matrix:
       - PYTHON_VERSION: ["3.6", "3.7", "3.8", "3.9"]
+  retry: 2
 
 package_redhat_8:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
@@ -1107,12 +1159,13 @@ package_redhat_8:
       - rpm_files/RPMS/x86_64/gnsstk-*
       - rpm_files/SRPMS/gnsstk-*
   dependencies: []
+  retry: 2
 
 package_redhat_8_py36:
   stage: package
   needs: []
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - bash rpm_files/setup_dirs.sh
@@ -1124,16 +1177,18 @@ package_redhat_8_py36:
       - rpm_files/RPMS/x86_64/python3-gnsstk-*
       - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
+  retry: 2
 
 package_windows:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: package
   extends: .normal_build
-  needs: [build_windows]
+  needs: [build_windows,user_install_windows]
   tags:
-    - win10-vs2019
+    - win10-vs2015
   script:
     - cd build
     - cpack -C Release
@@ -1147,9 +1202,10 @@ package_windows:
 package_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: package
-  needs: [build_windows_vs2019]
+  needs: [build_windows_vs2019,user_install_windows_vs2019]
   extends: .vs2019_build
   tags:
     - win10-vs2019
@@ -1166,9 +1222,10 @@ package_windows_vs2019:
 package_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: package
-  needs: [build_windows_vs2019_dll]
+  needs: [build_windows_vs2019_dll,user_install_windows_vs2019_dll]
   extends: .vs2019_dll_build
   tags:
     - win10-vs2019
@@ -1189,7 +1246,7 @@ deploy_debian_10:
   needs: [package_debian_10]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
   script:
     - pushd debs
@@ -1202,13 +1259,14 @@ deploy_debian_10:
     - gnsstk-config --includedir
   dependencies:
     - package_debian_10
+  retry: 2
 
 deploy_debian_11:
   stage: deploy
   needs: [package_debian_11]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
   script:
     - pushd debs
@@ -1221,13 +1279,14 @@ deploy_debian_11:
     - gnsstk-config --includedir
   dependencies:
     - package_debian_11
+  retry: 2
 
 deploy_ubuntu_20.04:
   stage: deploy
   needs: [package_ubuntu_20.04]
   extends: .big_build
   tags:
-    - docker-executor
+    - standard
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - pushd debs
@@ -1240,13 +1299,14 @@ deploy_ubuntu_20.04:
     - gnsstk-config --includedir
   dependencies:
     - package_ubuntu_20.04
+  retry: 2
 
 deploy_redhat_8:
   stage: deploy
   needs: [package_redhat_8]
   extends: .big_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1255,13 +1315,14 @@ deploy_redhat_8:
     - gnsstk-config --includedir
   dependencies:
     - package_redhat_8
+  retry: 2
 
 deploy_redhat_py36:
   stage: deploy
   needs: [package_redhat_8, package_redhat_8_py36]
   extends: .big_build
   tags:
-    - docker-executor
+    - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd rpm_files/RPMS/x86_64/
@@ -1272,6 +1333,7 @@ deploy_redhat_py36:
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
+  retry: 2
 
 push_artifacts:
   extends: .push_selected_artifacts
@@ -1282,3 +1344,4 @@ push_artifacts:
   stage: push
   needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
   dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+

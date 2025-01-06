@@ -55,6 +55,7 @@ public:
       /// Make sure constructor initializes data members correctly.
    unsigned constructorTest();
    unsigned getUserTimeTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -81,6 +82,22 @@ getUserTimeTest()
 }
 
 
+unsigned GPSCNav2Iono_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNav2Iono", "isSameData");
+
+   gnsstk::GPSCNav2Iono uut;
+   auto uut2 = std::make_shared<gnsstk::GPSCNav2Iono>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2));
+   uut.alpha[1] = 1;
+   TUASSERTE(bool, false, uut.isSameData(uut2));
+
+   TURETURN();
+}
+
+
 int main()
 {
    GPSCNav2Iono_T testClass;
@@ -88,6 +105,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

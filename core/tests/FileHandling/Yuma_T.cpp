@@ -52,12 +52,45 @@
 #include "build_config.h"
 #include "TestUtil.hpp"
 
+
+   // Allow to redirect osstream (aka cout), so we can get the result back for Testing
+class ScopedStreamRedirect 
+{
+   public:
+      ScopedStreamRedirect(std::ostream& from, std::streambuf* to)
+         : _originalStream(from), _originalBuffer(from.rdbuf())
+      { 
+         from.rdbuf(to); 
+      }
+
+         // convenience constructor for an existing stream
+      ScopedStreamRedirect(std::ostream& from, std::ostream& to)
+        : _originalStream(from), _originalBuffer(from.rdbuf())
+      { 
+         from.rdbuf(to.rdbuf()); 
+      }
+
+      // disable copy/move construct/assign to prevent misuse
+    ScopedStreamRedirect(const ScopedStreamRedirect&) = delete;
+    ScopedStreamRedirect& operator=(const ScopedStreamRedirect&) = delete;
+    ScopedStreamRedirect(ScopedStreamRedirect&&) = delete;
+    ScopedStreamRedirect& operator=(ScopedStreamRedirect&&) = delete;
+
+    ~ScopedStreamRedirect() { if(_originalBuffer) _originalStream.rdbuf(_originalBuffer); }
+    
+   private:
+      std::ostream& _originalStream;
+      std::streambuf* _originalBuffer;
+};
+
+
 class Yuma_T
 {
 public:
    unsigned openMissingFileTest();
    unsigned openInvalidFileTest();
    unsigned roundTripTest();
+   unsigned dumpTest();
 };
 
 
@@ -120,6 +153,27 @@ roundTripTest()
    TURETURN();
 }
 
+
+
+unsigned Yuma_T ::
+dumpTest ()
+{
+   TUDEF("YumaData", "dump");
+   gnsstk::YumaData uut;
+ 
+      // Dump calls cout, so redirect cout using a RAII for test
+   std::stringstream dumpOutputStream;
+   {
+      ScopedStreamRedirect _(std::cout, dumpOutputStream.rdbuf());
+      std::stringstream noop;
+      uut.dump(noop); 
+      TUASSERTE(bool, false, dumpOutputStream.str().empty()); 
+   }
+
+   TURETURN();
+}
+
+
 using namespace std;
 using namespace gnsstk;
 
@@ -131,6 +185,7 @@ int main( int argc, char * argv[] )
    errorTotal += testClass.openMissingFileTest();
    errorTotal += testClass.openInvalidFileTest();
    errorTotal += testClass.roundTripTest();
+   errorTotal += testClass.dumpTest();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

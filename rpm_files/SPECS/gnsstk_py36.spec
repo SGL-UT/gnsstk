@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 14.5.0
+%define version 14.6.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,107 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 06 2025 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.6.0 release
+- Update turn on pipeline sonar scan quality check
+- Add coverage tests to Gal*NavHealth files.
+- Add testing for `PackedNavBits` dump method
+- Add unit tests for Epoch.cpp
+- Update SP3_T.cpp with dump tests for increased coverage
+- Add unit tests to improve code coverage for FileHandling/RINEX
+- Update Math/PowerSum : This is a refactor of this module.
+- Fix NewNav findAll python interface to provide objects as their dynamic type
+- Add test coverage to InterSigCorr.hpp and InterSigCorr.cpp
+- Add test coverage to StdNavTimeOffset.hpp and StdNavTimeOffset.cpp
+- Update fortify job retry to 2
+- Update gitlab job pipeline job retries.
+- Fix pipeline yaml identation issue for job windows_build
+- Add new windows gitlab runners
+- Update CI pipelines to make use of new Gitlab Runner tags
+- Update SonarQube pipeline job
+- Add test coverage to LNavFilterData.cpp
+- Add Dump testing to BinexData
+- Add dump and isSameData tests to GPS/GPSC/GPSL
+- Add Coverage to Sinex Header
+- Add full coverage to GLONASSTime.hpp and GLONASSTime.cpp
+- Add testing to PosixTime
+- Add Coverage to Sinex Types dump debug
+- Update FileDirProc Filespec.cpp Added Unit test for dump and sort.
+- Add CNav IAURA implementation.
+- Update GNSSEph EngAlmanac Added dump Test
+- Update Gnsstk/FileHandling YumaData.cpp Added Dump unit test.
+- Add test coverage for NewNav/IonoNav dump functions
+- Add test coverage for NewNav BDSD2 classes
+- Add test coverage for NewNav/BDSD1NavEph.cpp and NewNav/BDSD1NavAlm.cpp
+- Add NewNav/BDSD1NavHealth.cpp test coverage
+- Fix newnav/GLOCNewEph.cpp Fixing introduced bug in factorToSigma().
+- Add test coverage to JulianDate
+- Add GLOCNavData_T Added unit test file focusing on Dump.
+- Update GLOCNavUT1TimeOffset_T.cpp Added Dump related unit tests.
+- Update GLOCNavLTDMP_T.cpp Added Dump related unit tests.
+- Update GLOCNavHealth_T.cpp Added Dump related unit tests.
+- Update GLOCNavEph_T.cpp Added Dump related unit tests.
+- Update GLOCNavAlm_T.cpp  Added Dump related unit tests.
+- Update CMakeLists.txt  Added GLOCNavData Unit Test to CMakeLists
+- Update by making format input of QZSWeekSecond consistent with other classes
+- Update NewNav  Updated Unit test GLOFNavAlm_T, GLOFNavData_T, GLOFNavHealth_T, GLOFNavISC_T, GLOFNavUT1TimeOffset_T
+- Update  GLOFNavEph Test : added test for dump.
+- Add IonexData test for dump method.
+- Add DEBUGTRACE to several classes
+- Add coverage to QZSWeekSecond.hpp
+- Add full coverage to UnixTime.hpp and UnixTime.cpp
+- Add coverage to IRNWeekSecond.hpp
+- Add Coverage to GALWeekSeconds
+- Add coverage to MJD.hpp
+- Add test coverage to GPSWeekSecond
+- Add test coverage to GPSZCount
+- Add test coverage to GSPWeekZCount
+- Add test coverage TimeCorrection
+- Add full coverage to TimeSystemCorr.cpp
+- Add full coverage to CNavCrossSourceFilter.hpp and CNavCrossSourceFilter.cpp
+- Update doxygen documentation to show undocumented members such as enum values
+- Add all 12 months to test testF2LayerCoeff CCIR.cpp
+- Update add fortify results to toolkits dashboard.
+- Update CODEOWNERS with new NewNav reviewers.
+- Update codeowners file to use cpp reviewers group.  Exclude geomatics from sonarqube code coverage.
+- Add test coverage to GPSWeek.hpp/cpp
+- Add code coverage to nav time system converter
+- Add test coverage to Week class
+- Add full coverage to CommonTime.hpp and CommonTime.cpp
+- Add Test coverage for YDSTime class
+- Added unit tests for Geomatics/SpecialFuncs
+- Add HelmertTransformation.cpp/hpp and update unit tests for code coverage
+- Update gitlab pipeline job to exclude issues that are not relevant.
+- Fix QZSS almanac NavData objects to use the QZS time system in their timestamps.
+- Add Fortify Scan pipeline job.
+- Add Additional unit test to compliment existing PosSol testing
+- Add a few simple tests for the DiscCorr class
+- Add full coverage to TimeSystem.cpp
+- Add | ci_Combinations | Added unit tests
+- Add full coverage to ReferenceFrame.cpp
+- Add CommandLine_T.cpp for unit testing CommandLine.cpp
+- Add Coverage to BasicTimeSystemConverter
+- Add Geomatics/SunEarthSatGeometry_T unittests
+- Add Debug to ORD test
+- Add NewNav support to parse GPS LNav subframe 4 page 13 NMCT message.
+- Update Sinex_ReadWrite_T.cpp to run with unit tests, added more extensive tests for Rinex3ObsHeader
+- Add unit tests for uncovered operations in core/lib/Math for Matrix, Vector, and Stats
+- Add LinearClockModel test coverage
+- Add ObsEpochMap test coverage
+- Add unit tests for core/Geomatics/EOPPrediction.cpp
+- Add core/tests/ClockModel/SvObvsEpoch_T.cpp | Added unit test file for SvObsEpoch
+- Add a few simple tests for the gdc class
+- Add a few basic tests of PRSolution.
+- Fix LNav fit interval computation for QZSS and GPS short/long term extended modes
+- Add | core/tests/ClockModel/ORDEpoch_T.cpp | Added testing for ORDEpoch
+- Fix swig tests running in windows DLL builds using python3.8+
+- Add unit tests for AntexData.cpp
+- Add ObsRngDev test coverage
+- Add ObsClockModel Test Coverage
+- Update gitlab pipeline windows jobs to use new gitlab runner windows instance on sgl-glrunner1/2 with AMD processor on windows.
+- Add unit tests for functions in core/lib/AntennaStore.cpp
+- Add NewNav/README.md to capture what has been implemented
+- Fix initialization of GLOCNavUT1TimeOffset members.
 * Thu Sep 05 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.5.0 release
 - Add test coverage to Epoch clock model

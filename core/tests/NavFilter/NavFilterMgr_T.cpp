@@ -169,6 +169,9 @@ public:
       /// test a filter with behavior like multiple input epochs
    unsigned testBunk2();
 
+      // test dump function for LNavFilterData
+   unsigned testLNavFilterDataDump();
+
    string inputFileLNAV;
    string inputFileBunk;
    string refFileBunk1, refFileBunk2;
@@ -796,6 +799,25 @@ testBunk2()
    TURETURN();
 }
 
+unsigned NavFilterMgr_T ::
+testLNavFilterDataDump()
+{
+   TUDEF("LNavFilterData", "dumpTest");
+   uint32_t emptySF[10] = { 0,0,0,0,0,0,0,0,0,0 };
+   LNavFilterData uut;
+   uut.sf = emptySF;
+
+   stringstream testStream;
+   uut.dump(testStream);
+   TUASSERTE(bool, false, testStream.str().empty())
+
+   // Testing stream insertion operator, which calls dump()
+   stringstream testStream2;
+   testStream2 << uut;
+   TUASSERTE(bool, false, testStream.str().empty())
+   TURETURN();
+}
+
 
 int main()
 {
@@ -814,6 +836,7 @@ int main()
    errorTotal += testClass.testProcessingDepths();
    errorTotal += testClass.testBunk1();
    errorTotal += testClass.testBunk2();
+   errorTotal += testClass.testLNavFilterDataDump();
 
    cout << "Total Failures for " << __FILE__ << ": " << errorTotal << endl;
 

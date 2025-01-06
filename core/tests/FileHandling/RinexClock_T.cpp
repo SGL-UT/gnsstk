@@ -69,6 +69,10 @@ public:
        * exception when exceptions are enabled. */
    int dataExceptionTest();
 
+   int rinexClockDataDumpTests();
+
+   int rinexClockHeaderDumpTests();
+
    std::string dataRinexClockFile;
    std::string dataRinexClockRef;
    std::string dataBadEpochLine;
@@ -309,6 +313,57 @@ int RinexClock_T::dataExceptionTest()
    return testFramework.countFails();
 }
 
+int RinexClock_T::rinexClockDataDumpTests()
+{
+   TUDEF( "RinexClockData", "dump" );
+
+   try
+   {
+      gnsstk::RinexClockStream rinexClockFile( dataRinexClockFile.c_str() );
+      gnsstk::RinexClockData rinexClockData;
+
+      rinexClockFile.exceptions(std::fstream::failbit);
+
+      // Skip reading the header since we just want the data dump
+      rinexClockFile >> rinexClockData;
+      std::stringstream ss;
+      rinexClockData.dump(ss);
+      TUASSERT( !ss.str().empty());
+      rinexClockFile.close();
+   }
+   catch (...)
+   {
+      TUFAIL("Caught unanticipated exception");
+   }
+
+   TURETURN();
+}
+
+int RinexClock_T::rinexClockHeaderDumpTests()
+{
+   TUDEF( "RinexClockHeader", "dump" );
+
+   try
+   {
+      gnsstk::RinexClockStream rinexClockFile( dataRinexClockFile.c_str() );
+      gnsstk::RinexClockHeader rinexClockHeader;
+
+      rinexClockFile.exceptions(std::fstream::failbit);
+
+      rinexClockFile >> rinexClockHeader;
+      std::stringstream ss;
+      rinexClockHeader.dump(ss);
+      TUASSERT( !ss.str().empty());
+      rinexClockFile.close();
+   }
+   catch (...)
+   {
+      TUFAIL("Caught unanticipated exception");
+   }
+
+   TURETURN();
+}
+
 
 int main() //Main function to initialize and run all tests above
 {
@@ -318,6 +373,8 @@ int main() //Main function to initialize and run all tests above
    errorTotal += testClass.headerExceptionTest();
    errorTotal += testClass.roundTripTest();
    errorTotal += testClass.dataExceptionTest();
+   errorTotal += testClass.rinexClockDataDumpTests();
+   errorTotal += testClass.rinexClockHeaderDumpTests();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

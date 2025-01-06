@@ -22,6 +22,7 @@
 //
 //==============================================================================
 
+
 //==============================================================================
 //
 //  This software was developed by Applied Research Laboratories at the
@@ -36,17 +37,43 @@
 //
 //==============================================================================
 
-#include <list>
-#include <iostream>
-
 #include "Stats.hpp"
 #include "PowerSum.hpp"
-#include "Exception.hpp"
 #include "TestUtil.hpp"
-#include <stdlib.h>
-#include <math.h>
+#include <map>
 
 using namespace std;
+
+class PowerSum_T
+   {
+   private:
+      gnsstk::PowerSum ps;         // Main uut variable. Goes through heavy initialization
+      gnsstk::Stats<double> s;
+
+      // Utility functions
+      double  initialize_data ();
+      std::map<std::string, std::string>  parseAttributes(const std::string& input);
+
+   public:
+      unsigned dumpTest(); 
+      unsigned AddSubtractITest();   // Calls add() & subtract() functions
+      unsigned momentTest();
+      unsigned averageTest();   
+      unsigned varianceTest();
+      unsigned skewTest();   
+      unsigned kurtosisTest();   
+
+      PowerSum_T ()
+      {
+         for (int i=0; i<100000; i++)
+         {
+            double rv = initialize_data();
+            ps.add(rv);
+            s.Add(rv);
+         }
+      };
+   };
+
 
 // Generate a norimally distributed deviate with zero mean and unit variance.
 // Kudos to Press, Flannery, Teukolsky, and Veterling. And the man, Knuth.
@@ -54,8 +81,8 @@ using namespace std;
 // for every other call. Also this uses the libc standard rand() function
 // which really blows by most accounts. If you want this to be a 'good'
 // normal distribution, use a different rand()
-
-double gasdev()
+double PowerSum_T ::
+initialize_data()
 {
    const double mr2 = 2.0 / RAND_MAX;
    double v1, v2, fac;
@@ -69,66 +96,108 @@ double gasdev()
    } while (r >= 1);
    fac = sqrt(-2*log(r)/r);
    return v2*fac;
-}
+};
 
 
-int main(int argc, char *argv[])
+unsigned PowerSum_T ::
+dumpTest()
 {
-   TUDEF("PowerSum", "fail");
-   gnsstk::PowerSum ps;
-   gnsstk::Stats<double> s;
-
-   for (int i=0; i<100000; i++)
-   {
-      double rv = gasdev();
-      ps.add(rv);
-      s.Add(rv);
-   }
-
-      //ps.dump(cout);
-
-      //cout << "Stats class average:" << s.Average()
-      //     << " stddev:" << s.StdDev() << endl;
-
-   double e1 = std::abs(s.Average() - ps.average());
-   double e2 = std::abs(s.StdDev() - sqrt(ps.variance()));
-      //cout << "Disagreement in average: " << e1 << endl
-      //     << "Disagreement in standard deviation: " << e2 << endl;
-
-   try
-   {
-      TUCSM("average");
-      TUASSERT(e1 < 1e-3);
-      TUCSM("variance");
-      TUASSERT(e2 < 1e-3);
-      TUCSM("average");
-      TUASSERT(std::abs(ps.average()) < 1e-3);
-         // 2e-3 : tolerance is dependent on platform and can be improved with
-         // better random number generators
-      TUCSM("variance");
-      TUASSERT(std::abs(sqrt(ps.variance())-1) < 2e-3);
-      TUCSM("skew");
-      TUASSERT(std::abs(ps.skew()) < 0.01);
-      TUCSM("kurtosis");
-      TUASSERT(std::abs(ps.kurtosis()-3) < 0.05);
-   }
-   catch (gnsstk::Exception& e)
-   {
-      cout << e;
-      TUFAIL("Exception");
-   }
-
-
-      //if (e1 > 1e-3 || e2 > 1e-3 ||
-      //    std::abs(ps.average()) > 1e-3 ||
-      //    std::abs(sqrt(ps.variance())-1) > 2e-3 ||
-      //    std::abs(ps.skew()) > 0.01 ||
-      //    std::abs(ps.kurtosis()-3) > 0.05)
-      //{
-      //   cout << "Error in computed values" << endl;
-      //   return -1;
-      //}
-      //cout << "Looks good to me..." << endl;
-      //return 0;
+   TUDEF("PowerSum", "dump");
+   gnsstk::PowerSum psTmp;
+   std::stringstream dumpOutputStream;
+   psTmp.dump(dumpOutputStream);
+   TUASSERTE(bool, dumpOutputStream.str().empty(), false);  
    TURETURN();
+};
+
+
+unsigned PowerSum_T ::
+AddSubtractITest()
+{
+   TUDEF("PowerSum", "add_subtract_itertors");
+   gnsstk::PowerSum psTmp;
+   std::stringstream dumpOutputStream;
+   std::list<double> values1 = {1, 1, 1, 1,};
+   psTmp.add(values1.cbegin(), values1.cend());
+   std::list<double> values2 = {1, 1, 1};
+   psTmp.subtract(values2.cbegin(), values2.cend());
+   bool result = psTmp.average() == 1.;
+   TUASSERTE(bool, result, true);
+   TURETURN();
+};
+
+unsigned PowerSum_T ::
+momentTest()
+{
+   TUDEF("PowerSum", "moment");
+   double expected = 0.66666666666666663;
+   double epsilon =  1e-8;
+   gnsstk::PowerSum psTmp;
+   psTmp.clear();
+   std::stringstream dumpOutputStream;
+   std::list<double> values = {1, 2, 3};
+   psTmp.add(values.cbegin(), values.cend());
+   double result = psTmp.moment(2);
+   TUASSERTFEPS (expected, result, epsilon);
+   TURETURN();
+};
+
+
+unsigned PowerSum_T ::
+averageTest()
+{
+   TUDEF("PowerSum", "average");
+   double e1 = std::abs(s.Average() - ps.average());
+   TUASSERT(e1 < 1e-3);
+   TUASSERT(std::abs(ps.average()) < 1e-3);
+   TURETURN();
+};
+
+
+unsigned PowerSum_T ::
+varianceTest()
+{
+   TUDEF("PowerSum", "variance");
+   double e2 = std::abs(s.StdDev() - sqrt(ps.variance()));
+   TUASSERT(e2 < 1e-3);
+   TUASSERT(std::abs(sqrt(ps.variance())-1) < 2e-3);
+   TURETURN();
+};
+
+
+unsigned PowerSum_T ::
+skewTest()
+{
+   TUDEF("PowerSum", "skew");
+   TUASSERT(std::abs(ps.skew()) < 0.01);
+   TURETURN();
+};
+
+
+unsigned PowerSum_T ::
+kurtosisTest()
+{
+   TUDEF("PowerSum", "kurtosis");
+   TUASSERT(std::abs(ps.kurtosis()-3) < 0.05);
+   TURETURN();
+};
+
+
+int main()
+{
+   PowerSum_T testClass;
+   unsigned errorTotal = 0;
+
+   errorTotal += testClass.dumpTest(); 
+   errorTotal += testClass.AddSubtractITest(); 
+   errorTotal += testClass.momentTest();
+   errorTotal += testClass.averageTest();   
+   errorTotal += testClass.varianceTest();
+   errorTotal += testClass.skewTest();   
+   errorTotal += testClass.kurtosisTest();   
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
 }

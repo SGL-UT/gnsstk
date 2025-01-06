@@ -86,6 +86,9 @@ public:
       /// Dual frequency ISC test
    unsigned getISCDFTest();
 
+   unsigned dumpTests();
+   unsigned compareTest();
+
    gnsstk::ObsID oid1, oid2;
 };
 
@@ -151,6 +154,29 @@ getISCDFTest()
    TURETURN();
 }
 
+unsigned InterSigCorr_T ::
+dumpTests()
+{
+   TUDEF("InterSigCorr", "dumpTests");
+   TestClass uut;
+   std::vector<gnsstk::DumpDetail> dumpDetailTypes = {gnsstk::DumpDetail::OneLine, gnsstk::DumpDetail::Brief, gnsstk::DumpDetail::Full};
+   for (gnsstk::DumpDetail detailType : dumpDetailTypes) {
+      std::stringstream testStream;
+      uut.dump(testStream, detailType);
+      TUASSERTE(bool, false, testStream.str().empty());
+   }
+   TURETURN();
+}
+
+unsigned InterSigCorr_T ::
+compareTest()
+{
+   TUDEF("InterSigCorr", "compareTest");
+   TestClass uut;
+   gnsstk::NavDataPtr clone = uut.clone();
+   TUTHROW(uut.compare(clone)); // compare function currently unimplemented, verify that it throws an error
+   TURETURN();
+}
 
 int main()
 {
@@ -160,6 +186,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getISCSFTest();
    errorTotal += testClass.getISCDFTest();
+   errorTotal += testClass.dumpTests();
+   errorTotal += testClass.compareTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

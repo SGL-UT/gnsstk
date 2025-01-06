@@ -90,6 +90,12 @@ public:
       TUASSERTE(unsigned int, 13500, assigned.zcount);
       TUASSERTE(TimeSystem, TimeSystem(2), assigned.getTimeSystem());
 
+         //---------------------------------------------------------------------
+         //Construct from TimeTag
+         //---------------------------------------------------------------------
+      GPSWeekZcount gpsWeekZCountFromTimeTag(compare);  // GPSWeekZcount compare is a child of TimeTag
+      TUASSERTE(GPSWeekZcount, compare, gpsWeekZCountFromTimeTag);
+
       TURETURN();
    }
 
@@ -103,6 +109,7 @@ public:
       GPSWeekZcount setFromInfo1;
       GPSWeekZcount setFromInfo2;
       GPSWeekZcount setFromInfo3;
+      TimeTag::IdToValue emptyID;
       TimeTag::IdToValue id;
       id['F'] = "1300";
       id['z'] = "13500";
@@ -113,6 +120,12 @@ public:
          //Does a proper setFromInfo work with all information provided?
          //---------------------------------------------------------------------
       TUASSERT(setFromInfo1.setFromInfo(id));
+      TUASSERTE(GPSWeekZcount, compare, setFromInfo1);
+
+         //---------------------------------------------------------------------
+         //Does an empty id do nothing?
+         //---------------------------------------------------------------------
+      TUASSERT(setFromInfo1.setFromInfo(emptyID));
       TUASSERTE(GPSWeekZcount, compare, setFromInfo1);
 
       id.erase('z');
@@ -397,8 +410,12 @@ public:
 
 
       TUCSM("addZcounts");
-         // simple add
+         // add zero
       copy = orig;
+      TUCATCH(copy.addZcounts(0));
+      TUASSERTE(int, 1024, copy.week);
+      TUASSERTE(unsigned int,0, copy.zcount);
+         // simple add
       TUCATCH(copy.addZcounts(27));
       TUASSERTE(int, 1024, copy.week);
       TUASSERTE(unsigned int, 27, copy.zcount);
@@ -680,6 +697,45 @@ public:
       TURETURN();
    }
 
+   unsigned testGetPrintChars()
+   {
+      TUDEF("GPSWeekZcount", "getPrintChars");
+
+      GPSWeekZcount gpsWeekZCount;
+      TUASSERTE(std::string, "EFGPwzZcC", gpsWeekZCount.getPrintChars());
+
+      TURETURN();
+   }
+
+   unsigned testGetDefaultFormat()
+   {
+      TUDEF("GPSWeekZcount", "getDefaultFormat");
+
+      GPSWeekZcount gpsWeekZCount;
+      TUASSERTE(std::string, "%04F %06Z %P", gpsWeekZCount.getDefaultFormat());
+
+      TURETURN();
+   }
+
+   unsigned testIsValid()
+   {
+      TUDEF("GPSWeekZcount", "isValid");
+
+      GPSWeekZcount greaterZCountThenWeek(1300, ZCOUNT_PER_WEEK + 1);
+      TUASSERTE(bool, false, greaterZCountThenWeek.isValid());
+
+      GPSWeekZcount greaterThanMaxWeek(142601, 13500);
+      TUASSERTE(bool, false, greaterThanMaxWeek.isValid());
+
+      GPSWeekZcount negativeWeek(-100, 13500);
+      TUASSERTE(bool, false, negativeWeek.isValid());
+
+      GPSWeekZcount validGPSWeekZcount(1300, 13500);
+      TUASSERTE(bool, true, validGPSWeekZcount.isValid());
+      
+      TURETURN();
+   }
+
 
 private:
    double eps;
@@ -700,6 +756,9 @@ int main() //Main function to initialize and run all tests above
    errorCounter += testClass.printfTest();
    errorCounter += testClass.mathTest();
    errorCounter += testClass.testTimeBlock();
+   errorCounter += testClass.testGetPrintChars();
+   errorCounter += testClass.testGetDefaultFormat();
+   errorCounter += testClass.testIsValid();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter
              << std::endl;

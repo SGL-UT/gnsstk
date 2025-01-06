@@ -527,6 +527,80 @@ public:
       TURETURN();
    }
 
+   int applyClockOffsetTest(void)
+   {
+      TUDEF("ObsRngDev", "applyClockOffset");
+      gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em);
+      
+      double initialOrd = ord.getORD();
+      double clockOffset = 10.0;
+      ord.applyClockOffset(clockOffset);
+      TUASSERTE(double, (initialOrd - clockOffset), ord.getORD());
+      
+      TURETURN();
+   }
+
+   int computeOrdTxTest(void)
+   {
+      TUDEF("ObsRngDev", "computeOrdTx");
+
+      gnsstk::ObsRngDev::debug = true;
+
+      // Setting svTime to true triggers computeOrdTx instead of computeOrdRx
+      bool svTime = true;
+      gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em, svTime);
+
+      
+      double expectedOrd = -3140326.9124734704;
+      TUASSERTFEPS(ord.getORD(), expectedOrd, 1e-7);
+      
+      gnsstk::vfloat expectedAzimuth = 227.6162872314;
+      TUASSERTE(gnsstk::vfloat, ord.getAzimuth(), expectedAzimuth);
+      
+      gnsstk::vfloat expectedElevation = 8.4342308044;
+      TUASSERTE(gnsstk::vfloat, ord.getElevation(), expectedElevation);
+
+      gnsstk::ObsRngDev::debug = false;
+
+      TURETURN();
+   }
+
+   int computeOrdRxTest(void)
+   {
+      TUDEF("ObsRngDev", "computeOrdRx");
+
+      gnsstk::ObsRngDev::debug = true;
+      
+      // Setting svTime to true triggers computeOrdTx instead of computeOrdRx
+      gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em);
+      
+      double expectedOrd = -3140373.3854728369;
+      TUASSERTFEPS(ord.getORD(), expectedOrd, 1e-14);
+      
+      gnsstk::vfloat expectedAzimuth = 227.6160125732;
+      TUASSERTE(gnsstk::vfloat, ord.getAzimuth(), expectedAzimuth);
+      
+      gnsstk::vfloat expectedElevation = 8.4337768555;
+      TUASSERTE(gnsstk::vfloat, ord.getElevation(), expectedElevation);
+
+      gnsstk::ObsRngDev::debug = false;
+
+      TURETURN();
+   }
+
+   int ostreamTest(void)
+   {
+      TUDEF("ObsRngDev", "ostream");
+      std::ostringstream output;
+      gnsstk::ObsRngDev ord(prange[0], id, cTimeVec[0], receiverPos, ephemStore, em);
+      output << ord;
+      
+      std::string expectedOutput = "t=2006/031 02:00:00.0 prn= 1 az=227.6 el=8.434 h=Unknown ord=-3.14e+06 ion=Unknown trop=15.49 iodc=Unknown wonky=0";
+      TUASSERTE(std::string, output.str(), expectedOutput);
+
+      TURETURN();
+   }
+
 private:
    int failCount;
    gnsstk::SatID id;
@@ -571,6 +645,10 @@ int main() //Main function to initialize and run all tests above
    errorCounter += testClass.IonosphericTroposphericCalculationTest();
    errorCounter += testClass.GammaCalculationTest();
    errorCounter += testClass.TroposphericGammaCalculationTest();
+   errorCounter += testClass.applyClockOffsetTest();
+   errorCounter += testClass.computeOrdTxTest();
+   errorCounter += testClass.computeOrdRxTest();
+   errorCounter += testClass.ostreamTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorCounter << std::endl;
 

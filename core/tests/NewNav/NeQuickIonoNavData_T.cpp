@@ -74,30 +74,32 @@ class NeQuickIonoNavData_T
 public:
    NeQuickIonoNavData_T();
 
-      /// Test the NeQuickIonoNavData constructor
+   /// Test the NeQuickIonoNavData constructor
    unsigned constructorTest();
-      /// Test NequickIonoNavData::getEffIonoLevel
+   /// Test NequickIonoNavData::getEffIonoLevel
    unsigned getEffIonoLevelTest();
-      /// Test the NeQuickIonoNavData::ModelParameters constructor
+   /// Test the NeQuickIonoNavData::ModelParameters constructor
    unsigned constructor2Test();
-      /// Test NeQuickIonoNavData::ModelParameters::legendre
+   /// Test NeQuickIonoNavData::ModelParameters::legendre
    unsigned legendreTest();
-      /// Test NeQuickIonoNavData::ModelParameters::height
+   /// Test NeQuickIonoNavData::ModelParameters::height
    unsigned heightTest();
-      /// Test NeQuickIonoNavData::ModelParameters::exosphereAdjust
+   /// Test NeQuickIonoNavData::ModelParameters::exosphereAdjust
    unsigned exosphereAdjustTest();
-      /// Test NeQuickIonoNavData::ModelParameters::peakAmplitudes
+   /// Test NeQuickIonoNavData::ModelParameters::peakAmplitudes
    unsigned peakAmplitudesTest();
-      /// Test NeQuickIonoNavData::ModelParameters::effSolarZenithAngle
+   /// Test NeQuickIonoNavData::ModelParameters::effSolarZenithAngle
    unsigned effSolarZenithAngleTest();
-      /// Test NeQuickIonoNavData::ModelParameters::thickness
+   /// Test NeQuickIonoNavData::ModelParameters::thickness
    unsigned thicknessTest();
-      /// Test NeQuickIonoNavData::getTEC (implicitly getSED, getVED).
+   /// Test NeQuickIonoNavData::getTEC (implicitly getSED, getVED).
    unsigned getTECTest();
-      /// Test NeQuickIonoNavData::getIonoCorr
+   /// Test NeQuickIonoNavData::getIonoCorr
    unsigned getIonoCorrTest();
+   /// Test NeQuickIonoNavData::dump
+   unsigned dumpTest();
 
-      /// Hold input/truth data for legendreTest
+   /// Hold input/truth data for legendreTest
    class TestData
    {
    public:
@@ -106,9 +108,9 @@ public:
             : tAzr(iazr), tPos(lat,lon,0,gnsstk::Position::Geodetic, &galEll),
               criticalFreq(cf), transFactor(tf), ct(convertTime(hour, month))
       {
-            // Test data supplies Azr (effective sunspot count), but
-            // ModelParameters takes Az (effective ionization level)
-            // so convert for use.
+         // Test data supplies Azr (effective sunspot count), but
+         // ModelParameters takes Az (effective ionization level)
+         // so convert for use.
          tAz = tAzr + 408.99;
          tAz = (((tAz * tAz) - 167273)/1123.6) + 63.7;
       }
@@ -120,7 +122,7 @@ public:
       double transFactor;
    };
 
-      /// Hold input/truth data for heightTest
+   /// Hold input/truth data for heightTest
    class TestDataHeight
    {
    public:
@@ -134,10 +136,10 @@ public:
       double height;
    };
 
-      /** Hold input/truth data for exosphereAdjust method.
-       * @note This test data adds the Azr data as an explicit piece
-       * of test data while the EU code pulls the value from a
-       * different test. */
+   /** Hold input/truth data for exosphereAdjust method.
+    * @note This test data adds the Azr data as an explicit piece
+    * of test data while the EU code pulls the value from a
+    * different test. */
    class TestDataExosphere
    {
    public:
@@ -156,7 +158,7 @@ public:
       double top;
    };
 
-      /// Hold input/truth data for peakAmplitudes method.
+   /// Hold input/truth data for peakAmplitudes method.
    class TestDataAmplitude
    {
    public:
@@ -184,7 +186,7 @@ public:
       double expA3;
    };
 
-      /// Hold input/truth data for effSolarZenithAngle method.
+   /// Hold input/truth data for effSolarZenithAngle method.
    class TestDataSolar
    {
    public:
@@ -198,7 +200,7 @@ public:
       double expAngle;
    };
 
-      /// Hold input/truth data for testing E layer critical freq computation
+   /// Hold input/truth data for testing E layer critical freq computation
    class TestDataCritFreqE
    {
    public:
@@ -214,7 +216,7 @@ public:
       double expFreq;
    };
 
-      /// Hold input/truth data for testing solar flux->eff. ionization
+   /// Hold input/truth data for testing solar flux->eff. ionization
    class TestDataAz
    {
    public:
@@ -226,7 +228,7 @@ public:
       double expAz;
    };
 
-      /// Hold input/truth data for testing layer thickness computation
+   /// Hold input/truth data for testing layer thickness computation
    class TestDataThickness
    {
    public:
@@ -242,10 +244,10 @@ public:
       double critFreqF2;
       double electronDensityF2;
       double peakHeightF2;
-         // There is no top for F2 layer, but the EU code specifies
-         // thickness in pairs of top/bottom, and in the interest of
-         // maintaining consistency with the original test code, it's
-         // here.
+      // There is no top for F2 layer, but the EU code specifies
+      // thickness in pairs of top/bottom, and in the interest of
+      // maintaining consistency with the original test code, it's
+      // here.
       double peakThickTopF2;
       double peakThickBotF2;
       double peakThickTopF1;
@@ -254,7 +256,7 @@ public:
       double peakThickBotE; // EU test data specifies this but it's a constant.
    };
 
-      /// Hold input/truth data for getTEC
+   /// Hold input/truth data for getTEC
    class TestDataTEC
    {
    public:
@@ -277,49 +279,49 @@ public:
       double expTEC;
    };
 
-      /// Input/truth data for legendreTest
+   /// Input/truth data for legendreTest
    static const TestData testData[];
-      /// Input/truth data for heightTest
+   /// Input/truth data for heightTest
    static const TestDataHeight testDataHeight[];
-      /// Input/truth data for exosphereAdjustTest
+   /// Input/truth data for exosphereAdjustTest
    static const TestDataExosphere testDataExosphere[];
-      /// Input/truth data for peakAmplitudesTest
+   /// Input/truth data for peakAmplitudesTest
    static const TestDataAmplitude testDataAmplitude[];
-      /// Input/truth data for effSolarZenithAngleTest
+   /// Input/truth data for effSolarZenithAngleTest
    static const TestDataSolar testDataSolar[];
-      /// Input/truth data for constructor2Test
+   /// Input/truth data for constructor2Test
    static const TestDataCritFreqE testDataCFE[];
-      /// Solar flux coefficients for high solar activity.
+   /// Solar flux coefficients for high solar activity.
    static const std::vector<double> highSolarCoeff;
-      /// Solar flux coefficients for medium solar activity.
+   /// Solar flux coefficients for medium solar activity.
    static const std::vector<double> mediumSolarCoeff;
-      /// Solar flux coefficients for low solar activity.
+   /// Solar flux coefficients for low solar activity.
    static const std::vector<double> lowSolarCoeff;
-      /// Input/truth data for getEffIonoLevelTest
+   /// Input/truth data for getEffIonoLevelTest
    static const TestDataAz testDataAz[];
-      /// Input/truth data for thicknessTest
+   /// Input/truth data for thicknessTest
    static const TestDataThickness testDataThickness[];
-      /// Input/truth data for getTECTest
+   /// Input/truth data for getTECTest
    static const TestDataTEC testDataTEC[];
-      /// Tool for computing modified dip latitude.
+   /// Tool for computing modified dip latitude.
    gnsstk::MODIP modip;
-      /// Tool for looking up iono model data.
+   /// Tool for looking up iono model data.
    gnsstk::CCIR ccir;
-      /// Epsilon for critical frequency checks.
+   /// Epsilon for critical frequency checks.
    static const double criticalFreqEps;
-      /// Epsilon for trans factor checks.
+   /// Epsilon for trans factor checks.
    static const double transFactorEps;
-      /// Epsilon for peak amplitude checks.
+   /// Epsilon for peak amplitude checks.
    static const double amplitudeEps;
-      /// Epsilon for solar effective zenith angle checks.
+   /// Epsilon for solar effective zenith angle checks.
    static const double solarEps;
-      /// Epsilon for effective ionization level checks.
+   /// Epsilon for effective ionization level checks.
    static const double azEps;
-      /// Epsilon for peak thickness checks
+   /// Epsilon for peak thickness checks
    static const double thicknessEps;
-      /// Epsilon for testing TEC computation using galileo:iono test data
+   /// Epsilon for testing TEC computation using galileo:iono test data
    static const double docEps;
-      /// Epsilon for comparing derived Azr against stated Azr
+   /// Epsilon for comparing derived Azr against stated Azr
    static const double ionoSpotsEps;
 };
 
@@ -552,7 +554,7 @@ NeQuickIonoNavData_T::testDataThickness[] =
 const NeQuickIonoNavData_T::TestDataTEC
 NeQuickIonoNavData_T::testDataTEC[] =
 {
-      // pulled from Annex E of galileo:iono
+   // pulled from Annex E of galileo:iono
    {highSolarCoeff,4,0,297.66,82.49,78.11,8.23,54.29,20281546.18,20.40},
    {highSolarCoeff,4,0,297.66,82.49,78.11,-158.03,24.05,20275295.43,53.45},
    {highSolarCoeff,4,0,297.66,82.49,78.11,-30.86,41.04,19953770.93,25.91},
@@ -661,7 +663,7 @@ NeQuickIonoNavData_T::testDataTEC[] =
    {lowSolarCoeff,4,20,204.54,19.80,3754.69,-172.71,-20.37,20225145.06,24.53},
    {lowSolarCoeff,4,20,204.54,19.80,3754.69,-136.92,46.53,20309713.37,13.14},
    {lowSolarCoeff,4,20,204.54,19.80,3754.69,-82.52,20.64,19937791.48,38.20},
-      // created to test vertical TEC which the provided truth seems to ignore
+   // created to test vertical TEC which the provided truth seems to ignore
    {highSolarCoeff,4,12,257.17,-40.74,-25.76,257.17,-40.74,20153844.84,14.08},
 };
 
@@ -733,7 +735,7 @@ legendreTest()
       double modip_u = modip.stModip(td.tPos);
       gnsstk::NeQuickIonoNavData::ModelParameters uut(
          modip_u, td.tPos, td.tAz, ccir, td.ct);
-         // sanity check
+      // sanity check
       TUASSERTFEPS(td.tAzr, uut.fAzr, ionoSpotsEps);
       TUASSERTFEPS(td.criticalFreq, uut.ffoF2, criticalFreqEps);
       TUASSERTFEPS(td.transFactor, uut.fM3000F2, transFactorEps);
@@ -829,7 +831,7 @@ thicknessTest()
 {
    TUDEF("NeQuickIonoNavData::ModelParameters", "thickness");
    unsigned numTests = sizeof(testDataThickness)/sizeof(testDataThickness[0]);
-      /// E layer maximum density height in km.
+   /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
@@ -839,7 +841,7 @@ thicknessTest()
       uut.ffoF2 = td.critFreqF2;
       uut.fNmF2 = td.electronDensityF2;
       uut.fhmF2 = td.peakHeightF2;
-         // normally set in height() method
+      // normally set in height() method
       uut.fhmF1 = (uut.fhmF2+hmE) / 2.0;                                //eq.79
       TUCATCH(uut.thickness());
       TUASSERTFEPS(td.peakThickBotF2, uut.fB2bot, thicknessEps);
@@ -858,7 +860,7 @@ getTECTest()
    TUDEF("NeQuickIonoNavData::ModelParameters", "getTEC");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
    TestClass uut;
-      /// E layer maximum density height in km.
+   /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    for (unsigned testNum = 0; testNum < numTests; testNum++)
    {
@@ -899,12 +901,12 @@ getIonoCorrTest()
    TUDEF("NeQuickIonoNavData::ModelParameters", "getIonoCorr");
    unsigned numTests = sizeof(testDataTEC)/sizeof(testDataTEC[0]);
    TestClass uut;
-      /// E layer maximum density height in km.
+   /// E layer maximum density height in km.
    constexpr double hmE = 120.0;                                        //eq.78
    gnsstk::CarrierBand band;
    double expCorr;
-      // Only testing two carrier bands to make sure the formula
-      // works.  The code is too slow for more thorough testing.
+   // Only testing two carrier bands to make sure the formula
+   // works.  The code is too slow for more thorough testing.
    const double factorL1 = getFactor(gnsstk::CarrierBand::L1);
    const double factorL5 = getFactor(gnsstk::CarrierBand::L5);
    for (unsigned testNum = 0; testNum < numTests; testNum++)
@@ -913,19 +915,72 @@ getIonoCorrTest()
       uut.ai[0] = td.coefficients[0];
       uut.ai[1] = td.coefficients[1];
       uut.ai[2] = td.coefficients[2];
-         // test L1
+      // test L1
       band = gnsstk::CarrierBand::L1;
       expCorr = td.expTEC * factorL1 * 1e16;
       TUASSERTFEPS(expCorr, uut.getIonoCorr(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
-         // test L5
+      // test L5
       band = gnsstk::CarrierBand::L5;
       expCorr = td.expTEC * factorL5 * 1e16;
       TUASSERTFEPS(expCorr, uut.getIonoCorr(td.ct, td.station, td.satellite,
                                               band),
                    docEps);
    }
+   TURETURN();
+}
+
+
+unsigned NeQuickIonoNavData_T ::
+dumpTest()
+{
+   TUDEF("NeQuickIonoNavData", "dump");
+
+   // uut -> unit under test. In this case, a non-abstract NeQuickIonoNavData object
+   TestClass uut;
+   std::stringstream dumpOneLine;
+   std::stringstream dumpFull;
+   
+   uut.dump(dumpOneLine, gnsstk::DumpDetail::OneLine);
+   // check if some key tokens are found in the dump string
+   std::stringstream sigStream;
+   sigStream << uut.signal;
+   bool timeFound = dumpOneLine.str().find(uut.getDumpTime(gnsstk::DumpDetail::OneLine, uut.timeStamp)) != std::string::npos;
+   TUASSERTE(bool, true, timeFound);
+   TUASSERTE(bool, true, dumpOneLine.str().find(sigStream.str()) != std::string::npos);
+
+   uut.dump(dumpFull, gnsstk::DumpDetail::Full);
+   // check that the contents of getSignalString(), unique from uut.signal, are present in the dump output
+   TUASSERTE(bool, true, dumpFull.str().find(uut.getSignalString()) != std::string::npos);
+   // check that times of interest are in dump output
+   TUASSERTE(bool, true, dumpFull.str().find(uut.getDumpTimeHdr(gnsstk::DumpDetail::Full)) != std::string::npos);
+   // check other relevant tokens which require a stringstream to find()
+   std::stringstream ai0Stream;
+   ai0Stream << uut.ai[0];
+   TUASSERTE(bool, true, dumpFull.str().find(ai0Stream.str()) != std::string::npos);
+   std::stringstream ai1Stream;
+   ai1Stream << uut.ai[1];
+   TUASSERTE(bool, true, dumpFull.str().find(ai1Stream.str()) != std::string::npos);
+   std::stringstream ai2Stream;
+   ai2Stream << uut.ai[2];
+   TUASSERTE(bool, true, dumpFull.str().find(ai2Stream.str()) != std::string::npos);
+   std::stringstream idf0Stream;
+   idf0Stream << uut.idf[0];
+   TUASSERTE(bool, true, dumpFull.str().find(idf0Stream.str()) != std::string::npos);
+   std::stringstream idf1Stream;
+   idf1Stream << uut.idf[1];
+   TUASSERTE(bool, true, dumpFull.str().find(idf1Stream.str()) != std::string::npos);
+   std::stringstream idf2Stream;
+   idf2Stream << uut.idf[2];
+   TUASSERTE(bool, true, dumpFull.str().find(idf2Stream.str()) != std::string::npos);
+   std::stringstream idf3Stream;
+   idf3Stream << uut.idf[3];
+   TUASSERTE(bool, true, dumpFull.str().find(idf3Stream.str()) != std::string::npos);
+   std::stringstream idf4Stream;
+   idf4Stream << uut.idf[4];
+   TUASSERTE(bool, true, dumpFull.str().find(idf4Stream.str()) != std::string::npos);
+
    TURETURN();
 }
 
@@ -946,6 +1001,7 @@ int main(int argc, char *argv[])
    errorTotal += testClass.thicknessTest();
    errorTotal += testClass.getTECTest();
    errorTotal += testClass.getIonoCorrTest();
+   errorTotal += testClass.dumpTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

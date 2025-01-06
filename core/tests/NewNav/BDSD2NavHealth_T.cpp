@@ -61,6 +61,8 @@ public:
    unsigned constructorTest();
    unsigned getUserTimeTest();
    unsigned getHealthTest();
+   unsigned dumpTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -127,6 +129,47 @@ getHealthTest()
 }
 
 
+unsigned BDSD2NavHealth_T ::
+dumpTest()
+{
+   TUDEF("BDSD2NavHealth", "dumpSVStatus");
+
+   gnsstk::BDSD2NavHealth uut;  
+   std::stringstream dumpOneLine;
+   std::stringstream dumpBrief;
+   std::stringstream dumpFull;
+
+   uut.dump(dumpOneLine, gnsstk::DumpDetail::OneLine);
+   TUASSERTE(bool, true, dumpOneLine.str().length() != 0);
+
+   uut.dump(dumpBrief, gnsstk::DumpDetail::Brief);
+   TUASSERTE(bool, true, dumpBrief.str().length() != 0);
+
+   uut.dump(dumpFull, gnsstk::DumpDetail::Full);
+   TUASSERTE(bool, true, dumpFull.str().length() != 0);
+
+   TURETURN();
+}
+
+
+unsigned BDSD2NavHealth_T ::
+isSameDataTest()
+{
+   TUDEF("BDSD2NavHealth", "isSameData");
+
+   gnsstk::BDSD2NavHealth uut;
+   auto uut2 = std::make_shared<gnsstk::BDSD2NavHealth>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.svHealth = 0;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+
+   TURETURN();
+}
+
+
+
 int main()
 {
    BDSD2NavHealth_T testClass;
@@ -135,6 +178,8 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.getHealthTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

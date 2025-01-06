@@ -37,6 +37,7 @@
 //==============================================================================
 
 #include "PosixTime.hpp"
+#include "UnixTime.hpp"
 #include "TimeTag.hpp"
 #include "TestUtil.hpp"
 #include <iostream>
@@ -68,6 +69,30 @@ public:
       TUASSERTE(time_t, 1350000, copy.ts.tv_sec);
       TUASSERTE(long, 1, copy.ts.tv_nsec);
       TUASSERTE(TimeSystem, TimeSystem(2), copy.getTimeSystem());
+
+
+      TUCSM("PosixTime(timespec)");
+      PosixTime timespecCopy(compare.ts); //  Initialize with copy constructor
+         // Were the attributes set to expectation with the copy constructor?
+      TUASSERTE(time_t, 1350000, timespecCopy.ts.tv_sec);
+      TUASSERTE(long, 1, timespecCopy.ts.tv_nsec);
+      TUASSERTE(TimeSystem, TimeSystem::Unknown, timespecCopy.getTimeSystem());
+
+      TUCSM("PosixTime(UnixTime)");
+      UnixTime unixTime(1350000, 1, TimeSystem(2));
+      PosixTime fromUnixTime(unixTime); //  Initialize with UnixTime
+         // Were the attributes set to expectation with the UnixTime?
+      TUASSERTE(time_t, 1350000, fromUnixTime.ts.tv_sec);
+      TUASSERTE(long, 1000, fromUnixTime.ts.tv_nsec);      // 1 us = 1000 ns
+      TUASSERTE(TimeSystem, TimeSystem(2), fromUnixTime.getTimeSystem());  
+
+      TUCSM("PosixTime(CommonTime)");
+      CommonTime commonTime = compare.convertToCommonTime();
+      PosixTime fromCommonTime(commonTime); //  Initialize from commonTime
+         // Were the attributes set to expectation from commonTime?
+      TUASSERTE(time_t, 1350000, fromCommonTime.ts.tv_sec);
+      TUASSERTE(long, 1, fromCommonTime.ts.tv_nsec);
+      TUASSERTE(TimeSystem, TimeSystem(2), fromCommonTime.getTimeSystem());  
 
       TUCSM("operator=");
       PosixTime assigned;
@@ -105,6 +130,13 @@ public:
       TUASSERT(setFromInfo2.setFromInfo(id));
       TUASSERTE(PosixTime, compare2, setFromInfo2);
 
+      id.erase('N');
+      id.erase('P');
+      id['Z'] = "dummy value";
+         // Does nothing if invalid value is passed 
+      TUASSERT(setFromInfo2.setFromInfo(id));
+      TUASSERTE(PosixTime, compare2, setFromInfo2);
+
       TURETURN();
    }
 
@@ -120,6 +152,7 @@ public:
       PosixTime lessThanSec(1340000, 100); // Initialize with fewer seconds
       PosixTime lessThanNanoSec(1350000,0); // Initialize with fewer nanoseconds
       PosixTime compareCopy(compare); //  Initialize with copy constructor
+      PosixTime timeSystemGAL(1350000, 100,TimeSystem::GAL);
 
       TUCSM("operator==");
       TUASSERTE(PosixTime, compare, compareCopy);
@@ -137,6 +170,8 @@ public:
       TUASSERT(!(compare < lessThanSec));
       TUASSERT(!(compare < lessThanNanoSec));
       TUASSERT(!(compare < compareCopy));
+      TUTHROW(timeSystemGAL < compare);
+
 
       TUCSM("operator>");
       TUASSERT(!(lessThanSec > compare));
@@ -269,6 +304,27 @@ public:
 
       TURETURN();
    }
+
+   unsigned  getPrintCharsTest (void)
+   {
+      TUDEF("PosixTime", "getPrintChars");
+
+      PosixTime testPosixTime;
+      TUASSERTE(string, "WNP", testPosixTime.getPrintChars());
+
+      TURETURN();
+   }
+
+   unsigned  getDefaultFormatTest (void)
+   {
+      TUDEF("PosixTime", "getDefaultFormat");
+
+      PosixTime testPosixTime;
+      TUASSERTE(string, "%W %N %P", testPosixTime.getDefaultFormat());
+      TUASSERTE(string, "0 0 UNK", testPosixTime.asString());   
+
+      TURETURN();
+   }
 };
 
 int main() // Main function to initialize and run all tests above
@@ -283,6 +339,8 @@ int main() // Main function to initialize and run all tests above
    errorTotal += testClass.timeSystemTest();
    errorTotal += testClass.toFromCommonTimeTest();
    errorTotal += testClass.printfTest();
+   errorTotal += testClass.getPrintCharsTest();
+   errorTotal += testClass.getDefaultFormatTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

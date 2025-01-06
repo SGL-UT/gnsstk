@@ -53,6 +53,8 @@ public:
    unsigned compareTest();
    unsigned resetTest();
    unsigned diffTest();
+   unsigned printTest();
+   unsigned setFromInfoTest();
 };
 
 
@@ -151,6 +153,12 @@ convertTest()
    TUASSERTE(unsigned, uut9.epoch, uut9b.epoch);
    TUASSERTE(unsigned, uut9.day, uut9b.day);
    TUASSERTFE(uut9.sod, uut9b.sod);
+
+   gnsstk::GLONASSTime uut10(27,1462,0);
+   gnsstk::CommonTime ct(gnsstk::CivilTime(1995, 9, 7, 0, 0, 0,
+                                            gnsstk::TimeSystem::GLO));
+   TUTHROW(uut10.convertFromCommonTime(ct)); // verify that error is thrown for year < 1996
+   TUASSERTE(bool, false, uut10.isValid());
    TURETURN();
 }
 
@@ -259,6 +267,28 @@ diffTest()
    TURETURN();
 }
 
+unsigned GLONASSTime_T ::
+printTest()
+{
+   TUDEF("GLONASSTime", "print");
+   gnsstk::GLONASSTime uut(5, 251, 60., gnsstk::TimeSystem::GLO);
+   TUASSERTE(std::string, "P", uut.getPrintChars());
+   TUASSERTE(std::string, "GLONASSTime-has-no-printability-yet", uut.getDefaultFormat());
+   TUASSERTE(std::string, "GLONASSTime-has-no-printability-yet", uut.printf(""));
+   TUASSERTE(std::string, "GLONASSTime-has-no-printability-yet", uut.printError(""));
+   TURETURN();
+}
+
+unsigned GLONASSTime_T ::
+setFromInfoTest()
+{
+   TUDEF("GLONASSTime", "setFromInfo");
+   gnsstk::GLONASSTime uut(5, 251, 60., gnsstk::TimeSystem::GLO);
+   gnsstk::TimeTag::IdToValue emptyID;
+   TUASSERTE(bool, false, uut.setFromInfo(emptyID));
+   TURETURN();
+}
+
 
 int main()
 {
@@ -270,6 +300,8 @@ int main()
    errorTotal += testClass.compareTest();
    errorTotal += testClass.resetTest();
    errorTotal += testClass.diffTest();
+   errorTotal += testClass.printTest();
+   errorTotal += testClass.setFromInfoTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

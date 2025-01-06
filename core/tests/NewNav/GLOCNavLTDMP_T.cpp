@@ -46,6 +46,7 @@ class GLOCNavLTDMP_T
 public:
    unsigned constructorTest();
    unsigned isSVIDTest();
+   unsigned dumpTest();
 };
 
 
@@ -87,6 +88,22 @@ isSVIDTest()
 }
 
 
+unsigned GLOCNavLTDMP_T ::
+dumpTest ()
+{
+   TUDEF("GLOCNavLTDMP", "dump");
+   gnsstk::GLOCNavLTDMP uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+
+   uut.dump(dumpOutputStream);
+   TUASSERTE(bool, dumpOutputStream.str().empty(), false);   
+
+   TURETURN();
+}
+
+
 int main()
 {
    GLOCNavLTDMP_T testClass;
@@ -94,6 +111,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.isSVIDTest();
+   errorTotal += testClass.dumpTest();   
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

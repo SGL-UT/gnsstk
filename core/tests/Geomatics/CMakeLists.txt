@@ -170,4 +170,46 @@ add_test(NAME JPL_403eph_conversion
          -P ${CMAKE_SOURCE_DIR}/core/tests/testsuccexp.cmake)
 set_property(TEST JPL_403eph_conversion PROPERTY LABELS Geomatics)
 
+################################################################################
+set(TESTDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../data/inputs/)
+add_executable(AntennaStore_T AntennaStore_T.cpp)
+target_link_libraries(AntennaStore_T gnsstk)
+target_compile_definitions(AntennaStore_T PRIVATE TESTDIR="${TESTDIR}")
+add_test(NAME AntennaStore COMMAND $<TARGET_FILE:AntennaStore_T>)
+set_property(TEST AntennaStore PROPERTY LABELS Geomatics)
+################################################################################
+add_executable(EOPPrediction_T EOPPrediction_T.cpp)
+target_link_libraries(EOPPrediction_T gnsstk)
+add_test(NAME EOPPrediction COMMAND $<TARGET_FILE:EOPPrediction_T>)
+set_property(TEST EOPPrediction PROPERTY LABELS Geomatics)
+################################################################################
+set(TESTDIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../data/inputs/)
+add_executable(AntexData_T AntexData_T.cpp)
+target_link_libraries(AntexData_T gnsstk)
+target_compile_definitions(AntexData_T PRIVATE TESTDIR="${TESTDIR}")
+add_test(NAME AntexData COMMAND $<TARGET_FILE:AntexData_T>)
+set_property(TEST AntexData PROPERTY LABELS Geomatics)
 
+add_executable(gdc_T gdc_T.cpp)
+target_link_libraries(gdc_T gnsstk)
+add_test(NAME gdc_T COMMAND $<TARGET_FILE:gdc_T>)
+set_property(TEST gdc_T PROPERTY LABELS Geomatics)
+
+add_executable(SpecialFuncs_T SpecialFuncs_T.cpp)
+target_link_libraries(SpecialFuncs_T gnsstk)
+add_test(NAME SpecialFuncs_T COMMAND $<TARGET_FILE:SpecialFuncs_T>)
+set_property(TEST SpecialFuncs_T PROPERTY LABELS Geomatics)
+
+################################################################################
+
+add_executable(SunEarthSatGeometry_T SunEarthSatGeometry_T.cpp)
+target_link_libraries(SunEarthSatGeometry_T gnsstk)
+add_test(NAME SunEarthSatGeometry COMMAND $<TARGET_FILE:SunEarthSatGeometry_T>)
+set_property(TEST SunEarthSatGeometry PROPERTY LABELS Geomatics)
+
+################################################################################
+
+add_executable(DiscCorr_T DiscCorr_T.cpp)
+target_link_libraries(DiscCorr_T gnsstk)
+add_test(NAME DiscCorr_T COMMAND $<TARGET_FILE:DiscCorr_T>)
+set_property(TEST DiscCorr_T PROPERTY LABELS Geomatics)

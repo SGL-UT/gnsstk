@@ -60,6 +60,9 @@ public:
    unsigned getXvtTest();
    unsigned getUserTimeTest();
    unsigned fixFitTest();
+   unsigned dumpTest();
+   unsigned getAccuracyTest();   
+   unsigned isSameDataTest();
 };
 
 
@@ -247,6 +250,117 @@ fixFitTest()
 }
 
 
+unsigned GLOFNavEph_T ::
+dumpTest ()
+{
+   TUDEF("GLOFNavEph", "dump");
+   gnsstk::GLOFNavEph uut;
+ 
+   // set up an stringstream objects to pass into dump()
+   std::stringstream dumpOutputStream;
+
+   // Terse dump
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::Terse);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   // OneLine dump
+   dumpOutputStream.str(std::string());
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::OneLine);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   // Brief dump
+   dumpOutputStream.str(std::string());
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::Brief);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   // Full dump Tests
+   dumpOutputStream.str(std::string());
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::Full);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   uut.P2=0;
+   uut.P3=0;
+   dumpOutputStream.str(std::string());
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::Full);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   uut.P2=1;
+   uut.P3=1;
+   dumpOutputStream.str(std::string());
+   uut.dump(dumpOutputStream, gnsstk::DumpDetail::Full);
+   TUASSERTE(bool, dumpOutputStream.str().length() != 0, true);
+
+   TURETURN();
+}
+
+
+unsigned GLOFNavEph_T ::
+getAccuracyTest ()
+{
+   TUDEF("GLOFNavEph", "getAccuracy");
+   gnsstk::GLOFNavEph uut;
+ 
+   // getAccuracy
+   uut.accIndex = 0;
+   TUASSERTE (bool, uut.getAccuracy() == 1.0, true);
+   uut.accIndex = 1;
+   TUASSERTE (bool, uut.getAccuracy() == 2.0, true);
+   uut.accIndex = 2;
+   TUASSERTE (bool, uut.getAccuracy() == 2.5, true);
+   uut.accIndex = 3;
+   TUASSERTE (bool, uut.getAccuracy() == 4.0, true);
+   uut.accIndex = 4;
+   TUASSERTE (bool, uut.getAccuracy() == 5.0, true);
+   uut.accIndex = 5;
+   TUASSERTE (bool, uut.getAccuracy() == 7.0, true);
+   uut.accIndex = 6;
+   TUASSERTE (bool, uut.getAccuracy() == 10.0, true);
+   uut.accIndex = 7;
+   TUASSERTE (bool, uut.getAccuracy() == 12.0, true);
+   uut.accIndex = 8;
+   TUASSERTE (bool, uut.getAccuracy() == 14.0, true);
+   uut.accIndex = 9;
+   TUASSERTE (bool, uut.getAccuracy() == 16.0, true);
+   uut.accIndex = 10;
+   TUASSERTE (bool, uut.getAccuracy() == 32.0, true);
+   uut.accIndex = 11;
+   TUASSERTE (bool, uut.getAccuracy() == 64.0, true);
+   uut.accIndex = 12;
+   TUASSERTE (bool, uut.getAccuracy() == 128.0, true);
+   uut.accIndex = 13;
+   TUASSERTE (bool, uut.getAccuracy() == 256.0, true);
+   uut.accIndex = 14;
+   TUASSERTE (bool, uut.getAccuracy() == 512.0, true);
+   uut.accIndex = -1; // Test unexpected value
+   TUASSERTE (bool, uut.getAccuracy() == 0.0, true);
+
+   TURETURN();
+}
+
+
+unsigned GLOFNavEph_T ::isSameDataTest() {
+  TUDEF("GLOFNavEph", "isSameData");
+
+  // set up GLOFNavEph objects
+  gnsstk::GLOFNavEph uut;
+
+  //Create uut2 with  all NaN values set to 0.0, since NaN == NaN always fails.
+  uut.freqBias = 0.0;   
+  uut.clkBias = 0.0;
+  uut.tauDelta = 0.0;
+  auto uut2 = std::make_shared<gnsstk::GLOFNavEph>(uut);
+
+  // Test that it compares
+  TUASSERTE(bool, true, uut.isSameData(uut2, true));
+
+  // Test that it fails
+  uut.P4 = 1; // change something to assure it fails
+  TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+  TURETURN();
+}
+
+
 int main()
 {
    GLOFNavEph_T testClass;
@@ -257,6 +371,9 @@ int main()
    errorTotal += testClass.getXvtTest();
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
+   errorTotal += testClass.dumpTest();
+   errorTotal += testClass.getAccuracyTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

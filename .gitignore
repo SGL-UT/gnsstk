@@ -2,6 +2,7 @@
 *~
 .*.swp
 .idea
+.vscode
 
 # Python compiled byte-code
 *.pyc
@@ -32,3 +33,5 @@ gnsstk_doc_cpp.tgz
 _build/
 api/
 quickref.rst
+NewNavInc.h
+NewNavInit.h

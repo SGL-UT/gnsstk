@@ -571,7 +571,7 @@ namespace gnsstk
    {
       try
       {
-         return (::exp(-(x - mu) * (x - mu) / (2.0 * sig * sig)));
+         return (::exp(-(x - mu) * (x - mu) / (2.0 * sig * sig))) / sqrt(2 * M_PI * sig * sig);
       }
       catch (Exception& e)
       {

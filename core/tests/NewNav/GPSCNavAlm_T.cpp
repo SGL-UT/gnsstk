@@ -58,6 +58,7 @@ public:
    unsigned getUserTimeTest();
    unsigned fixFitTest();
    unsigned getXvtTest();
+   unsigned isSameDataTest();
 };
 
 
@@ -139,6 +140,21 @@ getXvtTest()
    TURETURN();
 }
 
+unsigned GPSCNavAlm_T ::
+isSameDataTest()
+{
+   TUDEF("GPSCNavAlm", "isSameData");
+
+   gnsstk::GPSCNavAlm uut;
+   auto uut2 = std::make_shared<gnsstk::GPSCNavAlm>();
+
+   TUASSERTE(bool, true, uut.isSameData(uut2, true));
+   uut.healthL1 = false;
+   TUASSERTE(bool, false, uut.isSameData(uut2, true));
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -149,6 +165,7 @@ int main()
    errorTotal += testClass.getUserTimeTest();
    errorTotal += testClass.fixFitTest();
    errorTotal += testClass.getXvtTest();
+   errorTotal += testClass.isSameDataTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

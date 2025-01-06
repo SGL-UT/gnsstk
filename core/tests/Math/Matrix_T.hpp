@@ -120,6 +120,21 @@ public:
 
    //Functions in Matrix_Operators_T.cpp
    int operatorTest(void);
+   int andOpTest(void);
+   int orOpTest(void);
+   int minorMatrixTest(void);
+   int condNumTest(void);
+   int diagTest(void);
+   int blkdiagTest(void);
+   int rotationTest(void);
+   int inverseLUDTest(void);
+   int inverseSVDTest(void);
+   int inverseCholTest(void);
+   int multiplyOpTest(void);
+   int addOpTest(void);
+   int subtractOpTest(void);
+   int constMultiplyTest(void);
+   int constDivideTest(void);
 
    //Functions in Matrix_InverseTranspose_T.cpp
    int inverseTest(void);
@@ -137,6 +152,31 @@ public:
    int SVDATest(void);
    int SVDBackSubTest(void);
    int SVDDeterminantTest(void);
+
+   //Functions in MatrixBase.hpp
+   // ConstMatrixBase
+   int isUTTest(void);
+   int isLTTest(void);
+   int isDiagonalTest(void);
+   int isSymmetricTest(void);
+   int rowCopyTest(void);
+   int diagCopyTest(void);
+   // RefMatrixBase
+   int zeroizeTest(void);
+   int zeroizeRowTest(void);
+   int zeroizeColTest(void);
+   int assignFromTest(void);
+   int addTest(void);
+   int subtractTest(void);
+   int multiplyTest(void);
+   int divideTest(void);
+   int unaryNegativeTest(void);
+
+   // functions in Matrix.hpp
+   int matrixSliceConstructorTest(void);
+   int constMatrixSliceTest(void);
+   int constMatrixRowSliceTest(void);
+   int constMatrixColSliceTest(void);
 
 
 private:

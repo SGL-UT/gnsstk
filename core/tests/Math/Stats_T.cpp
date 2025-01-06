@@ -42,12 +42,173 @@
 #include "Vector.hpp"
 #include "Stats.hpp"
 #include "logstream.hpp"
+#include "TestUtil.hpp"
 
 //------------------------------------------------------------------------------------
 using namespace std;
 using namespace gnsstk;
 
 //------------------------------------------------------------------------------------
+int medianTest(void)
+{
+   // corner cases, n=0 just returns default of the templated type, so 0
+   TUDEF("Stats", "median");
+   Vector<double> a(0);
+   TUASSERTE(double, median(a), 0.0);
+   // n=1 
+   Vector<double> b(1);
+   b[0] = 3.0;
+   TUASSERTE(double, median(b), 3.0);
+   // n=2
+   Vector<double> c(2);
+   c[0] = 4.0;
+   c[1] = 6.0;
+   TUASSERTE(double, median(c), 5.0);
+   // odd number case. 
+   Vector<double> d(3);
+   d[0] = 1.0;
+   d[1] = 2.0;
+   d[2] = 3.0;
+   TUASSERTE(double, median(d), 2.0);
+   // even case
+   Vector<double> e(4);
+   e[0] = 1.0;
+   e[1] = 3.0;
+   e[2] = 5.0;
+   e[3] = 6.0;
+   TUASSERTE(double, median(e), 4.0);
+   TURETURN();
+}
+
+int statsAddAndSubtractTest(void)
+{
+   TUDEF("Stats", "Stats Add, Subtract");
+   gnsstk::Vector<double> a(3);
+   a[0] = 1.0;
+   a[1] = 2.0;
+   a[2] = 3.0;
+   std::vector<double> b = {4.0, 5.0, 6.0};
+   gnsstk::Stats<double> stats;
+   TUASSERTE(double, 0.0, stats.Average());
+   // add a gnsstk::Vector worth of numbers
+   stats.Add(a);
+   // verify the a statistic
+   TUASSERTE(double, 2.0, stats.Average());
+   stats.Add(b);
+   TUASSERTE(double, 3.5, stats.Average());
+   stats.Subtract(a);
+   TUASSERTE(double, 5.0, stats.Average());
+   stats.Subtract(b);
+   TUASSERTE(double, 0.0, stats.Average());
+   TURETURN();
+}
+
+int outputStreamTest(void)
+{
+   TUDEF("Stats", "outputStream");
+   gnsstk::Vector<double> a(3);
+   a[0] = 1.0;
+   a[1] = 2.0;
+   a[2] = 3.0;
+   gnsstk::Stats<double> stats;
+   // add a gnsstk::Vector worth of numbers
+   stats.Add(a);
+   std::stringstream ss;
+   ss << stats;
+   TUASSERT(ss.str().find("Minimum") >= 0);
+   TUASSERT(ss.str().find("Maximum") >= 0);
+   TUASSERT(ss.str().find("Average") >= 0);
+   TUASSERT(ss.str().find("Std Dev") >= 0);
+   TUASSERT(ss.str().find("Variance") >= 0);
+   TURETURN();
+}
+
+int seqStatsAddAndSubtractTest(void)
+{
+   TUDEF("Stats", "SeqStats Add, Subtract");
+   gnsstk::Vector<double> a(3);
+   a[0] = 1.0;
+   a[1] = 2.0;
+   a[2] = 3.0;
+   std::vector<double> b = {4.0, 5.0, 6.0};
+   gnsstk::SeqStats<double> stats;
+   TUASSERTE(double, 0.0, stats.Average());
+   // add a gnsstk::Vector worth of numbers
+   stats.Add(a);
+   // verify the a statistic
+   TUASSERTE(double, 2.0, stats.Average());
+   stats.Add(b);
+   TUASSERTE(double, 3.5, stats.Average());
+   stats.Subtract(a);
+   TUASSERTE(double, 5.0, stats.Average());
+   stats.Subtract(b);
+   TUASSERTE(double, 0.0, stats.Average());
+   TURETURN();
+}
+
+int wtdStatsAddAndSubtractTest(void)
+{
+   TUDEF("stats", "WtdStats Add, Subtract");
+   gnsstk::Vector<double> a(3);
+   a[0] = 1.0;
+   a[1] = 2.0;
+   a[2] = 3.0;
+   std::vector<double> b = {4.0, 5.0, 6.0};
+   gnsstk::Vector<double> w1(3);
+   w1[0] = 1.0;
+   w1[1] = 1.0;
+   w1[2] = 1.0;
+   std::vector<double> w2 = {1.0, 1.0, 1.0};
+   gnsstk::WtdStats<double> stats;
+   TUASSERTE(double, 0.0, stats.Average());
+   // add a gnsstk::Vector worth of numbers
+   stats.Add(a, w1);
+   // verify the a statistic
+   TUASSERTE(double, 2.0, stats.Average());
+   stats.Add(b, w2);
+   TUASSERTE(double, 3.5, stats.Average());
+   stats.Subtract(a, w1);
+   TUASSERTE(double, 5.0, stats.Average());
+   stats.Subtract(b, w2);
+   TUASSERTE(double, 0.0, stats.Average());
+   TURETURN();
+}
+
+int twoSampleStatsAddAndSubtractTest(void)
+{
+   TUDEF("stats", "TwoSampleStats Add, Subtract");
+   // exercise the constructor trivially for coverage.
+   gnsstk::Vector<double> empty1(0);
+   gnsstk::Vector<double> empty2(0);
+   gnsstk::TwoSampleStats<double> stats(empty1, empty2);
+   gnsstk::Vector<double> a(3);
+   a[0] = 1.0;
+   a[1] = 2.0;
+   a[2] = 3.0;
+   std::vector<double> b = {1.0, 2.0, 3.0};
+   gnsstk::Vector<double> c(3);
+   c[0] = 4.0;
+   c[1] = 5.0;
+   c[2] = 6.0;
+   std::vector<double> d = {4.0, 5.0, 6.0};
+   TUASSERTE(double, 0.0, stats.AverageX());
+   TUASSERTE(double, 0.0, stats.AverageY());
+   stats.Add(a, c);
+   // verify the a statistic
+   TUASSERTE(double, 2.0, stats.AverageX());
+   TUASSERTE(double, 2.0, stats.AverageY());
+   stats.Add(b, d);
+   TUASSERTE(double, 3.5, stats.AverageX());
+   TUASSERTE(double, 3.5, stats.AverageY());
+   stats.Subtract(a, c);
+   TUASSERTE(double, 5.0, stats.AverageX());
+   TUASSERTE(double, 5.0, stats.AverageY());
+   stats.Subtract(b, d);
+   TUASSERTE(double, 0.0, stats.AverageX());
+   TUASSERTE(double, 0.0, stats.AverageY());
+   TURETURN();
+}
+
 int main(int argc, char **argv)
 {
 try {
@@ -912,7 +1073,13 @@ try {
              << "\n TwoSampleStats:\n" << TSS.asShortString("",0,8) << endl
              << TSS1.asShortString("",0,8);
 
-   return 0;
+   int errorCount = 0;
+   errorCount += medianTest();
+   errorCount += statsAddAndSubtractTest();
+   errorCount += seqStatsAddAndSubtractTest();
+   errorCount += wtdStatsAddAndSubtractTest();
+
+   return errorCount;
 }
 catch(Exception& e) { cout << "Exception: " << e << endl; }
 }

@@ -40,6 +40,9 @@
 #include "HelmertTransform.hpp"
 #include "YDSTime.hpp"
 
+using namespace gnsstk;
+using namespace std;
+
 /// Gain access to protected data.
 class TestClass : public gnsstk::HelmertTransform
 {
@@ -65,6 +68,10 @@ public:
    unsigned transformTripleTest();
    unsigned transformXvtTest();
    unsigned transformdoubleTest();
+   unsigned constructorBadTest();
+   unsigned asStringTest();
+   unsigned transformBadTest();
+   //unsigned transformBadVecSizeTest();
 
    gnsstk::ReferenceFrame initialRF;
    gnsstk::ReferenceFrame finalRF;
@@ -135,6 +142,33 @@ constructorTest()
    TURETURN();
 }
 
+unsigned HelmertTransform_T::constructorBadTest()
+{
+   TUDEF("HelmertTransform", "constructorBad");
+
+   // Constructor should throw
+   TUTHROW( TestClass uut2(gnsstk::ReferenceFrame::Unknown, gnsstk::ReferenceFrame::Unknown,
+               1e-4, 2e-4, 3e-4, 4, 5, 6, 7, "hi there",
+               gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC)) );
+
+   TUTHROW( TestClass uut2(gnsstk::ReferenceFrame::PZ90, gnsstk::ReferenceFrame::WGS84,
+               0.5, 0.5, 0.5, 4, 5, 6, 7, "hi there",
+               gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC)) );
+
+   TURETURN();
+}
+
+unsigned HelmertTransform_T::asStringTest()
+{
+   TUDEF("HelmertTransform", "asStringTest()");
+   TestClass uut2(gnsstk::ReferenceFrame::PZ90, gnsstk::ReferenceFrame::WGS84,
+               1e-4, 2e-4, 3e-4, 4, 5, 6, 7, "hi there",
+               gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC));
+
+   string result = uut2.asString();
+   TUASSERT(result == "Helmert Transformation from PZ90 to WGS84:\n  Scale factor : 7.0000e+00 = 7000000000.0000 ppb\n  Rotation angles (deg):  X : 1.0000e-04,  Y : 2.0000e-04,  Z : 3.0000e-04\n  Rotation angles (mas):  X : 360.0000,  Y : 720.0000,  Z : 1080.0000\n  Translation (meters):  X : 4.0000,  Y : 5.0000,  Z : 6.0000\n  Beginning Epoch: 2020/05/02  0:07:36.000 = 2103 518856.000 UTC\n  Description: hi there");
+   TURETURN();
+}
 
 unsigned HelmertTransform_T ::
 transformPositionTest()
@@ -337,6 +371,33 @@ transformdoubleTest()
    TURETURN();
 }
 
+unsigned HelmertTransform_T::transformBadTest()
+{
+   TUDEF("HelmertTransform", "transformBadTest");
+
+   // Create a position with reference frame not equal to fromFrame or toFrame
+   ReferenceFrame differentRF(gnsstk::ReferenceFrame::ITRF);
+   RefFrame diffRF(differentRF, gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC));
+   gnsstk::Position posDifferent(&p1[0], gnsstk::Position::Cartesian, nullptr,
+                         diffRF);
+
+   TestClass uut2(gnsstk::ReferenceFrame::PZ90, gnsstk::ReferenceFrame::WGS84,
+            1e-4, 2e-4, 3e-4, 4, 5, 6, 7, "hi there",
+            gnsstk::YDSTime(2020,123,456,gnsstk::TimeSystem::UTC));
+
+   // Function call should throw
+   TUTHROW(uut2.transform(posDifferent, posDifferent));
+
+   // Create a vector with a size of 3 or more
+   gnsstk::Vector<double> pos1;
+   pos1.resize(4);
+   gnsstk::Vector<double> out1;
+
+   // Function call should throw
+   TUTHROW(uut2.transform(pos1, differentRF, out1));
+
+   TURETURN();
+}
 
 int main()
 {
@@ -349,6 +410,9 @@ int main()
    errorTotal += testClass.transformTripleTest();
    errorTotal += testClass.transformXvtTest();
    errorTotal += testClass.transformdoubleTest();
+   errorTotal += testClass.constructorBadTest();
+   errorTotal += testClass.asStringTest();
+   errorTotal += testClass.transformBadTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
