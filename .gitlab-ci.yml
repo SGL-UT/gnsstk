@@ -448,7 +448,11 @@ fortify-scan:
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
     - make all -j 4
     - !reference [.fortify_post_consolidated_cpp, script]
-  retry: 2
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
 
 fortify-scan-publish:
   stage: reporting
