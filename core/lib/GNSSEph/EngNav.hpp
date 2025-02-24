@@ -267,7 +267,8 @@ namespace gnsstk
           *
           * @param input 10 long integers containing the ten words of
           * the navigation message subframe.
-          * @return the pattern ID as defined in the above table.
+          * @return The pattern ID as defined in the above table,
+          * or 0 on error.
           */
       static short getSubframePattern(const long input[10])
          noexcept;

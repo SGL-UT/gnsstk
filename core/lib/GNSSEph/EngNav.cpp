@@ -491,32 +491,31 @@ namespace gnsstk
       long  itemp;
 
       short patId[]
-         = {   5,   6,  6,   6, 10,  8,   6,  7,   7,  7,   7,  7,   9 };
-         /*SVid   51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 */
+            = {     5,  6,  6,  6, 10,  8,  6,  7,  7,  7,  7,  7,  9 };
+         // SV ID: 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63
 
-         //  Get subframe id.  If 1-3 return as patId.
-
-      itemp = input[1];         /* move HOW to temp storage         */
-      itemp >>= 8;           /* shift so subframe id is in 3 lsb */
-      itemp &= 0x00000007L;  /* and mask off msbs                */
+         //  Get subframe ID.  If 1-3, return as pattern ID:
+      itemp = input[1];      // Move HOW to temp storage,
+      itemp >>= 8;           // shift so subframe ID is in 3 lsbs,
+      itemp &= 0x00000007L;  // and mask off msbs.
       iret = static_cast<short>( itemp );
-         /* Not a valid sf id */
       if ( iret < 1 || iret > 5 )
-         return(0);
+         return(0);          // Error - invalid subframe ID
       if ( iret < 4 )
-         return(iret);
+         return(iret);       // Pattern ID 1-3
 
-
-         /*   If subframe 1-5, get page id and look up patId      */
-      itemp = input[2];      /* move word 3 into temp storage    */
-      itemp >>= 22;          /* shift so SV ID is in 6 lsbs      */
-      itemp &= 0x0000003FL;  /* and mask off msbs                */
-      svid  = static_cast<short>( itemp );
+         // If subframe 4-5, get page ID and look up pattern ID:
+      itemp = input[2];      // Move word 3 into temp storage,
+      itemp >>= 22;          // shift so SV ID is in 6 lsbs,
+      itemp &= 0x0000003FL;  // and mask off msbs to yield
+      svid  = static_cast<short>( itemp );  // SV ID 0-63.
       if ( svid <= 32 )
-         iret = 4;            /* PRN orbit data */
+         iret = 4;           // PRN orbit data
+      else if ( svid <= 50 )
+         iret = 0;           // Error - unassigned SV ID
       else
-         iret = patId[svid-51];  /* look up pat id for almanac overhead
-                                    information */
+         iret = patId[svid-51];  // Look up pattern ID for
+                                 // almanac overhead info.
       return iret;
    }
 
