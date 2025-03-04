@@ -58,6 +58,7 @@
 #include "PNBGalINavDataFactory.hpp"
 #include "PNBGLOCNavDataFactory.hpp"
 #include "PNBGLOFNavDataFactory.hpp"
+#include "PNBNavDataFactory.hpp"
 
 
 namespace gnsstk
@@ -72,8 +73,11 @@ namespace gnsstk
 class TestClass : public gnsstk::PNBMultiGNSSNavDataFactory
 {
 public:
-   static std::shared_ptr<gnsstk::PNBNavDataFactoryMap> getFactories()
+   static std::shared_ptr<gnsstk::PNBNavDataFactoryMap> getStaticFactories()
    { return factories(); }
+
+   std::shared_ptr<gnsstk::PNBNavDataFactoryMap> getFactories()
+   { return myFactories; }
 };
 class PNBTestFactory : public gnsstk::PNBNavDataFactory
 {
@@ -87,6 +91,7 @@ public:
    bool getProcHea() const { return processHea; }
    bool getProcTim() const { return processTim; }
    void resetState() override {}
+   std::unique_ptr<gnsstk::PNBNavDataFactory> clone() { return std::unique_ptr<PNBTestFactory>(new PNBTestFactory(*this)); }
 };
 
 
@@ -103,6 +108,8 @@ public:
    unsigned setValidityFilterTest();
    unsigned setTypeFilterTest();
    unsigned addDataTest();
+   unsigned cloneTest();
+   unsigned copyAssignmentTest();
 
       /// Count the various types of messages present in navOut.
    void countResults(const gnsstk::NavDataPtrList& navOut);
@@ -156,7 +163,7 @@ constructorTest()
       // Iterate over the factories and try to find the expected
       // factory objects.  The factories map may also contain ext
       // factories, so we ignore anything else.
-   for (auto& i : *(TestClass::getFactories()))
+   for (auto& i : *(TestClass::getStaticFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if (dynamic_cast<gnsstk::PNBGPSLNavDataFactory*>(p) != nullptr)
@@ -218,10 +225,10 @@ unsigned PNBMultiGNSSNavDataFactory_T ::
 setValidityFilterTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "setValidityFilter()");
-   gnsstk::PNBMultiGNSSNavDataFactory uut;
+   TestClass uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setValidityFilter
-   for (auto& i : *(TestClass::getFactories()))
+   for (auto& i : *(uut.getFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)
@@ -252,10 +259,10 @@ unsigned PNBMultiGNSSNavDataFactory_T ::
 setTypeFilterTest()
 {
    TUDEF("PNBMultiGNSSNavDataFactory", "setTypeFilter()");
-   gnsstk::PNBMultiGNSSNavDataFactory uut;
+   TestClass uut;
    PNBTestFactory *fact = nullptr;
       // find our test factory so we can verify setTypeFilter
-   for (auto& i : *(TestClass::getFactories()))
+   for (auto& i : *(uut.getFactories()))
    {
       gnsstk::PNBNavDataFactory *p = i.second.get();
       if ((fact = dynamic_cast<PNBTestFactory*>(p)) != nullptr)
@@ -512,6 +519,94 @@ countResults(const gnsstk::NavDataPtrList& navOut)
    }
 }
 
+unsigned PNBMultiGNSSNavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("PNBMultiGNSSNavDataFactory", "clone()");
+   gnsstk::PNBMultiGNSSNavDataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   uut.setTypeFilter(gnsstk::allNavMessageTypes);
+   uut.setValidityFilter(gnsstk::NavValidityType::Any);
+      //
+      // Start with some GPS LNAV data.
+      //
+      // Add subframe 1, expect 1 health and 1 ISC.
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
+   TUASSERTE(size_t, 2, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, heaCount);
+
+   std::unique_ptr<gnsstk::PNBNavDataFactory> uut2 = uut.clone();
+   auto uut2Ref = dynamic_cast<gnsstk::PNBMultiGNSSNavDataFactory&>(*uut2);
+   // Reseting the state of uut2 should not impact uut
+   // i.e. uut should still have memory of ephLNAVGPSSF1 and when processing
+   // the next two subframes should result in a CEI object. uut2 cannot after reset.
+   uut2Ref.resetState();
+
+   uut.addData(ephLNAVGPSSF2, navOut);
+   navOut.clear();
+   uut.addData(ephLNAVGPSSF3, navOut);
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, ephCount);
+   navOut.clear();
+
+   uut2Ref.addData(ephLNAVGPSSF2, navOut);
+   navOut.clear();
+   uut2Ref.addData(ephLNAVGPSSF3, navOut);
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+
+   TURETURN();
+   TURETURN();
+}
+
+unsigned PNBMultiGNSSNavDataFactory_T ::
+copyAssignmentTest()
+{
+   TUDEF("PNBMultiGNSSNavDataFactory", "copyAssignment");
+   gnsstk::PNBMultiGNSSNavDataFactory uut;
+
+   // Copy assignment of self should still work
+   uut = uut;
+   gnsstk::NavDataPtrList navOut;
+   uut.setTypeFilter(gnsstk::allNavMessageTypes);
+   uut.setValidityFilter(gnsstk::NavValidityType::Any);
+      //
+      // Start with some GPS LNAV data.
+      //
+      // Add subframe 1, expect 1 health and 1 ISC.
+      /// @todo Switch this test to use FactoryCounter and check for 1 ISC
+   TUASSERTE(bool, true, uut.addData(ephLNAVGPSSF1, navOut));
+   TUASSERTE(size_t, 2, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, heaCount);
+
+   gnsstk::PNBMultiGNSSNavDataFactory uut2;
+   // Copy assignmet. reseting the state of uut2 should not impact uut
+   // i.e. uut should still have memory of ephLNAVGPSSF1 and when processing
+   // the next two subframes should result in a CEI object. uut2 cannot after reset.
+   uut2 = uut;
+   uut2.resetState();
+
+   uut.addData(ephLNAVGPSSF2, navOut);
+   navOut.clear();
+   uut.addData(ephLNAVGPSSF3, navOut);
+   TUASSERTE(size_t, 1, navOut.size());
+   countResults(navOut);
+   TUASSERTE(unsigned, 1, ephCount);
+   navOut.clear();
+
+   uut2.addData(ephLNAVGPSSF2, navOut);
+   navOut.clear();
+   uut2.addData(ephLNAVGPSSF3, navOut);
+   TUASSERTE(size_t, 0, navOut.size());
+   navOut.clear();
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -523,6 +618,8 @@ int main()
    errorTotal += testClass.setValidityFilterTest();
    errorTotal += testClass.setTypeFilterTest();
    errorTotal += testClass.addDataTest();
+   errorTotal += testClass.cloneTest();
+   errorTotal += testClass.copyAssignmentTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

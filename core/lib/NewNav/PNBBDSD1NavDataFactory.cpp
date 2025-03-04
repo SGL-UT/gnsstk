@@ -983,4 +983,10 @@ namespace gnsstk
       }
    }
 
+   std::unique_ptr<PNBNavDataFactory> PNBBDSD1NavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBBDSD1NavDataFactory>(new PNBBDSD1NavDataFactory(*this));
+   }
+
 } // namespace gnsstk

@@ -59,6 +59,7 @@ private:
       override
    { return false; }
    void resetState() override {}
+   std::unique_ptr<gnsstk::PNBNavDataFactory> clone() { return std::unique_ptr<TestClass>(new TestClass(*this)); }
 };
 
 class PNBNavDataFactory_T

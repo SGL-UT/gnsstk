@@ -44,8 +44,25 @@ namespace gnsstk
    PNBMultiGNSSNavDataFactory ::
    PNBMultiGNSSNavDataFactory()
    {
-         // get our own shared pointer to the factories map.
-      myFactories = factories();
+      std::shared_ptr<PNBNavDataFactoryMap> registeredFactories = PNBMultiGNSSNavDataFactory::factories();
+      cloneToMyFactories(*registeredFactories);
+   }
+
+   PNBMultiGNSSNavDataFactory ::
+   PNBMultiGNSSNavDataFactory(const PNBMultiGNSSNavDataFactory& ndf)
+   {
+      cloneToMyFactories(*ndf.myFactories);
+   }
+
+   PNBMultiGNSSNavDataFactory& PNBMultiGNSSNavDataFactory ::
+   operator=(const PNBMultiGNSSNavDataFactory& ndf)
+   {
+      PNBNavDataFactory::operator =(ndf);
+      if (this != &ndf)
+      {
+         cloneToMyFactories(*ndf.myFactories);
+      }
+      return *this;
    }
 
 
@@ -130,6 +147,23 @@ namespace gnsstk
       for (auto& fi : *myFactories)
       {
          fi.second->setControl(ctrl);
+      }
+   }
+
+   std::unique_ptr<PNBNavDataFactory> PNBMultiGNSSNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBMultiGNSSNavDataFactory>(new PNBMultiGNSSNavDataFactory(*this));
+   }
+
+   void PNBMultiGNSSNavDataFactory ::
+   cloneToMyFactories(const PNBNavDataFactoryMap& from)
+   {
+      myFactories->clear();
+      for (const auto& it : from)
+      {
+         PNBNavDataFactoryPtr fact = it.second->clone();
+         myFactories->insert(PNBNavDataFactoryMap::value_type(it.first, fact));
       }
    }
 }

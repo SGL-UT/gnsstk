@@ -171,6 +171,10 @@ namespace gnsstk
          return ((sz == 85) || (sz == 96));
       }
 
+
+         /// @copydoc PNBNavDataFactory::
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /// Class to store fields used to turn GLONASS into UT1.
       class TimeMeta

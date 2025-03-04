@@ -49,6 +49,7 @@ from __future__ import absolute_import
 // =============================================================
 
 %include "Ignore.i"
+%rename("$ignore", regextarget=1, fullname=1) "gnsstk::.*DataFactory::clone";
 
 // =============================================================
 //  Section 5: Enumerations

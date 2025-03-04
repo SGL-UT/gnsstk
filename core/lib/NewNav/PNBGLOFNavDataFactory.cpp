@@ -682,4 +682,10 @@ namespace gnsstk
          NA.is_valid();
    }
 
+   std::unique_ptr<PNBNavDataFactory> PNBGLOFNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGLOFNavDataFactory>(new PNBGLOFNavDataFactory(*this));
+   }
+
 } // namespace gnsstk

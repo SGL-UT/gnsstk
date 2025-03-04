@@ -146,6 +146,9 @@ namespace gnsstk
           * subframe 3, which is going to be offset by 12.52 seconds */
       static CommonTime getSF3Time(const CommonTime& timestamp);
 
+         /// @copydoc PNBNavDataFactory::clone()
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /// Quick alias for a shared_ptr to GPSCNav2ISC.
       typedef std::shared_ptr<GPSCNav2ISC> GPSCNav2ISCPtr;

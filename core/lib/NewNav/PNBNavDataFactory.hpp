@@ -51,6 +51,13 @@ namespace gnsstk
       /// @ingroup NavFactory
       //@{
 
+   class PNBNavDataFactory;
+
+      /// Managed pointer to a PNBNavDataFactory.
+   typedef std::shared_ptr<PNBNavDataFactory> PNBNavDataFactoryPtr;
+      /// Map the navigation message type to a factory for producing that type.
+   typedef std::map<NavType, PNBNavDataFactoryPtr> PNBNavDataFactoryMap;
+
       /** This is the abstract base class for all PackedNavBits
        * decoders for theNavData tree.  Only one method is declared,
        * addData(), which is the intended interface to be used.  This
@@ -113,6 +120,19 @@ namespace gnsstk
       virtual void setControl(const FactoryControl& ctrl)
       { factControl = ctrl; }
 
+         /** Clone the PNB factory.
+          *
+          * This polymorphic clone method is required for 
+          * PNBMultiGNSSNavDataFactory to duplicate it's static list of known
+          * PNB Nav Data Factories.
+          *
+          * @warning Currently this method does not guarantee a deep copy
+          *   of underlying data.
+          *
+          * @returns a shared pointer to the cloned factory
+          */ 
+      virtual std::unique_ptr<PNBNavDataFactory> clone() = 0;
+
    protected:
          /// Configuration for the behavior of this factory.
       FactoryControl factControl;
@@ -135,11 +155,6 @@ namespace gnsstk
          /// If true, GNSS system message will be output by addData.
       bool processSys;
    }; // class PNBNavDataFactory
-
-      /// Managed pointer to a PNBNavDataFactory.
-   typedef std::shared_ptr<PNBNavDataFactory> PNBNavDataFactoryPtr;
-      /// Map the navigation message type to a factory for producing that type.
-   typedef std::map<NavType, PNBNavDataFactoryPtr> PNBNavDataFactoryMap;
 
       //@}
 

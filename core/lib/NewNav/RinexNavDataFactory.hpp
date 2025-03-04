@@ -216,6 +216,9 @@ namespace gnsstk
           * @param[in] sisa The signal in space accuracy index.
           * @return The signal accuracy in meters. */
       static double encodeSISA(uint8_t sisa);
+
+        /// @copydoc NavDataFactory::clone() 
+      std::unique_ptr<NavDataFactory> clone() override;
    };
 
       //@}

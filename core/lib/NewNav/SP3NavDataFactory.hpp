@@ -334,6 +334,9 @@ namespace gnsstk
           * @see OrbitDataSP3(double). */
       double initOrbitDataVal;
 
+         /// @copydoc NavDataFactory::clone() 
+      std::unique_ptr<NavDataFactory> clone() override;
+
    protected:
 
          /** Set the obs and nav identification for the given NavMessageID
@@ -343,6 +346,7 @@ namespace gnsstk
           * @param[in,out] signal The NavMessageID object to update.
           * @return true if successful, false if the system is unsupported. */
       static bool setSignal(const SatID& sat, NavMessageID& signal);
+
 
    private:
          /** Load a RINEX clock file into internal store.

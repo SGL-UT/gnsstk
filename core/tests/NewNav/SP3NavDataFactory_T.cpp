@@ -107,6 +107,7 @@ public:
    unsigned gapTest();
       /// Test nomTimeStep via the friendlier wrapper methods.
    unsigned nomTimeStepTest();
+   unsigned cloneTest();
       /** Exercise loadIntoMap by loading mixed source data.
        * @param[in] badPos Set the rejectBadPosFlag to this value.
        * @param[in] badClk Set the rejectBadClkFlag to this value.
@@ -1392,6 +1393,42 @@ nomTimeStepTest()
    TURETURN();
 }
 
+unsigned SP3NavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("SP3NavDataFactory", "clone");
+   gnsstk::SP3NavDataFactory uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   gnsstk::SP3NavDataFactory& uut2Ref = dynamic_cast<gnsstk::SP3NavDataFactory&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   auto nd = std::make_shared<gnsstk::OrbitDataSP3>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->clkBias = 13.0;
+   uut2Ref.addNavData(nd);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+
+   auto uut3 = uut2Ref.clone();
+   gnsstk::SP3NavDataFactory& uut3Ref = dynamic_cast<gnsstk::SP3NavDataFactory&>(*uut3);
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+   TUASSERTE(unsigned, 1, uut3Ref.size());
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -1422,6 +1459,7 @@ int main()
    errorTotal += testClass.addRinexClockTest();
    errorTotal += testClass.gapTest();
    errorTotal += testClass.nomTimeStepTest();
+   errorTotal += testClass.cloneTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

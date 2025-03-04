@@ -153,6 +153,9 @@ namespace gnsstk
       bool processLTDMP(unsigned long stringID,
                         const PackedNavBitsPtr& navIn);
 
+         /// @copydoc PNBNavDataFactory::
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /// Class to store fields used to turn GLONASS into UT1.
       class TimeMeta

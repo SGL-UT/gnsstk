@@ -271,4 +271,11 @@ namespace gnsstk
                                  TrackingCode::CA);
       navOut->signal.nav = NavType::GPSLNAV;
    }
+
+
+   std::unique_ptr<NavDataFactory> YumaNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<YumaNavDataFactory>(new YumaNavDataFactory(*this));
+   }
 }

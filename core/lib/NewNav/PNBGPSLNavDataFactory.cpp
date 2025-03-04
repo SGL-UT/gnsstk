@@ -896,4 +896,10 @@ namespace gnsstk
       ephAcc.clear();
    }
 
+   std::unique_ptr<PNBNavDataFactory> PNBGPSLNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGPSLNavDataFactory>(new PNBGPSLNavDataFactory(*this));
+   }
+
 } // namespace gnsstk

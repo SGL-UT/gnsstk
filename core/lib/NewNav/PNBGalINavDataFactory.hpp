@@ -225,6 +225,10 @@ namespace gnsstk
       void dumpState(std::ostream& s) const;
 #endif
 
+    
+      /// @copydoc PNBNavDataFactory::clone() 
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /** Map transmitting satellite ID to a vector of
           * PackedNavBits for accumulating almanac data, where index 0

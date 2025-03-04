@@ -42,6 +42,7 @@
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
 #include "GPSWeekSecond.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -95,6 +96,7 @@ public:
    template <class NavClass>
    void verifyDataType(gnsstk::TestUtil& testFramework,
                        gnsstk::NavMessageMap& nmm);
+   unsigned cloneTest();
 };
 
 
@@ -397,6 +399,42 @@ verifyDataType(gnsstk::TestUtil& testFramework,
    }
 }
 
+unsigned SEMNavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("SEMNavDataFactory", "clone");
+   gnsstk::SEMNavDataFactory uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   gnsstk::SEMNavDataFactory uut2Ref = dynamic_cast<gnsstk::SEMNavDataFactory&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   auto nd = std::make_shared<gnsstk::GPSLNavAlm>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->af0 = 13.0;
+   uut2Ref.addNavData(nd);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+
+   auto uut3 = uut2Ref.clone();
+   gnsstk::SEMNavDataFactory uut3Ref = dynamic_cast<gnsstk::SEMNavDataFactory&>(*uut3);
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+   TUASSERTE(unsigned, 1, uut3Ref.size());
+   
+   TURETURN();
+}
+
 
 int main()
 {
@@ -406,6 +444,7 @@ int main()
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
    errorTotal += testClass.loadIntoMapTestdDeprecated();
+   errorTotal += testClass.cloneTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;
