@@ -40,6 +40,7 @@
 #include "TestUtil.hpp"
 #include "GPSLNavEph.hpp"
 #include "GPSLNavHealth.hpp"
+#include "CivilTime.hpp"
 
 namespace gnsstk
 {
@@ -68,6 +69,7 @@ public:
    unsigned constructorTest();
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
+   unsigned cloneTest();
       /** Use dynamic_cast to verify that the contents of nmm are the
        * right class.
        * @param[in] testFramework The test framework created by TUDEF,
@@ -178,6 +180,42 @@ verifyDataType(gnsstk::TestUtil& testFramework,
    }
 }
 
+unsigned YumaNavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("YumaNavDataFactory", "clone");
+   gnsstk::YumaNavDataFactory uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   gnsstk::YumaNavDataFactory& uut2Ref = dynamic_cast<gnsstk::YumaNavDataFactory&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   auto nd = std::make_shared<gnsstk::GPSLNavAlm>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->af0 = 13.0;
+   uut2Ref.addNavData(nd);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+
+   auto uut3 = uut2->clone();
+   gnsstk::YumaNavDataFactory& uut3Ref = dynamic_cast<gnsstk::YumaNavDataFactory&>(*uut3);
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+   TUASSERTE(unsigned, 1, uut3Ref.size());
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -186,6 +224,7 @@ int main()
 
    errorTotal += testClass.constructorTest();
    errorTotal += testClass.loadIntoMapTest();
+   errorTotal += testClass.cloneTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

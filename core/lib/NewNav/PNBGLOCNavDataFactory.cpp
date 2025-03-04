@@ -571,6 +571,12 @@ namespace gnsstk
    isValid()
    {
       return N4.is_valid();
+   }   
+   
+   std::unique_ptr<PNBNavDataFactory> PNBGLOCNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGLOCNavDataFactory>(new PNBGLOCNavDataFactory(*this));
    }
 
 } // namespace gnsstk

@@ -197,6 +197,9 @@ namespace gnsstk
       inline bool filterTimeOffset(double a0, double a1)
       { return (factControl.bdsTimeZZfilt && (a0 == 0.0) && (a1 == 0.0)); }
 
+         /// @copydoc PNBNavDataFactory::clone() 
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /// Store transmit time and corresponding AmEpID for amEpIDMap.
       class AmEpID

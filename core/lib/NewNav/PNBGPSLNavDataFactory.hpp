@@ -148,6 +148,9 @@ namespace gnsstk
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;
 
+         /// @copydoc PNBNavDataFactory::clone()
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /** Map GPS transmit PRN to fully qualified week/second
           * (WNa/toa).  This is set by SV/page ID 51. */

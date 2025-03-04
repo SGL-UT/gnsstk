@@ -673,4 +673,10 @@ namespace gnsstk
       return timestamp;
    }
 
+   std::unique_ptr<PNBNavDataFactory> PNBGPSCNav2DataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGPSCNav2DataFactory>(new PNBGPSCNav2DataFactory(*this));
+   }
+
 } // namespace gnsstk

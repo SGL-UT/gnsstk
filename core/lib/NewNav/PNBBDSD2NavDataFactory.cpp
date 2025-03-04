@@ -1007,6 +1007,12 @@ namespace gnsstk
       }
    }
 
+   std::unique_ptr<PNBNavDataFactory> PNBBDSD2NavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBBDSD2NavDataFactory>(new PNBBDSD2NavDataFactory(*this));
+   }
+
 
    PNBBDSD2NavDataFactory::AmEpID ::
    AmEpID()

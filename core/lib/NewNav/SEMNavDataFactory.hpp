@@ -138,6 +138,9 @@ namespace gnsstk
           *   timeStamp and signal data members will be filled in.
           */
       static void fillNavData(const SEMData& navIn, NavDataPtr& navOut);
+   
+         /// @copydoc NavDataFactory::clone()
+      std::unique_ptr<NavDataFactory> clone() override;
    };
 }
 
