@@ -63,7 +63,7 @@ namespace gnsstk
 
          fsbSOWm = fsbFraID+fnbFraID,   ///< SOW MSBs start bit
          fnbSOWm = 8,                   ///< SOW MSBs number of bits
-         fscSOW  = 0,                   ///< SOW scale factor
+         fscSOW  = 1,                   ///< SOW scale factor
 
          fsbParity1 = fsbSOWm+fnbSOWm,  ///< Word 1 parity start bit
          fnbParity1 = 4,                ///< Word 1 parity number of bits
