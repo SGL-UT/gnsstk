@@ -291,7 +291,7 @@ namespace gnsstk
       alm->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
       alm->rev = navIn->asUnsignedLong(fsbRev,fnbRev,fscRev);
       alm->fraID = sfid;
-      alm->sow = navIn->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
+      alm->sow = navIn->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
          // BDSD1NavAlm
       alm->pnum = pnum;
       alm->toa = navIn->asUnsignedDouble(asbtoa,anbtoa,asctoa);
@@ -346,7 +346,7 @@ namespace gnsstk
             iono->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
             iono->rev = navIn->asUnsignedLong(fsbRev,fnbRev,fscRev);
             iono->fraID = sfid;
-            iono->sow = navIn->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
+            iono->sow = navIn->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
                                               fscSOW);
             iono->alpha[0] = navIn->asSignedDouble(esbAlpha0,enbAlpha0,
                                                    escAlpha0);
@@ -375,7 +375,7 @@ namespace gnsstk
             isc->pre = navIn->asUnsignedLong(fsbPre,fnbPre,fscPre);
             isc->rev = navIn->asUnsignedLong(fsbRev,fnbRev,fscRev);
             isc->fraID = sfid;
-            isc->sow = navIn->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
+            isc->sow = navIn->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,
                                              fscSOW);
             isc->tgd1 = sf*navIn->asSignedDouble(esbTGD1,enbTGD1,escTGD1);
             isc->tgd2 = sf*navIn->asSignedDouble(esbTGD2m,enbTGD2m,
@@ -419,9 +419,9 @@ namespace gnsstk
          // BeiDou doesn't have anything like IODC/IODE to match
          // subframes.
       uint32_t sow1, sow2, sow3;
-      sow1 = ephSF[sf1]->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
-      sow2 = ephSF[sf2]->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
-      sow3 = ephSF[sf3]->asSignedDouble(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
+      sow1 = ephSF[sf1]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
+      sow2 = ephSF[sf2]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);
+      sow3 = ephSF[sf3]->asUnsignedLong(fsbSOWm,fnbSOWm,fsbSOWl,fnbSOWl,fscSOW);      
          // 6 seconds per subframe
       if (((sow3 - sow2) != 6) || ((sow2 - sow1) != 6))
       {
