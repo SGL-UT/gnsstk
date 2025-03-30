@@ -2,8 +2,6 @@
 namespace std
 {
    class fstream {};
-   template <typename ArgumentType, typename ResultType> struct unary_function {};
-   template <class Arg1, class Arg2, class Result> struct binary_function {};
 }
 
 

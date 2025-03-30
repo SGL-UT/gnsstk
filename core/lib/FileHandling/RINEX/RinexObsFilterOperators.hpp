@@ -58,9 +58,7 @@ namespace gnsstk
 
       /// This compares all elements of the RinexObsData with less than
       /// (only for those fields which the two obs data share).
-   struct RinexObsDataOperatorLessThanFull :
-      public std::binary_function<gnsstk::RinexObsData,
-                                  gnsstk::RinexObsData, bool>
+   struct RinexObsDataOperatorLessThanFull
    {
    public:
          /// The set is a set of RinexObsType that the two files have in
@@ -158,9 +156,7 @@ namespace gnsstk
 
       /// This is a much faster less than operator for RinexObsData,
       /// only checking time
-   struct RinexObsDataOperatorLessThanSimple :
-      public std::binary_function<gnsstk::RinexObsData,
-                                  gnsstk::RinexObsData, bool>
+   struct RinexObsDataOperatorLessThanSimple
    {
    public:
       bool operator()(const gnsstk::RinexObsData& l,
@@ -174,9 +170,7 @@ namespace gnsstk
 
       /// This simply compares the times of the two records
       /// for equality
-   struct RinexObsDataOperatorEqualsSimple :
-      public std::binary_function<gnsstk::RinexObsData,
-                                  gnsstk::RinexObsData, bool>
+   struct RinexObsDataOperatorEqualsSimple
    {
    public:
       bool operator()(const gnsstk::RinexObsData& l,
@@ -195,8 +189,7 @@ namespace gnsstk
       /// the internal theHeader will be the merged header data for
       /// those files and obsSet will be the set of RinexObsTypes that
       /// will be printed to the file.
-   struct RinexObsHeaderTouchHeaderMerge :
-      public std::unary_function<gnsstk::RinexObsHeader, bool>
+   struct RinexObsHeaderTouchHeaderMerge
    {
    public:
       RinexObsHeaderTouchHeaderMerge()

@@ -54,12 +54,9 @@ namespace gnsstk
       /// @ingroup FileHandling
       //@{
 
-   typedef std::binary_function<BinexData, BinexData, bool> BinexDataBinaryOperator;
-
 
       /// Determine if two BinexData objects are equal.
-   struct BinexDataOperatorEquals :
-      public BinexDataBinaryOperator
+   struct BinexDataOperatorEquals
    {
    public:
       bool operator()(const BinexData& l,

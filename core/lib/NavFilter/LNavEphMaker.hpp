@@ -50,7 +50,6 @@ namespace gnsstk
       /** Sort function for LNavEphMaker.  Orders items by station,
        * rx, prn, carrier, code. */
    struct LNavEphMakerSort
-      : std::binary_function<LNavFilterData*,LNavFilterData*,bool>
    {
       inline bool operator()(const LNavFilterData*const& l,
                              const LNavFilterData*const& r)

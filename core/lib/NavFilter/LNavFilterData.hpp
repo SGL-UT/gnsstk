@@ -73,30 +73,24 @@ namespace gnsstk
 
       /// Sort LNavFilterData pointers by navigation message bits
    struct LNavMsgSort
-      : std::binary_function<LNavFilterData*,LNavFilterData*,bool>
    {
+      // using first_argument_type = LNavFilterData*;
+      // using second_argument_type = LNavFilterData*;
+      // using result_type = int;
       inline bool operator()(const LNavFilterData*const& l,
                              const LNavFilterData*const& r)
-         const;
-   };
-
-      //@}
-
-
-   bool LNavMsgSort ::
-   operator()(const LNavFilterData*const& l, const LNavFilterData*const& r)
-      const
-   {
-      for (unsigned sfword = 0; sfword < 10; sfword++)
-      {
-         if (l->sf[sfword] < r->sf[sfword])
-            return true;
-         if (l->sf[sfword] > r->sf[sfword])
+         const 
+         {
+            for (unsigned sfword = 0; sfword < 10; sfword++)
+            {
+               if (l->sf[sfword] < r->sf[sfword])
+                  return true;
+               if (l->sf[sfword] > r->sf[sfword])
+                  return false;
+            }
             return false;
-      }
-      return false;
-   }
-
+         }
+   };
 
       // Write to output stream
    std::ostream& operator<<(std::ostream& s, const LNavFilterData& nfd);

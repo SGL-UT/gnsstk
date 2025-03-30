@@ -147,12 +147,13 @@ public:
          //Output for invalid satellite and negative ID
          //---------------------------------------------------------------------
       gnsstk::SatID sat3(-10, gnsstk::SatelliteSystem (50));
+      sat3.norad = 20;
       std::string outputString3, compareString3;
       std::stringstream outputStream3;
 
       sat3.dump(outputStream3);
       outputString3 = outputStream3.str();
-      compareString3 = "??? -10";
+      compareString3 = "??? -10 NORAD 20";
       TUASSERTE(std::string, compareString3, outputString3);
 
       TURETURN();

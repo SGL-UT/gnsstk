@@ -56,12 +56,9 @@ namespace gnsstk
       /// @ingroup FileHandling
       //@{
 
-   typedef std::unary_function<RinexMetHeader, bool> RinexMetDataUnaryOperator;
-   typedef std::binary_function<RinexMetData, RinexMetData, bool> RinexMetDataBinaryOperator;
-
       /// This compares all elements of the RinexMetData with less than
       /// (only for those fields which the two obs data share).
-   struct RinexMetDataOperatorLessThanFull : public RinexMetDataBinaryOperator
+   struct RinexMetDataOperatorLessThanFull
    {
    public:
 
@@ -118,7 +115,7 @@ namespace gnsstk
    };
 
       /// Compares only times.
-   struct RinexMetDataOperatorLessThanSimple : public RinexMetDataBinaryOperator
+   struct RinexMetDataOperatorLessThanSimple
    {
    public:
 
@@ -131,7 +128,7 @@ namespace gnsstk
    };
 
       /// Compares only times.
-   struct RinexMetDataOperatorEqualsSimple : public RinexMetDataBinaryOperator
+   struct RinexMetDataOperatorEqualsSimple
    {
    public:
 
@@ -149,7 +146,7 @@ namespace gnsstk
       /// running touch() on a list of RinexMetHeader, the internal theHeader will
       /// be the merged header data for those files and obsSet will be the set of
       /// RinexMetTypes that will be printed to the file.
-   struct RinexMetHeaderTouchHeaderMerge : public RinexMetDataUnaryOperator
+   struct RinexMetHeaderTouchHeaderMerge
    {
    public:
 
@@ -209,7 +206,7 @@ namespace gnsstk
    };
 
       /// This filter will return true for any data not within the specified time range.
-   struct RinexMetDataFilterTime : public RinexMetDataUnaryOperator
+   struct RinexMetDataFilterTime
    {
 
    public:

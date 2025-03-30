@@ -96,9 +96,9 @@ namespace gnsstk
          s << "*";
       else
          s << id;
-      if (hasNorad)
+      if (norad.has_value())
       {
-         s << " NORAD " << norad;
+         s << " NORAD " << *norad;
       }
    }
 
@@ -153,6 +153,5 @@ namespace gnsstk
    void SatID :: setNorad(unsigned long n)
    {
       norad = n;
-      hasNorad = true;
    }
 }
