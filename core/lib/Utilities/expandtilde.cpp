@@ -51,7 +51,11 @@ namespace gnsstk
 void expand_filename(string& filename)
 {
 #ifndef _WIN32
-   static char *chome = getenv("HOME");
+   static const char *chome = getenv("HOME");
+   if(chome == nullptr) 
+   {
+      return;
+   }
    static string home = string(chome);
 
    // assume tilde occurs only once
