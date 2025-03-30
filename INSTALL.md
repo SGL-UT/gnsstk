@@ -147,7 +147,7 @@ The following procedure will build and install the GNSSTk.  We
 typically do this in a gitbash window, hence the '$' prompt below.
 
    1. Ensure the prerequisites have been installed:
-      - Visual Studio (2015 and 2019 are currently supported)
+      - Visual Studio (2019 is currently supported)
       - cmake
 
    2. Obtain the GNSSTk source distribution.
@@ -186,10 +186,6 @@ typically do this in a gitbash window, hence the '$' prompt below.
       - Using Visual Studio 2019:
 
          $ cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ..
-
-      - Using Visual Studio 2015:
-
-         $ cmake -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ..
 
    7. Build the library (and tests, if specified above).
 

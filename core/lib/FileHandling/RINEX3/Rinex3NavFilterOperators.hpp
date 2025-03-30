@@ -60,8 +60,7 @@ namespace gnsstk
       //@{
 
       /// This compares all elements of the Rinex3NavData with less than.
-   struct Rinex3NavDataOperatorLessThanFull :
-      public std::binary_function<Rinex3NavData, Rinex3NavData, bool>
+   struct Rinex3NavDataOperatorLessThanFull
    {
    public:
          /// Set the default epsilon to 1e-5 for comparison.
@@ -153,8 +152,7 @@ namespace gnsstk
    };
 
       /// This compares all elements of the Rinex3NavData with equals
-   struct Rinex3NavDataOperatorEqualsFull :
-      public std::binary_function<Rinex3NavData, Rinex3NavData, bool>
+   struct Rinex3NavDataOperatorEqualsFull
    {
    public:
 
@@ -187,8 +185,7 @@ namespace gnsstk
    };
 
       /// Only compares time.  Suitable for sorting a Rinex3Nav file.
-   struct Rinex3NavDataOperatorLessThanSimple :
-      public std::binary_function<Rinex3NavData, Rinex3NavData, bool>
+   struct Rinex3NavDataOperatorLessThanSimple
    {
    public:
 
@@ -207,8 +204,7 @@ namespace gnsstk
       /// setting the other header fields. After running touch() on a list of
       /// Rinex3NavHeader, the internal theHeader will be the merged header
       /// data for those files.
-   struct Rinex3NavHeaderTouchHeaderMerge :
-      public std::unary_function<Rinex3NavHeader, bool>
+   struct Rinex3NavHeaderTouchHeaderMerge
    {
    public:
 
@@ -249,8 +245,7 @@ namespace gnsstk
    };
 
       /// Filter based on PRN ID.
-   struct Rinex3NavDataFilterPRN :
-      public std::unary_function<Rinex3NavData, bool>
+   struct Rinex3NavDataFilterPRN
    {
    public:
 

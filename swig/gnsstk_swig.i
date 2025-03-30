@@ -137,7 +137,6 @@
 %feature("flatnested");
 %import(module="gnsstk") "BinexData.hpp"
 %feature("flatnested", "");
-%template(std_binary_function_BinexData) std::binary_function<gnsstk::BinexData, gnsstk::BinexData, bool>;
 %feature("flatnested");
 %import(module="gnsstk") "FileSpec.hpp"
 %feature("flatnested", "");
@@ -177,11 +176,8 @@
 %import(module="gnsstk") "CCIR.hpp"
 %import(module="gnsstk") "CGCS2000Ellipsoid.hpp"
 %import(module="gnsstk") "NavFilterKey.hpp"
-%template(std_binary_function_NavFilterKey) std::binary_function<gnsstk::NavFilterKey *, gnsstk::NavFilterKey *, bool >;
 %import(module="gnsstk") "NavFilter.hpp"
 %import(module="gnsstk") "CNav2SanityFilter.hpp"
-%template(std_binary_function_CNavFilterData) std::binary_function< gnsstk::CNavFilterData,gnsstk::CNavFilterData,bool >;
-%template(std_binary_function_CNavFilterDataPtr) std::binary_function< gnsstk::CNavFilterData *, gnsstk::CNavFilterData *, bool >;
 %import(module="gnsstk") "CNavFilterData.hpp"
 %import(module="gnsstk") "CNavCookFilter.hpp"
 %import(module="gnsstk") "NavFilterMgr.hpp"
@@ -217,14 +213,12 @@
 %import(module="gnsstk") "RinexObsHeader.hpp"
 %feature("flatnested", "");
 %template(std_vector_RinexObsType) std::vector<gnsstk::RinexObsType>;
-%template(std_unary_function_RinexObsHeader) std::unary_function<gnsstk::RinexObsHeader, bool>;
 %import(module="gnsstk") "RinexDatum.hpp"
 %template(std_vector_RinexDatum) std::vector<gnsstk::RinexDatum>;
 %template(std_map_RinexSatID_std_vector_RinexDatum) std::map<gnsstk::RinexSatID, std::vector<gnsstk::RinexDatum> >;
 %template(std_map_RinexObsType_RinexDatum) std::map<gnsstk::RinexObsType, gnsstk::RinexDatum>;
 %template(std_map_RinexSatID_RinexObsTypeMap) std::map<gnsstk::SatID, std::map<gnsstk::RinexObsType, gnsstk::RinexDatum> >;
 %import(module="gnsstk") "RinexObsData.hpp"
-%template(std_binary_function_RinexObsData) std::binary_function<gnsstk::RinexObsData,gnsstk::RinexObsData,bool>;
 %import(module="gnsstk") "RinexUtilities.hpp"
 %import(module="gnsstk") "TimeString.hpp"
 /* %import(module="gnsstk") "SatPass.hpp" */
@@ -274,10 +268,8 @@
  // Use a special wrapper for the include file which resolves issues
  // with the nested definitions
 %import(module="gnsstk") "Rinex3ObsHeader.i"
-%template(std_unary_function_Rinex3ObsHeader) std::unary_function<gnsstk::Rinex3ObsHeader, bool>;
 %import(module="gnsstk") "Rinex3ObsData.hpp"
 %template(std_vector_Rinex3ObsData) std::vector<gnsstk::Rinex3ObsData>;
-%template(std_binary_function_Rinex3ObsData) std::binary_function<gnsstk::Rinex3ObsData,gnsstk::Rinex3ObsData,bool>;
 %import(module="gnsstk") "FileFilterFrameWithHeader.hpp"
 %import(module="gnsstk") "FileStore.hpp"
 %feature("flatnested");
@@ -393,7 +385,6 @@
 %feature("flatnested");
 %import(module="gnsstk") "KalmanFilter.hpp"
 %feature("flatnested", "");
-%template(std_binary_function_LNavFilterData) std::binary_function< gnsstk::LNavFilterData *, gnsstk::LNavFilterData *, bool >;
 %import(module="gnsstk") "LNavFilterData.hpp"
 %import(module="gnsstk") "LNavAlmValFilter.hpp"
 %import(module="gnsstk") "LNavCookFilter.hpp"
@@ -481,15 +472,10 @@
 %import(module="gnsstk") "Rinex3NavBase.hpp"
 %import(module="gnsstk") "TimeSystemCorr.hpp"
 %import(module="gnsstk") "Rinex3NavHeader.hpp"
-%template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
 %import(module="gnsstk") "Rinex3NavStream.hpp"
 %import(module="gnsstk") "RinexNavBase.hpp"
 %import(module="gnsstk") "RinexNavData.hpp"
-%template(std_binary_function_RinexNavData) std::binary_function<gnsstk::RinexNavData,gnsstk::RinexNavData,bool>;
-%template(std_unary_function_RinexNavData) std::unary_function<gnsstk::RinexNavData,bool>;
 %import(module="gnsstk") "Rinex3NavData.hpp"
-%template(std_binary_function_Rinex3NavData) std::binary_function<gnsstk::Rinex3NavData,gnsstk::Rinex3NavData,bool>;
-%template(std_unary_function_Rinex3NavData) std::unary_function<gnsstk::Rinex3NavData,bool>;
 %import(module="gnsstk") "Rinex3NavFilterOperators.hpp"
 /* %import(module="gnsstk") "Rinex3ObsFileLoader.hpp" */
 %import(module="gnsstk") "Rinex3ObsFilterOperators.hpp"
@@ -506,15 +492,12 @@
 %feature("flatnested");
 %import(module="gnsstk") "RinexMetHeader.hpp"
 %feature("flatnested", "");
-%template(std_unary_function_RinexMetHeader) std::unary_function<gnsstk::RinexMetHeader,bool>;
 %import(module="gnsstk") "RinexMetData.hpp"
-%template(std_binary_function_RinexMetData) std::binary_function<gnsstk::RinexMetData,gnsstk::RinexMetData,bool>;
 %import(module="gnsstk") "RinexMetFilterOperators.hpp"
 %import(module="gnsstk") "RinexMetStream.hpp"
 %import(module="gnsstk") "RinexNavDataFactory.hpp"
 %import(module="gnsstk") "RinexNavHeader.hpp"
 %template (FileStore_RinexNavHeader) gnsstk::FileStore<gnsstk::RinexNavHeader>;
-%template(std_unary_function_RinexNavHeader) std::unary_function<gnsstk::RinexNavHeader,bool>;
 %import(module="gnsstk") "RinexNavFilterOperators.hpp"
 %import(module="gnsstk") "RinexNavStream.hpp"
 %import(module="gnsstk") "RinexObsFilterOperators.hpp"

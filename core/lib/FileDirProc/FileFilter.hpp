@@ -363,8 +363,7 @@ namespace gnsstk
          /// of FileData.  This is only used by sort() and shouldn't be
          /// used elsewhere.
       template<class Compare>
-      class SortAdapter  :
-         public std::binary_function<lItrType, lItrType, bool>
+      class SortAdapter
       {
       public:
          SortAdapter(Compare& c)

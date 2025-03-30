@@ -64,8 +64,7 @@ namespace gnsstk
       /// It appears this code was written to give a strict ordering
       /// to Rinex3ObsData objects, not to really imply any meaning about
       /// the data.
-   struct Rinex3ObsDataOperatorLessThanFull :
-      public std::binary_function<Rinex3ObsData, Rinex3ObsData, bool>
+   struct Rinex3ObsDataOperatorLessThanFull
    {
    public:
          /// The set is a set of Rinex3ObsType that the two files have in
@@ -173,8 +172,7 @@ namespace gnsstk
 
       /// This is a much faster less than operator for Rinex3ObsData,
       /// only checking time
-   struct Rinex3ObsDataOperatorLessThanSimple :
-      public std::binary_function<Rinex3ObsData, Rinex3ObsData, bool>
+   struct Rinex3ObsDataOperatorLessThanSimple
    {
    public:
       bool operator()(const Rinex3ObsData& l, const Rinex3ObsData& r) const
@@ -187,8 +185,7 @@ namespace gnsstk
 
       /// This simply compares the times of the two records
       /// for equality
-   struct Rinex3ObsDataOperatorEqualsSimple :
-      public std::binary_function<Rinex3ObsData, Rinex3ObsData, bool>
+   struct Rinex3ObsDataOperatorEqualsSimple
    {
    public:
       bool operator()(const Rinex3ObsData& l, const Rinex3ObsData& r) const
@@ -206,8 +203,7 @@ namespace gnsstk
       /// the internal theHeader will be the merged header data for
       /// those files and obsSet will be the set of Rinex3ObsTypes that
       /// will be printed to the file.
-   struct Rinex3ObsHeaderTouchHeaderMerge :
-      public std::unary_function<Rinex3ObsHeader, bool>
+   struct Rinex3ObsHeaderTouchHeaderMerge
    {
    public:
       Rinex3ObsHeaderTouchHeaderMerge()

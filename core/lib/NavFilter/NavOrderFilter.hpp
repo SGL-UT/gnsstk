@@ -54,7 +54,6 @@ namespace gnsstk
        * sure that unique objects remain unique when stored in a
        * set. */
    struct NavTimeSort
-      : std::binary_function<NavFilterKey*,NavFilterKey*,bool>
    {
       inline bool operator()(const NavFilterKey*const& l,
                              const NavFilterKey*const& r)

@@ -61,7 +61,6 @@ namespace gnsstk
 
       // Sort CNavFilterData objects by navigation message bits
    struct CNavMsgSort
-      : std::binary_function<CNavFilterData, CNavFilterData, bool>
    {
       inline bool operator() (const CNavFilterData* l,
                               const CNavFilterData* r) const;

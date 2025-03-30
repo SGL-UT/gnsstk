@@ -289,8 +289,7 @@ namespace gnsstk
          std::string field;
       };
 
-      struct FileSpecSort :
-         public std::binary_function<std::string,std::string,bool>
+      struct FileSpecSort
       {
       public:
          FileSpecSort(const FileSpec& fs, const FileSpecSortType s)

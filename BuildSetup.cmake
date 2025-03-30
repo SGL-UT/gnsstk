@@ -13,9 +13,9 @@ elseif( WIN32 )
     set( STADYN "STATIC" )
 endif()
 
-if( NOT DEFINED CPPSTD )
-  set( CPPSTD "c++11" )
-endif()
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_CXX_EXTENSIONS off)
 
 # profiler stuff
 if( ${PROFILER} )
@@ -54,7 +54,7 @@ elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
     set( CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS} -O2" )
     set( CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS} -O3" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CPPSTD} -Werror=return-type -Werror=deprecated" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type -Werror=deprecated" )
     # Do not optimize for debug builds.  Do the same for RELWITHDEBINFO ?
     set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g" )
     set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3" )
@@ -87,16 +87,11 @@ endif()
 #----------------------------------------
 # Windows Visual Studio flags
 #----------------------------------------
-if( WIN32 )
-    if( MSVC14 )
-        #Compiler Options for Microsoft Visual Studio 14 (2015)
+if( WIN32 AND MSVC )
+    if( MSVC_VERSION GREATER_EQUAL 1928 )
         add_definitions( /MP /D_SCL_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_WARNINGS /D_USE_MATH_DEFINES /EHsc /GR /wd"4274"
             /wd"4503" /wd"4290" /wd"4267" /wd"4250" /wd"4244" /wd"4101" /wd"4800" /wd"4068" )
-    elseif( MSVC11 )
-        #Compiler Options for Microsoft Visual Studio 11 (2012)
-        add_definitions( /MP /D_SCL_SECURE_NO_WARNINGS /D_CRT_SECURE_NO_WARNINGS /D_USE_MATH_DEFINES /EHsc /GR /wd"4274"
-            /wd"4503" /wd"4290" /wd"4267" /wd"4250" /wd"4244" /wd"4101" /wd"4800" /wd"4068" )
-    endif( MSVC14 )
+    endif()
 endif()
 
 #----------------------------------------
@@ -131,6 +126,7 @@ if( (${CMAKE_SYSTEM_NAME} MATCHES "Linux") )
    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-z,relro -Wl,-z,now ${CMAKE_SHARED_LINKER_FLAGS}")
    set(CMAKE_EXE_LINKER_FLAGS "-Wl,-z,relro -Wl,-z,now ${CMAKE_EXE_LINKER_FLAGS}")
    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,-z,relro -Wl,-z,now ${CMAKE_MODULE_LINKER_FLAGS}")
+   add_compile_options("-frecord-gcc-switches")
 endif()
 
 
@@ -141,8 +137,6 @@ if( DEBUG_SWITCH AND NOT DEBUG_VERBOSE )
     message( STATUS "UNIX                      = ${UNIX}" ) # e.g., is the platform UNIX ?
     message( STATUS "APPLE                     = ${APPLE}" ) # e.g., is the platform OSX?
     message( STATUS "WIN32                     = ${WIN32}" ) # e.g., is the platform Windows?
-    message( STATUS "MSVC11                    = ${MSVC11}" ) # e.g., is the platform VisualStudio?
-    message( STATUS "MSVC12                    = ${MSVC12}" ) # e.g., is the platform VisualStudio?
     message( STATUS "CMAKE_COMMAND             = ${CMAKE_COMMAND}" )     # e.g., /usr/bin/cmake
     message( STATUS "CMAKE_VERSION             = ${CMAKE_VERSION}" )     # e.g., 2.8.9
     message( STATUS "CMAKE_BUILD_TOOL          = ${CMAKE_BUILD_TOOL}" )  # e.g., /usr/bin/make

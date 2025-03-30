@@ -16,9 +16,9 @@ include( make_copy_targets.cmake )
 find_package( SWIG REQUIRED )
 include( ${SWIG_USE_FILE} )
 
-if( NOT DEFINED CPPSTD )
-  set( CPPSTD "c++11" )
-endif()
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_CXX_EXTENSIONS off)
 
 # These warnings have been restored by commenting out the SWIG flags
 # as it's better to resolve the warnings using %ignore, %rename or
@@ -47,14 +47,12 @@ set( CMAKE_SKIP_RPATH TRUE )
 # -Wno-write-strings disables warnings that g++ generates by the
 # truckload because the Python C API uses char* instead of
 # const char*
-if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CPPSTD}" )
-elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -std=${CPPSTD}" )
+if( ${CMAKE_SYSTEM_NAME} MATCHES "Darwin" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${CPPSTD} -Wno-write-strings" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-write-strings" )
 elseif( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /DSWIG_DIRECTOR_NO_UEH" )
     get_filename_component(PYTHON_LIBRARY_PATH "${PYTHON_LIBRARY}" DIRECTORY)
     link_directories(${PYTHON_LIBRARY_PATH})
 endif()
