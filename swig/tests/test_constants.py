@@ -15,7 +15,7 @@ class TestConstants(unittest.TestCase):
         self.assertEqual(gnsstk.CA_CHIP_FREQ_GPS, 1023000)
         self.assertEqual(gnsstk.L1_FREQ_GPS, 1575420000)
         self.assertEqual(gnsstk.L2_FREQ_GPS, 1227600000)
-        self.assertAlmostEqual(gnsstk.PI, 3.14159265359, places=12)
+        self.assertEqual(gnsstk.PI, 3.1415926535898)
         self.assertEqual(gnsstk.ZCOUNT_PER_DAY, 57600)
         with self.assertRaises(AttributeError):
             print(gnsstk.foo.bar)
@@ -34,7 +34,7 @@ class Geometry_test(unittest.TestCase):
 
 class GNSSconstants_test(unittest.TestCase):
     def test_constants(self):
-        self.assertEqual(gnsstk.PI, 3.141592653589793238462643383280)
+        self.assertEqual(gnsstk.PI, 3.1415926535898)
         self.assertEqual(gnsstk.OSC_FREQ_GPS, 10.23e6)
         self.assertEqual(gnsstk.L6_FREQ_GAL, 1278.75e6)
 

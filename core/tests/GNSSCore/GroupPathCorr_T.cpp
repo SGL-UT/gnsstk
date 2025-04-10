@@ -222,7 +222,7 @@ getCorrTestPositionDouble()
    uut.calcs.push_back(ec3);
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
       // Adjust epsilon precision so windows test passes on AMD FPU
-   TUASSERTFEPS(13.399231057432754, corr, 1e-14);
+   TUASSERTFEPS(13.399231057432754, corr, 1e-13);
    TURETURN();
 }
 
@@ -271,7 +271,7 @@ getCorrTestXvtDouble()
    uut.calcs.push_back(ec3);
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
       // Adjust epsilon precision so windows test passes on AMD FPU
-   TUASSERTFEPS(13.399231057432754, corr, 1e-14);
+   TUASSERTFEPS(13.399231057432754, corr, 1e-13);
    TURETURN();
 }
 

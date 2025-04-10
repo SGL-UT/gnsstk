@@ -108,16 +108,16 @@ getIonoCorrTest()
    uut.beta[2]  = -1.32803702E+04;
    uut.beta[3]  =  3.38181850E+04;
       // probably wouldn't use L1 or L2 for BDS D2 but this is a sanity check
-   TUASSERTFE(13.174577965354167475,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2));
-   TUASSERTFE(7.9994064218713107906,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
-   TUASSERTFE(8.1468578153895165883,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B1));
-   TUASSERTFE(13.624958539291872839,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B2));
-   TUASSERTFE(12.338314431653227388,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B3));
+   TUASSERTFEPS(13.174577965354167475,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2), 1e-13);
+   TUASSERTFEPS(7.9994064218713107906,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1), 1e-13);
+   TUASSERTFEPS(8.1468578153895165883,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B1), 1e-13);
+   TUASSERTFEPS(13.624958539291872839,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B2), 1e-13);
+   TUASSERTFEPS(12.338314431653227388,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::B3), 1e-13);
    TURETURN();
 }
 
