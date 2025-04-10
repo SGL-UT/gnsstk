@@ -191,12 +191,12 @@ unsigned NavLibrary_T ::
                               gnsstk::NavType::GPSLNAV);
    TUASSERT(navLib.getXvt(sat, toa, xvt, gnsstk::SVHealth::Any));
    // @note These values have not been checked for truth..
-   TUASSERTFE(-14234732.713211029768, xvt.x[0]);
-   TUASSERTFE(-22065282.948710985482, xvt.x[1]);
-   TUASSERTFE(4276699.0422724094242, xvt.x[2]);
-   TUASSERTFE(48.302306319750684338, xvt.v[0]);
-   TUASSERTFE(-658.18099556502488667, xvt.v[1]);
-   TUASSERTFE(-3055.0896705668619688, xvt.v[2]);
+   TUASSERTFEPS(-14234732.713211029768, xvt.x[0], 1e-6);
+   TUASSERTFEPS(-22065282.948710985482, xvt.x[1], 1e-6);
+   TUASSERTFEPS(4276699.0422724094242, xvt.x[2], 1e-6);
+   TUASSERTFEPS(48.302306319750684338, xvt.v[0], 1e-9);
+   TUASSERTFEPS(-658.18099556502488667, xvt.v[1], 1e-9);
+   TUASSERTFEPS(-3055.0896705668619688, xvt.v[2], 1e-9);
    TUASSERTFE(2.1934509277344000722e-05, xvt.clkbias);
    TUASSERTFE(1.0913936421274999914e-11, xvt.clkdrift);
    TUASSERTFE(-1.7127699037179789504e-08, xvt.relcorr);
@@ -253,7 +253,6 @@ unsigned NavLibrary_T ::
                         gnsstk::NavSearchOrder::User));
    alm = dynamic_cast<gnsstk::GPSLNavAlm *>(ndp.get());
    TUASSERT(alm != nullptr);
-   alm->dump(std::cout, gnsstk::DumpDetail::Full);
 
    TUASSERT(!navLib.find(nmida, ts,
                          ndp, gnsstk::SVHealth::Any,

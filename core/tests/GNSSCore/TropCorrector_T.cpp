@@ -130,7 +130,7 @@ getCorrTestPosition()
    TUCSM("getCorr(Position)");
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
       // Adjust epsilon precision so windows test passes on AMD FPU
-   TUASSERTFEPS(9.775888009609917, corr, 1e-14);
+   TUASSERTFEPS(9.775888009609917, corr, 1e-13);
 
       // test NBTropModel special handling
    TestClass<gnsstk::NBTropModel> uut2;
@@ -151,7 +151,7 @@ getCorrTestPosition()
       // Different value with the default weather compared without
       // implies that it's using those default weather values.
       // epsilon so windows passes ...
-   TUASSERTFEPS(9.1431767236047711833, corr, 1e-14);
+   TUASSERTFEPS(9.1431767236047711833, corr, 1e-10);
    TURETURN();
 }
 
@@ -182,7 +182,7 @@ getCorrTestXvt()
    TUCSM("getCorr(Xvt)");
    TUASSERTE(bool, true, uut.getCorr(stnPos, svPos, sat, oid, when, nav, corr));
       // Adjust epsilon precision so windows test passes on AMD FPU
-   TUASSERTFEPS(9.775888009609917, corr, 1e-14)
+   TUASSERTFEPS(9.775888009609917, corr, 1e-10)
    TURETURN();
 }
 

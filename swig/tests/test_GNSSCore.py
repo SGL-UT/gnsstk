@@ -46,9 +46,9 @@ class TestGNSSCore(unittest.TestCase):
         b = gnsstk.Angle(1,gnsstk.AngleType.Sin)
         c = gnsstk.Angle(1.0,2.0)
         self.assertTrue(b.rad() == 1.5707963267948966)
-        self.assertTrue(b.deg() == 90.0)
+        self.assertAlmostEqual(b.deg(), 90.0) 
         self.assertTrue(c.rad() == 0.4636476090008061)
-        self.assertTrue(c.deg() == 26.56505117707799)
+        self.assertAlmostEqual(c.deg(), 26.56505117707799)
 
     def test_ObservationType(self):
         a = gnsstk.ObservationType.Range

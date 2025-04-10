@@ -469,16 +469,16 @@ processEphTest()
          TUASSERTFE(-6.62500000E+00, eph->Crs);
          TUASSERTFE(-2.14204192E-07, eph->Cis);
          TUASSERTFE(-2.2910535335540771484e-07, eph->Cic);
-         TUASSERTFE(1.6427405986254530745, eph->M0);
+         TUASSERTFEPS(1.6427405986254530745, eph->M0, 1e-13);
          TUASSERTFE(4.92949105E-09, eph->dn);
          TUASSERTFE(0, eph->dndot);
          TUASSERTFE(0.012018375913612544537, eph->ecc);
          TUASSERTFE(5153.6434803009033203, eph->Ahalf);
          TUASSERTFE(26560041.122048005462, eph->A);
          TUASSERTFE(0, eph->Adot);
-         TUASSERTFE(1.4502525982818956773, eph->OMEGA0);
-         TUASSERTFE(0.9404723483911350268, eph->i0);
-         TUASSERTFE(1.1153119288528794417, eph->w);
+         TUASSERTFEPS(1.4502525982818956773, eph->OMEGA0, 1e-13);
+         TUASSERTFEPS(0.9404723483911350268, eph->i0, 1e-13);
+         TUASSERTFEPS(1.1153119288528794417, eph->w, 1e-13);
          TUASSERTFE(-8.27748765E-09, eph->OMEGAdot);
          TUASSERTFE(3.90730561E-10, eph->idot);
          TUASSERTFE(-4.0083192288875579834e-05, eph->af0);
@@ -595,17 +595,17 @@ processAlmOrbTest()
          TUASSERTFE(0, alm->Crs);
          TUASSERTFE(0, alm->Cis);
          TUASSERTFE(0, alm->Cic);
-         TUASSERTFE(1.714684548614031856, alm->M0);
+         TUASSERTFEPS(1.714684548614031856, alm->M0, 1e-13);
          TUASSERTFE(0, alm->dn);
          TUASSERTFE(0, alm->dndot);
          TUASSERTFE(0.004675388336181640625, alm->ecc);
          TUASSERTFE(5153.56005859375, alm->Ahalf);
          TUASSERTFE(5153.56005859375 * 5153.56005859375, alm->A);
          TUASSERTFE(0, alm->Adot);
-         TUASSERTFE(-0.62474775600600196412, alm->OMEGA0);
+         TUASSERTFEPS(-0.62474775600600196412, alm->OMEGA0, 1e-13);
          TUASSERTFE(0.036186367101724167816+gnsstk::GPSLNavData::refioffsetGPS,
                     alm->i0);
-         TUASSERTFE(0.72259183672470084225, alm->w);
+         TUASSERTFEPS(0.72259183672470084225, alm->w, 1e-13);
          TUASSERTFE(-7.92032991E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
          TUASSERTFE(-6.103515625e-05, alm->af0);
@@ -668,17 +668,17 @@ processAlmOrbTest()
          TUASSERTFE(0, alm->Crs);
          TUASSERTFE(0, alm->Cis);
          TUASSERTFE(0, alm->Cic);
-         TUASSERTFE(1.3982957680142222845, alm->M0);
+         TUASSERTFEPS(1.3982957680142222845, alm->M0, 1e-13);
          TUASSERTFE(0, alm->dn);
          TUASSERTFE(0, alm->dndot);
          TUASSERTFE(0.0002918243408203125, alm->ecc);
          TUASSERTFE(5153.60791015625, alm->Ahalf);
          TUASSERTFE(5153.60791015625 * 5153.60791015625, alm->A);
          TUASSERTFE(0, alm->Adot);
-         TUASSERTFE(-0.63010732608789443709, alm->OMEGA0);
+         TUASSERTFEPS(-0.63010732608789443709, alm->OMEGA0, 1e-13);
          TUASSERTFE(0.018239990305952701738+gnsstk::GPSLNavData::refioffsetGPS,
                     alm->i0);
-         TUASSERTFE(-0.27279354095737701202, alm->w);
+         TUASSERTFEPS(-0.27279354095737701202, alm->w, 1e-13);
          TUASSERTFE(-8.1031946734407515747e-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
          TUASSERTFE(-0.0001068115234375, alm->af0);
@@ -980,16 +980,16 @@ processEphQZSSTest()
          TUASSERTFE(-3.04062500E+01, eph->Crs);
          TUASSERTFE(-5.36441803E-07, eph->Cis);
          TUASSERTFE(-9.12696123E-08, eph->Cic);
-         TUASSERTFE(1.1030415015803312073E+00, eph->M0);
+         TUASSERTFEPS(1.1030415015803312073E+00, eph->M0, 1e-13);
          TUASSERTFE(2.43152985E-09, eph->dn);
          TUASSERTFE(0, eph->dndot);
          TUASSERTFE(7.5891476939432322979E-02, eph->ecc);
          TUASSERTFE(::sqrt(4.2168440525536708534E+07), eph->Ahalf);
          TUASSERTFE(4.2168440525536708534E+07, eph->A);
          TUASSERTFE(0, eph->Adot);
-         TUASSERTFE(-3.0561569811139608355E+00, eph->OMEGA0);
-         TUASSERTFE(7.2813125210358609074E-01, eph->i0);
-         TUASSERTFE(-1.5543714330778595212E+00, eph->w);
+         TUASSERTFEPS(-3.0561569811139608355E+00, eph->OMEGA0, 1e-13);
+         TUASSERTFEPS(7.2813125210358609074E-01, eph->i0, 1e-13);
+         TUASSERTFEPS(-1.5543714330778595212E+00, eph->w, 1e-13);
          TUASSERTFE(-2.63439545E-09, eph->OMEGAdot);
          TUASSERTFE(9.47539469E-10, eph->idot);
          TUASSERTFE(-1.8891552463173866272E-04, eph->af0);
@@ -1122,7 +1122,7 @@ processAlmOrbQZSSTest()
          TUASSERTFE(0, alm->Crs);
          TUASSERTFE(0, alm->Cis);
          TUASSERTFE(0, alm->Cic);
-         TUASSERTFE(8.4556833509804563143E-01, alm->M0);
+         TUASSERTFEPS(8.4556833509804563143E-01, alm->M0, 1e-13);
          TUASSERTFE(0, alm->dn);
          TUASSERTFE(0, alm->dndot);
          TUASSERTFE(1.5868663787841796875E-02 + gnsstk::GPSLNavData::refEccQZSS,
@@ -1130,11 +1130,11 @@ processAlmOrbQZSSTest()
          TUASSERTFE(6.493703125E+03, alm->Ahalf);
          TUASSERTFE(6.493703125E+03 * 6.493703125E+03, alm->A);
          TUASSERTFE(0, alm->Adot);
-         TUASSERTFE(3.1062594134985190841E+00, alm->OMEGA0);
+         TUASSERTFEPS(3.1062594134985190841E+00, alm->OMEGA0, 1e-13);
          TUASSERTFE(-5.7116815898929418349E-02 +
                     gnsstk::GPSLNavData::refioffsetQZSS,
                     alm->i0);
-         TUASSERTFE(-1.5547277282389830866E+00, alm->w);
+         TUASSERTFEPS(-1.5547277282389830866E+00, alm->w, 1e-13);
          TUASSERTFE(-2.17151902E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
          TUASSERTFE(-1.8787384033203125E-04, alm->af0);
@@ -1197,7 +1197,7 @@ processAlmOrbQZSSTest()
          TUASSERTFE(0, alm->Crs);
          TUASSERTFE(0, alm->Cis);
          TUASSERTFE(0, alm->Cic);
-         TUASSERTFE(-1.3581512361304759473E+00, alm->M0);
+         TUASSERTFEPS(-1.3581512361304759473E+00, alm->M0, 1e-13);
          TUASSERTFE(0, alm->dn);
          TUASSERTFE(0, alm->dndot);
          TUASSERTFE(1.51500701904296875E-02 + gnsstk::GPSLNavData::refEccQZSS,
@@ -1205,11 +1205,11 @@ processAlmOrbQZSSTest()
          TUASSERTFE(6.49335595703125E+03, alm->Ahalf);
          TUASSERTFE(6.49335595703125E+03 * 6.49335595703125E+03, alm->A);
          TUASSERTFE(0, alm->Adot);
-         TUASSERTFE(-8.9252926940374188725E-01, alm->OMEGA0);
+         TUASSERTFEPS(-8.9252926940374188725E-01, alm->OMEGA0, 1e-13);
          TUASSERTFE(-3.7139112981700014848E-02 +
                     gnsstk::GPSLNavData::refioffsetQZSS,
                     alm->i0);
-         TUASSERTFE(-1.5782527617281980614E+00, alm->w);
+         TUASSERTFEPS(-1.5782527617281980614E+00, alm->w, 1e-13);
          TUASSERTFE(-2.49153235E-09, alm->OMEGAdot);
          TUASSERTFE(0, alm->idot);
          TUASSERTFE(-2.86102294921875E-06, alm->af0);

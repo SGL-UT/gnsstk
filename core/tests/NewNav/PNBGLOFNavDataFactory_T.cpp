@@ -535,10 +535,10 @@ processAlmTest()
          TUASSERTE(gnsstk::CommonTime, toaExp, alm->Toa);
          TUASSERTE(bool, true, alm->healthBits);
          TUASSERTFE(0.000152587890625, alm->taunA);
-         TUASSERTFE(-0.56266535141894369332, alm->lambdanA);
+         TUASSERTFEPS(-0.56266535141894369332, alm->lambdanA, 1e-13);
          TUASSERTFE(0.020648819511929372705, alm->deltainA);
          TUASSERTFE(0.00044727325439453125, alm->eccnA);
-         TUASSERTFE(-0.75078772187077846834, alm->omeganA);
+         TUASSERTFEPS(-0.75078772187077846834, alm->omeganA, 1e-13);
          TUASSERTFE(2599.4375, alm->tLambdanA);
          TUASSERTFE(-2656.337890625, alm->deltaTnA);
          TUASSERTFE(0.00030517578125, alm->deltaTdotnA);

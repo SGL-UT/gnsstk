@@ -274,5 +274,10 @@ add_executable(RawRange_T RawRange_T.cpp)
 target_link_libraries(RawRange_T gnsstk)
 add_test(NAME GNSSCore_RawRange COMMAND $<TARGET_FILE:RawRange_T>)
 
+add_executable(GNSSconstants_T GNSSconstants_T.cpp)
+target_link_libraries(GNSSconstants_T gnsstk)
+add_test(NAME GNSSCore_constants COMMAND $<TARGET_FILE:GNSSconstants_T>)
+
+
 ###############################################################################
 ###############################################################################
