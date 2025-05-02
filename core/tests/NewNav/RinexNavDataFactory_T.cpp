@@ -1235,15 +1235,15 @@ loadIntoMapQZSSTest()
                                                 gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime expXT = gnsstk::CivilTime(2014,5,13,7,15,0,
                                                 gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime expti2 = gnsstk::CivilTime(2014,5,13,7,15,0,
+   gnsstk::CommonTime expti2 = gnsstk::CivilTime(2014,5,13,7,15,12,
                                                  gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2014,5,13,10,0,0,
+   gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2014,5,13,9,15,12,
                                                  gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(1792,202512,
                                                      gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198900,
+   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198912,
                                                        gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(1792, 208800,
+   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(1792, 206112,
                                                      gnsstk::TimeSystem::QZS);
    TUASSERT(uut.addDataSource(fname));
    TUASSERTE(size_t, 3, uut.size());

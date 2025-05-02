@@ -204,16 +204,37 @@ unsigned GPSCNavEph_T ::
 fixFitTest()
 {
    TUDEF("GPSCNavEph", "fixFit");
-   gnsstk::GPSCNavEph uut;
-   gnsstk::GPSWeekSecond beginExpWS2(2059, 597600), endExpWS2(2060, 3600);
-   gnsstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
-   uut.Toe = gnsstk::GPSWeekSecond(2059, 603000);
-   uut.xmitTime = gnsstk::GPSWeekSecond(2059,597600);
-   uut.xmit11 = gnsstk::GPSWeekSecond(2059,597612);
-   uut.xmitClk = gnsstk::GPSWeekSecond(2059,597624);
-   TUCATCH(uut.fixFit());
-   TUASSERTE(gnsstk::CommonTime, beginExp2, uut.beginFit);
-   TUASSERTE(gnsstk::CommonTime, endExp2, uut.endFit);
+   {
+      gnsstk::GPSCNavEph uut;
+      gnsstk::GPSWeekSecond beginExpWS2(2059, 597600), endExpWS2(2060, 3600);
+      gnsstk::CommonTime beginExp2(beginExpWS2), endExp2(endExpWS2);
+      uut.Toe = gnsstk::GPSWeekSecond(2059, 603000);
+      uut.xmitTime = gnsstk::GPSWeekSecond(2059,597600);
+      uut.xmit11 = gnsstk::GPSWeekSecond(2059,597612);
+      uut.xmitClk = gnsstk::GPSWeekSecond(2059,597624);
+      TUCATCH(uut.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp2, uut.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp2, uut.endFit);
+   }
+
+   // GPS III upload behavior -- the curve midpoint is not aligned to an hour boundary.
+   // The curve midpoint will be aligned to a 5 minute boundary and the Toe will be 
+   // negatively offset from that 5 minute boundary.
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2121, 603354)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 9600)};
+      gnsstk::GPSCNavEph uut;
+      uut.signal.system = gnsstk::SatelliteSystem::GPS;
+      // On first upload, midpoint is determined to be 1.5 hours out
+      // from transmit aligned to 5 minutes. 
+      uut.Toe = gnsstk::GPSWeekSecond(2122, 3900);
+      uut.xmitTime = gnsstk::GPSWeekSecond(2121,603360);
+      uut.xmit11 = gnsstk::GPSWeekSecond(2121,603354);
+      uut.xmitClk = gnsstk::GPSWeekSecond(2121,603366);
+      TUCATCH(uut.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, uut.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, uut.endFit);
+   }
       //uut.dump(std::cerr, gnsstk::OrbitDataKepler::Detail::Full);
    TURETURN();
 }
