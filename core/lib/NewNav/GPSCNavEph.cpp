@@ -39,6 +39,8 @@
 #include "GPSCNavEph.hpp"
 #include "GPSWeekSecond.hpp"
 #include "TimeString.hpp"
+#include "DebugTrace.hpp"
+#include "TimeConstants.hpp"
 
 using namespace std;
 
@@ -90,37 +92,36 @@ namespace gnsstk
    void GPSCNavEph ::
    fixFit()
    {
-      CommonTime xmit1st = std::min({xmitTime, xmit11, xmitClk});
-      GPSWeekSecond xws(xmit1st), toeWS(Toe);
-      int xmitWeek = xws.week;
-      long xmitSOW = (long) xws.sow;
-         /** @todo replace all these magic numbers with named
-          * constants or enums, with sensible names, not
-          * "NINTY_MINUTES" [sic] */
-      bool isNominalToe = (long)toeWS.sow % 7200 == 90*60;
-      endFit = Toe + 90*60;
+      // GPS CNav fit interval is fixed to three hours 
+      // (IS-GPS-200N 30.3.3.1.1, IS-GPS-200N 30.3.4.4)
+      uint16_t halfFitInterval = (SEC_PER_HOUR * 3) / 2;
 
-         // If the toe is NOT offset, then the begin valid time can be set
-         // to the beginning of the two hour interval.
-      if (signal.system==SatelliteSystem::GPS && isNominalToe)
+      // By default, the Toe is assumed to be the midpoint of the curve fit interval.
+      // (IS-GPS-200N 30.3.4.4)
+      beginFit = Toe - halfFitInterval;
+      endFit = Toe + halfFitInterval;
+      
+      // If the Toe is non-nominal then it indicates an upload cutover and Toe is not
+      // the midpoint of the curve fit interval. The begin and end fit times must be adjusted.
+      //    * A nominal Toe is always 1.5 hours ahead of 2 hour boundaries (IS-GPS-200N 30.3.4.5).
+      //    * The start of the CEI dataset transmission interval corresponds to the beginning of the
+      //      curve fit interval for the CEI. (IS-GPS-200N 30.3.4.4) 
+      //      With a nominal Toe, the start of transmission can be inferred. For a non-nominal Toe, 
+      //      the start of the transmission interval, and thus the beginning of the curve fit, 
+      //      cannot be assumed. For non-nominal Toe, all we can assume is that we (hopefully) capture 
+      //      the earliest transmission and set the begin fit time to that value.
+      //    * For a non-nominal Toe, the end of the curve fit interval must be adjusted since the Toe
+      //      is offset from the assumed curve fit interval midpoint. The Toe is offset
+      //      by a small negative deviation (IS-GPS-200N 30.3.4.5) which would be 5 minutes
+      //      for CNav due to the LSB scale factor (IS-GPS-200N Table 30-I). i.e. The midpoint
+      //      is 5 minutes ahead of the Toe, so add 5 minutes to the end of the fit time.
+      //    * QZSS does not specify the relationship of fit interval to upload cutovers. So we do not adjust them.
+      uint32_t toeSOW = static_cast<uint32_t>(GPSWeekSecond(Toe).sow);
+      bool isNominalToe = (toeSOW % (2 * SEC_PER_HOUR)) == halfFitInterval;
+      if (signal.system == SatelliteSystem::GPS && !isNominalToe)
       {
-         xmitSOW = xmitSOW - (xmitSOW % 7200);
-      }
-
-         // If there IS an offset, all we can assume is that we (hopefully)
-         // captured the earliest transmission and set the begin valid time
-         // to that value.
-         //
-         // @note Prior to GPS III, the offset was typically applied
-         // to BOTH the first and second data sets following a
-         // cutover.  So this means the SECOND data set will NOT be
-         // coerced to the top of the even hour start time if it
-         // wasn't collected at the top of the hour.
-      beginFit = GPSWeekSecond(xmitWeek, xmitSOW, xws.getTimeSystem());
-         // If an upload cutover, need some adjustment.
-      if (!isNominalToe)
-      {
-         endFit += 300;
+         beginFit = std::min({xmitTime, xmit11, xmitClk});
+         endFit += SEC_PER_5_MIN;
       }
    }
 
