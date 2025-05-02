@@ -40,6 +40,7 @@
 #include "GPSWeekSecond.hpp"
 #include "TimeString.hpp"
 #include "GPS_URA.hpp"
+#include "TimeConstants.hpp"
 
 using namespace std;
 
@@ -91,40 +92,48 @@ namespace gnsstk
    void GPSLNavEph ::
    fixFit()
    {
-      GPSWeekSecond toeWS(Toe);
-      bool isNominalToe = (long)toeWS.sow % 3600 == 0;
-
-         // Round the Toe up to the nearest hour to get the midpoint
-         // of the curve fit interval. Usually the Toe is already the
-         // midpoint but in the case of an upload cutover the Toe is offset
-         // from the midpoint by a multiple of -16 seconds.
-         // See IS-GPS-200N Section 20.3.4.5 for more info.
-      CommonTime curveMidpoint{Toe};
-      if (!isNominalToe)
-      {
-         curveMidpoint = Toe + (3600 - ((long)toeWS.sow % 3600));
-      }
-
-      double fitSeconds = 3600.0 * getLegacyFitInterval(iodc, fitIntFlag);
+      // GPS fit interval is based on the fit interval flag and IODC.
+      // Nominally, GPS fit interval is 4 hours. When the fit interval flag is 1
+      // then the fit interval will be greater than 4 hours. See getLegacyFitInterval
+      // for more info.
+      uint32_t halfFitInterval = SEC_PER_HOUR * getLegacyFitInterval(iodc, fitIntFlag) / 2;
+      
+      // QZSS has a fixed fit interval of 2 hours instead
+      // of GPS's usual 4 hours. Also the fit interval flag
+      // is defined to be always zero (IS-QZSS-PNT-004 Table 4.1.1-2, Section 4.1.2.4)
       if (signal.system == SatelliteSystem::QZSS)
       {
-            // QZSS has a fit interval of 2 hours instead
-            // of GPS's usual 4 hours. Also the fit interval flag
-            // is defined to be always zero.
-         fitSeconds = 7200.0;
+         halfFitInterval = SEC_PER_HOUR;
       }
       
-      beginFit = curveMidpoint - (fitSeconds / 2.0);
-      if (!isNominalToe)
+      // By default, the Toe is assumed to be the midpoint of the curve fit interval.
+      // (IS-GPS-200N 20.3.4.4, 20.3.4.5)
+      beginFit = Toe - halfFitInterval;
+      endFit = Toe + halfFitInterval;
+      
+      // If the Toe is non-nominal then it indicates an upload cutover and Toe is not
+      // the midpoint of the curve fit interval. The begin and end fit times must be adjusted.
+      //    * A nominal Toe always lies on an hour boundary (IS-GPS-200N 20.3.4.4). This covers
+      //      both GPS normal operations, GPS extended operations mode, and QZSS.
+      //    * The start of the CEI dataset transmission interval corresponds to the beginning of the
+      //      curve fit interval for the CEI. (IS-GPS-200N 20.3.4.4) 
+      //      With a nominal Toe, the start of transmission can be inferred. For a non-nominal Toe, 
+      //      the start of the transmission interval, and thus the beginning of the curve fit, 
+      //      cannot be assumed. For non-nominal Toe, all we can assume is that we (hopefully) capture 
+      //      the earliest transmission and set the begin fit time to that value.
+      //    * For a non-nominal Toe, the end of the curve fit interval must be adjusted since the Toe
+      //      is offset from the assumed curve fit interval midpoint. The Toe is offset
+      //      by a small negative deviation (IS-GPS-200N 30.3.4.5). Since the midpoint of the fit interval,
+      //      must be a multiple of 5 minutes (IS-GPS-200N 30.3.4.4), and the Toe is offset from the midpoint
+      //      by a small negative deviation (IS-GPS-200N 30.3.4.5), then the end fit rounds up to a 5 minute multiple.
+      //    * QZSS does not specify the relationship of fit interval to upload cutovers. So we do not adjust them.
+      uint32_t toeSOW = static_cast<uint32_t>(GPSWeekSecond(Toe).sow);
+      bool isNominalToe = toeSOW % SEC_PER_HOUR == 0;
+      if (signal.system == SatelliteSystem::GPS && !isNominalToe)
       {
-            // If this is an upload cutover CEI then the begin fit must
-            // be the time of the first transmission of the new CEI set.
-            // All we can assume is that we (hopefully) captured the earliest
-            // transmission and set the begin valid time to that transmission
-            // time
          beginFit = xmitTime;
+         endFit += SEC_PER_5_MIN - (toeSOW % SEC_PER_5_MIN);
       }
-      endFit = curveMidpoint + (fitSeconds / 2.0);
    }
 
 
