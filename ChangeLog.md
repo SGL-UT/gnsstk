@@ -1,3 +1,16 @@
+# Version 14.4.2   Tuesday May 06, 2025
+
+Modifications by Author
+-----------------------
+     Taben Malik <malik@arlut.utexas.edu> (2):
+           Fixing LNav fit interval computation.
+           Fixing GPSLNavEph fit interval computation.
+
+     Tony Hughes <anthony@arlut.utexas.edu> (1):
+           For TKS-801 and OCS-1035, disallow unassigned SV IDs and tidy comments.
+
+
+
 # Version 14.4.1   Friday June 07, 2024
 
 Modifications by Author

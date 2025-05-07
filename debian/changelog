@@ -1,3 +1,13 @@
+gnsstk (14.4.2-1) focal; urgency=low
+
+  * Updated to version 14.4.2
+  * Fix EngNav such that subframe pattern ID look-ups disallow
+    unassigned SV ID values
+  * Fix GPSLNavEph fit interval computation
+  * Fix LNav fit interval computation
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Tue, 06 May 2025 23:27:08 -0500
+
 gnsstk (14.4.1-1) focal; urgency=low
 
   * Updated to version 14.4.1

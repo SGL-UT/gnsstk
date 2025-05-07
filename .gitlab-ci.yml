@@ -457,30 +457,14 @@ build_windows_vs2019_dll:
     - mkdir build
     - cd build
     - cmake -DBUILD_SHARED_LIBS=TRUE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
-    - cmake --build . --config Release -- /m
+    - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
       - build/
-    expire_in: 4 days
-  allow_failure: false
-  timeout: 180m
-
-build_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - win10-vs2019
-  script:
-    - mkdir build
-    - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
-    - cmake --build . --config Release -- /m
-  artifacts:
-    paths:
-    - build/
+      - swig/*.cmake
+      - swig/**/*.in
+      - "*.{in,cmake,h}"
+      - "**/CMakeLists.txt"
     expire_in: 4 days
 
 build_windows_vs2019:
@@ -495,12 +479,13 @@ build_windows_vs2019:
     - mkdir build
     - cd build
     - cmake -DBUILD_SHARED_LIBS=FALSE -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 16 2019" -A x64 ../
-    - cmake --build . --config Release -- /m
+    - cmake --build . --config Release -- /m:4 /nr:false
   artifacts:
     paths:
       - build/
+      - "*.{in,cmake,h}"
+      - "**/CMakeLists.txt"
     expire_in: 4 days
-  allow_failure: false
 
 # Test Stage
 # Runs all tests of GNSSTK for each platform
@@ -672,34 +657,11 @@ test_redhat_8:
   dependencies:
     - build_redhat_8
 
-test_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: none
-  stage: test
-  needs: [build_windows]
-  extends: .normal_build
-  tags:
-    - win10-vs2019
-  script:
-    - cd build
-    - cmake --build . --target RUN_TESTS --config Release
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-    expire_in: 4 days
-  dependencies:
-    - build_windows
-  timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
-
 test_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: test
   needs: [build_windows_vs2019]
   extends: .vs2019_build
@@ -717,13 +679,12 @@ test_windows_vs2019:
   dependencies:
     - build_windows_vs2019
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
 
 test_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: test
   needs: [build_windows_vs2019_dll]
   extends: .vs2019_dll_build
@@ -731,6 +692,8 @@ test_windows_vs2019_dll:
     - win10-vs2019
   script:
     - cd build
+    # Added COPY_GNSSTK_DLL target for workaround with python 3.8+ not honoring DLLs found in windows PATH variable.
+    - cmake --build . --target COPY_GNSSTK_DLL --config Release
     - cmake --build . --target RUN_TESTS --config Release
   artifacts:
     when: on_failure
@@ -741,8 +704,6 @@ test_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
   timeout: 10m
-  # Allow failures here to prevent blocking the rest of the pipeline. See INDEV-1475
-  allow_failure: true
 
 # User_Install Stage
 
@@ -856,36 +817,13 @@ user_install_redhat_8:
   dependencies:
     - build_redhat_8
 
-user_install_windows:
-  stage: install
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: none
-  needs: [build_windows,test_windows]
-  extends: .normal_build
-  tags:
-    - win10-vs2019
-  script:
-    - cd build
-    - cmake --build . --config Release --target install
-    - cd ..
-    - dir build\install
-  artifacts:
-    paths:
-      - build/install/
-    expire_in: 4 days
-  dependencies:
-    - build_windows
-    - test_windows
-  timeout: 20m
-  # Allow failures here to prevent blocking the rest of the pipeline.
-  allow_failure: false
   retry: 2
 
 user_install_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: install
   needs: [build_windows_vs2019,test_windows_vs2019]
   extends: .vs2019_build
@@ -893,7 +831,7 @@ user_install_windows_vs2019:
     - win10-vs2019
   script:
     - cd build
-    - cmake --build . --config Release --target install
+    - cmake --build . --config Release --target install -j 10
     - cd ..
     - dir build\install
   artifacts:
@@ -903,13 +841,14 @@ user_install_windows_vs2019:
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
-  allow_failure: false
-  timeout: 20m
+  timeout: 60m
+  retry: 2
 
 user_install_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: install
   needs: [build_windows_vs2019_dll,test_windows_vs2019_dll]
   extends: .vs2019_dll_build
@@ -917,7 +856,7 @@ user_install_windows_vs2019_dll:
     - win10-vs2019
   script:
     - cd build
-    - cmake --build . --config Release --target install
+    - cmake --build . --config Release --target install -j 10
     - cd ..
     - dir build\install
   artifacts:
@@ -927,8 +866,8 @@ user_install_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
     - test_windows_vs2019_dll
-  allow_failure: false
-  timeout: 20m
+  timeout: 60m
+  retry: 2
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
@@ -1074,8 +1013,8 @@ package_conda:
   script:
     - conda activate conda_builder
     - export GIT_COMMIT=$CI_COMMIT_REF_NAME
-    - export GIT_LAST_TAG=$(git describe --abbrev=0 origin/stable)
-    - export GIT_CHANGES_LAST_TAG=$(git rev-list --count $(git describe --abbrev=0 origin/stable)..@)
+    - export GIT_LAST_TAG=$(git describe --abbrev=0 origin/release/v14.4.2)
+    - export GIT_CHANGES_LAST_TAG=$(git rev-list --count $(git describe --abbrev=0 origin/release/v14.4.2)..@)
     # Output directory must exist before conda build
     - mkdir -p conda-bld
     - conda build --output-folder conda-bld --python=$PYTHON_VERSION conda_recipe
@@ -1125,31 +1064,15 @@ package_redhat_8_py36:
       - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
 
-package_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}
-    GIT_STRATEGY: none
-  stage: package
-  extends: .normal_build
-  needs: [build_windows]
-  tags:
-    - win10-vs2019
-  script:
-    - cd build
-    - cpack -C Release
-#    - cpack -G WIX -C Release
-  dependencies:
-    - build_windows
-  artifacts:
-    paths:
-      - build/_CPack_Packages
+  retry: 2
 
 package_windows_vs2019:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: package
-  needs: [build_windows_vs2019]
+  needs: [build_windows_vs2019,user_install_windows_vs2019]
   extends: .vs2019_build
   tags:
     - win10-vs2019
@@ -1166,9 +1089,10 @@ package_windows_vs2019:
 package_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
-    GIT_STRATEGY: none
+    GIT_STRATEGY: fetch
+    GIT_CLEAN_FLAGS: none
   stage: package
-  needs: [build_windows_vs2019_dll]
+  needs: [build_windows_vs2019_dll,user_install_windows_vs2019_dll]
   extends: .vs2019_dll_build
   tags:
     - win10-vs2019

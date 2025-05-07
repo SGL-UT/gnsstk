@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 14.4.1
+%define version 14.4.2
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 06 2025 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.4.2 release
+-   Fix LNav fit interval computation
+-   Fix GPSLNavEph fit interval computation
+-   Fix EngNav such that subframe pattern ID look-ups disallow unassigned SV ID values
 * Fri Jun 07 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.4.1 release
 - Update pipeline to use rhel 8 ubi image instead of deprecated centos 8 appstream
