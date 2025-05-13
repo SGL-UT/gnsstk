@@ -68,8 +68,11 @@ variables:
   SONAR_PROJECT_KEY: gnsstk
   SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7 -Dsonar.sourceEncoding=UTF-8"
   FORTIFY_SCAN_TYPE:
-    value: '-quick'
-    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low"
+    value: ''
+    options:
+    - ''
+    - '-quick'
+    description: "Defaults to blank which is Critical, High, Medium, and Low. Change value to -quick for Critical and High only.  Do not use -quick for releases"
 
 # Template for all normal jobs.
 .normal_build:
@@ -436,11 +439,9 @@ sonar-scan:
 fortify-scan:
   extends:
     - .cpp_fortify
+  needs: []
   tags:
     - extra-large
-  needs: []
-  variables:
-    FORTIFY_SCAN_TYPE: '-quick'
   script:
     - mkdir -p build
     - cd build
