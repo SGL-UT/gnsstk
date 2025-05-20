@@ -52,7 +52,7 @@ add_test(NAME df_diff_4
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
 
-# ignore lines 1&2, and the last 2617, set eps to 1e-14 and there should be 2
+# ignore lines 1&2, and the last 2617, set eps to 1e-14 and there should be 3
 add_test(NAME df_diff_5
     COMMAND ${CMAKE_COMMAND}
     -DTEST_PROG=$<TARGET_FILE:df_diff>
@@ -60,7 +60,20 @@ add_test(NAME df_diff_5
     -DTESTNAME=df_diff_5
     -DARGS=-1\ ${GNSSTK_TEST_DATA_DIR}/arlm200b.15o\ -2\ ${GNSSTK_TEST_DATA_DIR}/df_diff.in\ -l\ 2\ -e\ 1e-14\ -z\ 2617
     -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
-    -DEXP_RC=2
+    -DEXP_RC=3
+    -DNODIFF=1
+    -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
+
+# Ensures that full strings are tested when there are pseudo-numbers in a line.
+# Fixes gnsstk#535
+add_test(NAME df_diff_pseudonum
+    COMMAND ${CMAKE_COMMAND}
+    -DTEST_PROG=$<TARGET_FILE:df_diff>
+    -DTESTBASE=df_diff_pseudonum
+    -DTESTNAME=df_diff_pseudonum
+    -DARGS=-v\ -1\ ${GNSSTK_TEST_DATA_DIR}/inputs/df_diff_pseudonum_1.in\ -2\ ${GNSSTK_TEST_DATA_DIR}/inputs/df_diff_pseudonum_2.in
+    -DTARGETDIR=${GNSSTK_TEST_OUTPUT_DIR}
+    -DEXP_RC=1
     -DNODIFF=1
     -P ${CMAKE_CURRENT_SOURCE_DIR}/testsuccexp.cmake)
 
