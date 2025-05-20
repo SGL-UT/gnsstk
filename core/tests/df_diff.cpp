@@ -40,6 +40,7 @@
 // failing on small differences in floating point values.
 
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -74,16 +75,66 @@ public:
       string regex;
    };
 
-      // While this is in C11, we don't want to work under C03
+
+      /** Attempt to parse floating point value from a string token.
+       * 
+       * The whole string token must be a valid number format for a valid return.
+       * 
+       * Scientific notation is allowed, including older FORTRAN style
+       * notation that uses a 'd' or 'D' instead of 'e' or 'E' denoting the
+       * exponent.
+       * 
+       * @param[in] s A single token to attempt parsing.
+       * @param[out] isDouble set to true if the whole token `s` represents
+       *    a number, otherwise is set to false.
+       * @return if `isDouble` is true then the returned value is the parsed number
+       *    from the token `s`. If `isDouble` is false then the returned value
+       *    is undefined.
+       */
    double stringToDouble(const string& s, bool& isDouble)
    {
-      char *p;
-      double v = strtod(s.c_str(), &p);
-      if (p == s.c_str())
+      const char* str = s.c_str();
+      char* endptr;
+  
+      // Try parsing the string with strtod
+      double value = std::strtod(str, &endptr);
+  
+      // Case 1: No characters parsed (not a valid number)
+      if (endptr == str) {
          isDouble = false;
-      else
+         return 0.0;
+      }
+
+      // Case 2: Entire string parsed successfully
+      if (endptr == str + s.size()) {
          isDouble = true;
-      return v;
+         return value;
+      }
+
+      // Case 3: Stopped at 'd' or 'D', check for scientific notation
+      if (*endptr == 'd' || *endptr == 'D') {
+         const char* exp_start = endptr + 1;
+         char* exp_endptr;
+ 
+         // Parse the exponent as an integer
+         long exponent = std::strtol(exp_start, &exp_endptr, 10);
+ 
+         // No valid exponent digits found
+         if (exp_endptr == exp_start) {
+            isDouble = false;
+            return 0.0;
+         }
+ 
+         // Exponent parsed successfully and entire string consumed
+         if (exp_endptr == str + s.size()) {
+            isDouble = true;
+            return value * std::pow(10.0, static_cast<double>(exponent));
+         }
+      }
+ 
+      // Case 4: Unparsed characters remain, invalid format
+      isDouble = false;
+      return 0.0;
    }
 
    bool initialize(int argc, char *argv[]) noexcept
@@ -116,7 +167,7 @@ public:
          return false;
       }
 
-      if (!input1)
+      if (!input2)
       {
          cerr << "Could not open: " << input2Fn << endl;
          exitCode=1;
@@ -218,7 +269,7 @@ protected:
    {
       try
       {
-         for (long lineNumber = 1; lineNumber < totalLines; lineNumber++)
+         for (long lineNumber = 1; lineNumber <= totalLines; lineNumber++)
          {
             string line1, line2;
             if (!getline(input1, line1) || !getline(input2, line2))
