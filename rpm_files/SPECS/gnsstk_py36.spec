@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 14.6.0
+%define version 15.0.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,22 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 23 2025 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v15.0.0 release
+- Ensuring correct destruction of NavData with virtual destructor
+- Update cmake to set minimum compiler version on RHEL to be C++17 ABI compatible
+- Update submodule ref to point to latest gnsstk-data merge
+- Fix df_diff comparisons, off-by-one error, and cmake test usage of df_diff.
+- Fix gitlab pipeline jobs retry for only system failures.
+- Update Fortify pipeline scan job
+- Fix GPSLNavEph fit interval computation.
+- Update  GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact specification of the IS-GPS-200
+- Fix SNAPPER Check ptr for null before calling string constructor. Running SNAPPER with lambda in cloud doesn't have the env variable $HOME by default
+- Add C++17 support for Toolkits
+- Fix PNBBDSD1NavDataFactory Change SOW cracking from asSignedDouble() to asUnsignedInt()
+- Update MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to allow multiple independent instances.
+- Fix EngNav such that subframe pattern ID look-ups disallow unassigned SV ID values.
+- Fix Fortify pipeline retry condition
 * Mon Jan 06 2025 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.6.0 release
 - Update turn on pipeline sonar scan quality check

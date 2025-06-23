@@ -1,3 +1,38 @@
+# Version 15.0.0   Monday June 23, 2025
+
+Modifications by Author
+-----------------------
+     Benjamin Brutocao <benjamin.brutocao@arlut.utexas.edu> (1):
+           Match IS GPS 200 definition of pi
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Spa 747 - Fix SOW count cracking in PNB BDS D1 Nav Data Factory
+
+     David Barber <dbarber@arlut.utexas.edu> (6):
+           fix fortify retry condition
+           Update gnsstk-data submodule ref
+           Add fortify scan job
+           Update pipeline jobs retry for system failures only
+           Update test_dfix_karr.exp
+           Update gcc minimum version to be 9 and remove deb10/deb11 pipeline jobs
+
+     Sangeetha Illendula <sangeetha.illendula@arlut.utexas.edu> (1):
+           Check ptr for null before calling string constructor. This fix is needed to run...
+
+     Sankara Muthukrishnan <sankara.m@arlut.utexas.edu> (1):
+           Add C++17 support for Toolkits
+
+     Taben Malik <malik@arlut.utexas.edu> (3):
+           Allow multiple MultiFormatNavDataFactories
+           Fixing GPSLNavEph fit interval computation.
+           df_diff pseudo-number comparisons and off-by-one bug
+           Ensuring correct destruction of NavData with virtual destructor
+
+     Tony Hughes <anthony@arlut.utexas.edu> (1):
+           For TKS-801 and OCS-1035, in subframe pattern ID lookup, disallow unassigned SV IDs and tidy comments.
+
+
+
 # Version 14.6.0   Monday January 06, 2025
 
 Modifications by Author
