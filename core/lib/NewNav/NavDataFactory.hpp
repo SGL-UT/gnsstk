@@ -111,7 +111,10 @@ namespace gnsstk
           * @return true if successful.  If false, navOut will be untouched. */
       virtual bool findAll(const NavMessageID& nmid, const TimeRange& whenRange,
                                NavDataPtrList& navOut, bool unique, SVHealth xmitHealth,
-                               NavValidityType valid) = 0;
+                               NavValidityType valid)
+      {
+         return false;
+      }
 
          /** Get the offset, in seconds, to apply to times when
           * converting them from fromSys to toSys.
