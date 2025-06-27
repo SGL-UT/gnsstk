@@ -64,6 +64,15 @@ namespace gnsstk
       /// Days per second.
    const double DAY_PER_SEC = 1.0/SEC_PER_DAY;
 
+      /// Seconds per minute
+   const unsigned char SEC_PER_MIN = 60;
+      /// Minutes per hour
+   const unsigned char MIN_PER_HOUR = 60;
+      /// Seconds per 5 minutes
+   const unsigned short SEC_PER_5_MIN = 300;
+      /// Seconds per hour
+   const unsigned short SEC_PER_HOUR = 3600;
+
       /// Milliseconds in a second.
    const long MS_PER_SEC = 1000L;
       /// Seconds per millisecond.

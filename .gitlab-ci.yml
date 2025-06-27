@@ -68,26 +68,40 @@ variables:
   SONAR_PROJECT_KEY: gnsstk
   SONAR_ADDTIONAL_PARAMS: "-Dsonar.python.coverage.reportPaths=coverage-python.xml -Dsonar.cfamily.gcov.reportsPath=. -Dsonar.python.version=3.7 -Dsonar.sourceEncoding=UTF-8"
   FORTIFY_SCAN_TYPE:
-    value: '-quick'
-    description: "Defaults to -quick which is Critical, High. Change value to blank for a Full Scan which includes Medium and Low"
+    value: ''
+    options:
+    - ''
+    - '-quick'
+    description: "Defaults to blank which is Critical, High, Medium, and Low. Change value to -quick for Critical and High only.  Do not use -quick for releases"
 
 # Template for all normal jobs.
-.normal_build:
-  except:
-    variables:
-      - $BLD_ONLY_VS2019 == "True"
+.normal_job:
+  rules:
+    - if: $BLD_ONLY_VS2019 == "True"
+      when: never
+    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~ /^ci_.*$/ || $CI_COMMIT_REF_NAME =~ /^version_.*_prep$/
+      variables:
+        BUILD_TYPE: debug
+    - when: always
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
 
 .vs2019_build:
   only:
     variables:
       - $BLD_VS2019 == "True"
       - $BLD_VS_STATIC == "True"
+  retry: 2
 
 .vs2019_dll_build:
   only:
     variables:
       - $BLD_VS2019 == "True"
       - $BLD_VS_DLL == "True"
+  retry: 2
 
 # Template for all "big" builds.
 .big_build:
@@ -102,6 +116,11 @@ variables:
       - /^feature\/ci_.*$/
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
 
 # Template for disabling stages
 .dont_build:
@@ -114,10 +133,10 @@ variables:
 static_analysis:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
@@ -127,10 +146,10 @@ static_analysis:
 sgllint_lint:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:python3
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files for required lines like copyright/license statements.'
@@ -146,25 +165,26 @@ sgllint_lint:
 submodule_check:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
   variables:
     GIT_SUBMODULE_UPDATE_FLAGS: --remote
-  only:
-    - main
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /main/
+      when: always
+    - when: never
+  image: $DOCKER_REGISTRY/sgl/ubuntu:20.04
   script:
     - (! git status --porcelain | grep 'M data')
-  retry: 2
 
 protected_term_lint:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:python3
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files for protected terms in files modified since the branch split from default.'
@@ -181,10 +201,10 @@ protected_term_lint:
 protected_history_lint:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:python3
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files modified on this branch for sensitive terms.'
@@ -202,10 +222,10 @@ protected_history_lint:
 generate_documentation:
   stage: check
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     # Install GraphViz
     - sudo apt-get install -y graphviz
@@ -217,49 +237,11 @@ generate_documentation:
     paths:
       - docs/
     expire_in: 4 days
-  retry: 2
-
-build_debian_10:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT -DPYTHON_EXECUTABLE=/usr/bin/python3
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
-    expire_in: 4 days
-  retry: 2
-
-build_debian_11:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
-    - make all -j 4
-  artifacts:
-    paths:
-      - build/
-  retry: 2
 
 build_ubuntu_20.04:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
@@ -272,15 +254,14 @@ build_ubuntu_20.04:
   artifacts:
     paths:
       - build/
-  retry: 2
 
 build_ext_noswig:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -288,15 +269,14 @@ build_ext_noswig:
     - cmake -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
-  retry: 2
 
 build_noext_noswig:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -304,16 +284,15 @@ build_noext_noswig:
     - cmake -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=install ..
     - test ! -d CMakeFiles/gnsstk.dir/ext
     - test ! -d swig
-  retry: 2
 
 # this should print a warning and continue by flipping BUILD_EXT on
 build_swig_noext:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -322,15 +301,14 @@ build_swig_noext:
     # ext is implicitly enabled if you request swig and not ext
     - test -d CMakeFiles/gnsstk.dir/ext
     - test -d swig
-  retry: 2
 
-build_debian_10_virtualenv:
+build_ubuntu_20.04_virtualenv:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
     - source myenv/bin/activate
@@ -342,33 +320,11 @@ build_debian_10_virtualenv:
     paths:
       - myenv/
       - build/
-    expire_in: 4 days
-  retry: 2
-
-build_debian_11_virtualenv:
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
-    - source myenv/bin/activate
-    - mkdir -p build
-    - cd build
-    - cmake -DDEBUG_SWITCH=ON -DPYTHON_INSTALL_PREFIX=$VIRTUAL_ENV -DCMAKE_INSTALL_PREFIX=$VIRTUAL_ENV $CMAKE_ARG_DEFAULT -DPYTHON_EXECUTABLE=$VIRTUAL_ENV/bin/python3
-    - make all -j 4
-  artifacts:
-    paths:
-      - myenv/
-      - build/
-  retry: 2
 
 .build_conda:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
@@ -381,6 +337,9 @@ build_debian_11_virtualenv:
     - conda activate py${PYTHON_VERSION}
     - mkdir -p build
     - cd build
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - export gnsstk=`pwd`/install
     - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
     - make all -j 4
@@ -388,7 +347,6 @@ build_debian_11_virtualenv:
     paths:
       - build/
     expire_in: 4 days
-  retry: 2
 
 build_conda_py3.6:
   variables:
@@ -410,61 +368,17 @@ build_conda_py3.9:
     PYTHON_VERSION: "3.9"
   extends: .build_conda
 
-sonar-scan:
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
-  stage: quality
-  needs: []
-  extends:
-    - .sonarqube-check
-  tags:
-    - extra-large
-  script:
-    - apt-get install gcovr lcov -y
-    # Install gnsstk from latest deb CI artifacts first.
-    - mkdir build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
-    - build-wrapper-linux-x86-64 --out-dir . make all -j 4
-    - ctest -j 4
-    - cd ..
-    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
-    - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
-    - !reference [.scan-c++, script]
-  retry: 2
-
-fortify-scan:
-  extends:
-    - .cpp_fortify
-  tags:
-    - extra-large
-  needs: []
-  variables:
-    FORTIFY_SCAN_TYPE: '-quick'
-  script:
-    - mkdir -p build
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
-    - make all -j 4
-    - !reference [.fortify_post_consolidated_cpp, script]
-  retry: 2
-
-fortify-scan-publish:
-  stage: reporting
-  extends: .fortify-scan-publish
-  needs:
-    - job: fortify-scan
-      artifacts: true
-
 build_redhat_8:
   stage: build
   needs: []
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - mkdir -p build
     - cd build
     - export gnsstk=`pwd`/install
@@ -474,7 +388,6 @@ build_redhat_8:
     paths:
       - build/
     expire_in: 4 days
-  retry: 2
 
 build_windows_vs2019_dll:
   variables:
@@ -494,26 +407,6 @@ build_windows_vs2019_dll:
       - build/
       - swig/*.cmake
       - swig/**/*.in
-      - "*.{in,cmake,h}"
-      - "**/CMakeLists.txt"
-    expire_in: 4 days
-
-build_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-  stage: build
-  needs: []
-  extends: .normal_build
-  tags:
-    - win10-vs2015
-  script:
-    - mkdir build
-    - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DDEBUGTRACE=off -DCMAKE_BUILD_TYPE=release -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=ON -G "Visual Studio 14 2015 Win64" ../
-    - cmake --build . --config Release -- /m:4 /nr:false
-  artifacts:
-    paths:
-      - build/
       - "*.{in,cmake,h}"
       - "**/CMakeLists.txt"
     expire_in: 4 days
@@ -538,52 +431,72 @@ build_windows_vs2019:
       - "**/CMakeLists.txt"
     expire_in: 4 days
 
+
+# Scanning Phase jobs
+
+sonar-scan:
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  stage: quality
+  needs: []
+  extends:
+    - .sonarqube-check
+  tags:
+    - extra-large
+  script:
+    - apt-get install gcovr lcov -y
+    # Install gnsstk from latest deb CI artifacts first.
+    - mkdir build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
+    - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+    - ctest -j 4
+    - cd ..
+    - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
+    - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
+    - !reference [.scan-c++, script]
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+fortify-scan:
+  extends:
+    - .cpp_fortify
+  needs: []
+  tags:
+    - extra-large
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
+    - make all -j 4
+    - !reference [.fortify_post_consolidated_cpp, script]
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+fortify-scan-publish:
+  stage: reporting
+  extends: .fortify-scan-publish
+  needs:
+    - job: fortify-scan
+      artifacts: true
+
+
 # Test Stage
 # Runs all tests of GNSSTK for each platform
-test_debian_10:
-  stage: test
-  needs: [build_debian_10]
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-  dependencies:
-    - build_debian_10
-  retry: 2
-
-test_debian_11:
-  stage: test
-  needs: [build_debian_11]
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-  dependencies:
-    - build_debian_11
-  retry: 2
-
 test_ubuntu_20.04:
   stage: test
   needs: [build_ubuntu_20.04]
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
@@ -598,37 +511,14 @@ test_ubuntu_20.04:
     - build/swig/
   dependencies:
     - build_ubuntu_20.04
-  retry: 2
 
-test_debian_10_virtualenv:
+test_ubuntu_20.04_virtualenv:
   stage: test
-  needs: [build_debian_10_virtualenv]
-  extends: .normal_build
+  needs: [build_ubuntu_20.04_virtualenv]
+  extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - source myenv/bin/activate
-    - cd build
-    - ctest -j 4
-    - touch $CI_PROJECT_DIR/success
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-    expire_in: 4 days
-  dependencies:
-    - build_debian_10_virtualenv
-  retry: 2
-
-test_debian_11_virtualenv:
-  stage: test
-  needs: [build_debian_11_virtualenv]
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -640,12 +530,11 @@ test_debian_11_virtualenv:
     - build/Testing/Temporary/
     - build/swig/
   dependencies:
-    - build_debian_11_virtualenv
-  retry: 2
+    - build_ubuntu_20.04_virtualenv
 
 .test_conda:
   stage: test
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
@@ -657,6 +546,9 @@ test_debian_11_virtualenv:
     - conda create --name py${PYTHON_VERSION} "python=${PYTHON_VERSION}" nose enum34
     - conda activate py${PYTHON_VERSION}
     - cd build
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - ctest -j 4
     - touch $CI_PROJECT_DIR/success
   artifacts:
@@ -665,8 +557,6 @@ test_debian_11_virtualenv:
     - build/Testing/Temporary/
     - build/swig/
     expire_in: 4 days
-  retry: 2
-
 
 test_conda_py3.6:
   variables:
@@ -699,12 +589,15 @@ test_conda_py3.9:
 test_redhat_8:
   stage: test
   needs: [build_redhat_8]
-  extends: .normal_build
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     - cd build
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - ctest -j 4
   artifacts:
     when: on_failure
@@ -713,30 +606,6 @@ test_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
-  retry: 2
-
-test_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: none
-  stage: test
-  needs: [build_windows]
-  extends: .normal_build
-  tags:
-    - win10-vs2015
-  script:
-    - cd build
-    - cmake --build . --target RUN_TESTS --config Release
-  artifacts:
-    when: on_failure
-    paths:
-    - build/Testing/Temporary/
-    - build/swig/
-    expire_in: 4 days
-  dependencies:
-    - build_windows
-  timeout: 10m
 
 test_windows_vs2019:
   variables:
@@ -789,44 +658,6 @@ test_windows_vs2019_dll:
 # User_Install Stage
 
 # Tests user install of Gnsstk on each platform, saves artifacts for downstream builds.
-user_install_debian_10:
-  stage: install
-  needs: [build_debian_10]
-  extends: .big_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 ../
-    - make install -j 4
-  artifacts:
-    paths:
-      - build/install
-    expire_in: 4 days
-  dependencies:
-    - build_debian_10
-  retry: 2
-
-user_install_debian_11:
-  stage: install
-  needs: [build_debian_11]
-  extends: .big_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - cd build
-    - export gnsstk=`pwd`/install
-    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=$gnsstk -DPYTHON_USER_INSTALL=ON ../
-    - make install -j 4
-  artifacts:
-    paths:
-      - build/install
-  dependencies:
-    - build_debian_11
-  retry: 2
 
 user_install_ubuntu_20.04:
   stage: install
@@ -845,34 +676,14 @@ user_install_ubuntu_20.04:
       - build/install
   dependencies:
     - build_ubuntu_20.04
-  retry: 2
 
-virtualenv_install_debian_10:
+virtualenv_install_ubuntu_20.04:
   stage: install
-  needs: [build_debian_10_virtualenv]
-  extends: .normal_build
+  needs: [build_ubuntu_20.04_virtualenv]
+  extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - source myenv/bin/activate
-    - cd build
-    - make install -j 4
-  artifacts:
-    paths:
-      - myenv
-    expire_in: 4 days
-  dependencies:
-    - build_debian_10_virtualenv
-  retry: 2
-
-virtualenv_install_debian_11:
-  stage: install
-  needs: [build_debian_11_virtualenv]
-  extends: .normal_build
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -881,8 +692,7 @@ virtualenv_install_debian_11:
     paths:
       - myenv
   dependencies:
-    - build_debian_11_virtualenv
-  retry: 2
+    - build_ubuntu_20.04_virtualenv
 
 user_install_redhat_8:
   stage: install
@@ -892,6 +702,9 @@ user_install_redhat_8:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - cd build
     - export gnsstk=`pwd`/install
     - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
@@ -902,32 +715,6 @@ user_install_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
-  retry: 2
-
-user_install_windows:
-  stage: install
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_PIPELINE_ID
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: none
-  needs: [build_windows,test_windows]
-  extends: .normal_build
-  tags:
-    - win10-vs2015
-  script:
-    - cd build
-    - cmake --build . --config Release --target install -j 10
-    - cd ..
-    - dir build\install
-  artifacts:
-    paths:
-      - build/install/
-    expire_in: 4 days
-  dependencies:
-    - build_windows
-    - test_windows
-  timeout: 30m
-  retry: 2
 
 user_install_windows_vs2019:
   variables:
@@ -951,7 +738,8 @@ user_install_windows_vs2019:
   dependencies:
     - build_windows_vs2019
     - test_windows_vs2019
-  timeout: 30m
+  timeout: 60m
+  retry: 2
 
 user_install_windows_vs2019_dll:
   variables:
@@ -975,7 +763,8 @@ user_install_windows_vs2019_dll:
   dependencies:
     - build_windows_vs2019_dll
     - test_windows_vs2019_dll
-  timeout: 30m
+  timeout: 60m
+  retry: 2
 
 # System Stage
 # Tests install of Gnsstk on each platform, saves artifacts for downstream builds.
@@ -987,105 +776,25 @@ system_install_redhat_8:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - cd build
     - export gnsstk=/usr/local
     - cmake -DCMAKE_INSTALL_PREFIX=$gnsstk ../
     - sudo make install -j 4
   dependencies:
     - build_redhat_8
-  retry: 2
 
 # Package Stage
 # Tests packaging of Gnsstk on all platforms
-package_debian_10:
-  stage: package
-  needs: []
-  variables:
-    BUILD_TYPE: fast
-  rules:
-    # Add this rule to prevent an "additional" single element pipeline for merge requests.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
-      variables:
-        BUILD_TYPE: debug
-    - when: on_success
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - rm -rf ../*.deb .gitmodules
-    # Mark the debian log so that this package is a backport.
-    # Use the most recent Maintainer as current maintainer.
-    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    - dch --bpo "No Changes"
-    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
-    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=buster-sgl"
-    - mkdir debs
-    - mv ../*.deb debs
-    - mv ../*.changes debs
-    - mv ../*.dsc debs
-    - mv ../*.git ../*.gitshallow debs
-    - mv ../*.buildinfo debs
-  artifacts:
-    paths:
-      - debs/
-  timeout:  90m
-  dependencies:
-    - build_debian_10
-  retry: 2
-
-package_debian_11:
-  stage: package
-  needs: []
-  variables:
-    BUILD_TYPE: fast
-  rules:
-    # Add this rule to prevent an "additional" single element pipeline for merge requests.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
-      variables:
-        BUILD_TYPE: debug
-    - when: on_success
-  tags:
-    - extra-large
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - rm -rf ../*.deb .gitmodules
-    # Mark the debian log so that this package is a backport.
-    # Use the most recent Maintainer as current maintainer.
-    - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    - dch --bpo "No Changes"
-    - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
-    - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=bullseye-sgl"
-    - mkdir debs
-    - mv ../*.deb debs
-    - mv ../*.changes debs
-    - mv ../*.dsc debs
-    - mv ../*.git ../*.gitshallow debs
-    - mv ../*.buildinfo debs
-  artifacts:
-    paths:
-      - debs/
-  timeout:  90m
-  dependencies:
-    - build_debian_11
-  retry: 2
 
 package_ubuntu_20.04:
   stage: package
   needs: []
+  extends: .normal_job
   variables:
     BUILD_TYPE: fast
-  rules:
-    # Add this rule to prevent an "additional" single element pipeline for merge requests.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_REF_NAME =~ /main/ || $CI_COMMIT_REF_NAME =~/^ci_.*$/ || $CI_COMMIT_REF_NAME=~/^version_.*_prep$/
-      variables:
-        BUILD_TYPE: debug
-    - when: on_success
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
@@ -1094,10 +803,7 @@ package_ubuntu_20.04:
     # Mark the debian log so that this package is a backport.
     # Use the most recent Maintainer as current maintainer.
     - export DEBEMAIL=$(dpkg-parsechangelog -S Maintainer)
-    # Increment release number so c++11 compiled package gets installed by default over c++17 compiled package
-    - dch -q "No Changes"
-    # defaults to using c++11 standard
-    - dch --bpo "No Changes" && dch  -l "cpp11ubuntu" -D focal 'No Changes' -u low
+    - dch --bpo "No Changes" && dch  -l "cpp17ubuntu" -D focal 'No Changes' -u low
     - if [ "$BUILD_TYPE" == "debug" ]; then BUILD_PROFILES="pkg_python,debug_package"; else BUILD_PROFILES="pkg_python"; fi
     - dpkg-buildpackage --build-profiles=${BUILD_PROFILES} -us -uc -d --changes-option="-DDistribution=focal-sgl"
     - mkdir debs
@@ -1112,11 +818,11 @@ package_ubuntu_20.04:
   timeout:  90m
   dependencies:
     - build_ubuntu_20.04
-  retry: 2
 
 package_conda:
   stage: package
   needs: []
+  extends: .normal_job
   tags:
     - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
@@ -1128,7 +834,6 @@ package_conda:
     - export GIT_LAST_TAG=$(git describe --abbrev=0 origin/stable)
     - export GIT_CHANGES_LAST_TAG=$(git rev-list --count $(git describe --abbrev=0 origin/stable)..@)
     # Output directory must exist before conda build
-    - mkdir -p conda-bld
     - conda build --output-folder conda-bld --python=$PYTHON_VERSION conda_recipe
     # Don't archive the cache files.
     - rm -r conda-bld/linux-64/.cache
@@ -1141,15 +846,18 @@ package_conda:
   parallel:
     matrix:
       - PYTHON_VERSION: ["3.6", "3.7", "3.8", "3.9"]
-  retry: 2
 
 package_redhat_8:
   stage: package
   needs: []
+  extends: .normal_job
   tags:
     - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
     - pushd rpm_files
@@ -1159,15 +867,18 @@ package_redhat_8:
       - rpm_files/RPMS/x86_64/gnsstk-*
       - rpm_files/SRPMS/gnsstk-*
   dependencies: []
-  retry: 2
 
 package_redhat_8_py36:
   stage: package
   needs: []
+  extends: .normal_job
   tags:
     - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
     - bash rpm_files/setup_dirs.sh
     - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
     - pushd rpm_files
@@ -1177,27 +888,6 @@ package_redhat_8_py36:
       - rpm_files/RPMS/x86_64/python3-gnsstk-*
       - rpm_files/SRPMS/python3-gnsstk-*
   dependencies: []
-  retry: 2
-
-package_windows:
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}
-    GIT_STRATEGY: fetch
-    GIT_CLEAN_FLAGS: none
-  stage: package
-  extends: .normal_build
-  needs: [build_windows,user_install_windows]
-  tags:
-    - win10-vs2015
-  script:
-    - cd build
-    - cpack -C Release
-#    - cpack -G WIX -C Release
-  dependencies:
-    - build_windows
-  artifacts:
-    paths:
-      - build/_CPack_Packages
 
 package_windows_vs2019:
   variables:
@@ -1241,46 +931,6 @@ package_windows_vs2019_dll:
 
 # Deploy Stage
 # Tests install of Gnsstk package on each platform, saves artifacts for downstream builds.
-deploy_debian_10:
-  stage: deploy
-  needs: [package_debian_10]
-  extends: .big_build
-  tags:
-    - standard
-  image: $DOCKER_REGISTRY/sgl/debian-10:pkgbuild
-  script:
-    - pushd debs
-    - sudo apt-get -y install ./*.deb
-    - popd
-    # source gnsstk's enable script
-    - source /etc/profile.d/gnsstk_enable.sh
-    - python3 -c "import gnsstk"
-    - df_diff -h
-    - gnsstk-config --includedir
-  dependencies:
-    - package_debian_10
-  retry: 2
-
-deploy_debian_11:
-  stage: deploy
-  needs: [package_debian_11]
-  extends: .big_build
-  tags:
-    - standard
-  image: $DOCKER_REGISTRY/sgl/debian-11:pkgbuild
-  script:
-    - pushd debs
-    - apt-get -y install ./*.deb
-    - popd
-    # source gnsstk's enable script
-    - source /etc/profile.d/gnsstk_enable.sh
-    - python3 -c "import gnsstk"
-    - df_diff -h
-    - gnsstk-config --includedir
-  dependencies:
-    - package_debian_11
-  retry: 2
-
 deploy_ubuntu_20.04:
   stage: deploy
   needs: [package_ubuntu_20.04]
@@ -1299,7 +949,6 @@ deploy_ubuntu_20.04:
     - gnsstk-config --includedir
   dependencies:
     - package_ubuntu_20.04
-  retry: 2
 
 deploy_redhat_8:
   stage: deploy
@@ -1315,7 +964,6 @@ deploy_redhat_8:
     - gnsstk-config --includedir
   dependencies:
     - package_redhat_8
-  retry: 2
 
 deploy_redhat_py36:
   stage: deploy
@@ -1333,15 +981,16 @@ deploy_redhat_py36:
   dependencies:
     - package_redhat_8_py36
     - package_redhat_8
-  retry: 2
 
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
-    DEB_10_PACKAGES: "debs/*bpo10+1_amd64.deb"
-    DEB_11_PACKAGES: "debs/*bpo11*.deb"
     UBU_20_PACKAGES: "debs/*bpo10+1*ubuntu*.deb"
   stage: push
-  needs: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-  dependencies: [package_conda, package_debian_10, package_debian_11, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-
+  needs: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  dependencies: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure

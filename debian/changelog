@@ -1,3 +1,31 @@
+gnsstk (15.0.0-1) focal; urgency=low
+
+  * Updated to version 15.0.0
+  * Ensuring correct destruction of NavData with virtual destructor
+  * Fix Fortify pipeline retry condition
+  * Fix EngNav such that subframe pattern ID look-ups disallow
+    unassigned SV ID values.
+  * Update MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to
+    allow multiple independent instances.
+  * Fix PNBBDSD1NavDataFactory Change SOW cracking from asSignedDouble()
+    to asUnsignedInt()
+  * Add C++17 support for Toolkits
+  * Fix SNAPPER Check ptr for null before calling string constructor.
+    Running SNAPPER with lambda in cloud doesn't have the env variable
+    $HOME by default
+  * Update GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact
+    specification of the IS-GPS-200
+  * Fix GPSLNavEph fit interval computation.
+  * Update Fortify pipeline scan job
+  * Fix gitlab pipeline jobs retry for only system failures.
+  * Fix df_diff comparisons, off-by-one error, and cmake test usage of
+    df_diff.
+  * Update submodule ref to point to latest gnsstk-data merge
+  * Update cmake to set minimum compiler version on RHEL to be C++17 ABI
+    compatible
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 23 Jun 2025 11:33:54 -0500
+
 gnsstk (14.6.0-1) focal; urgency=low
 
   * Updated to version 14.6.0

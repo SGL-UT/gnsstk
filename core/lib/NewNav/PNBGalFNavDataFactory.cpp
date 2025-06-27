@@ -620,4 +620,10 @@ namespace gnsstk
       almAcc.clear();
       ephAcc.clear();
    }
+
+   std::unique_ptr<PNBNavDataFactory> PNBGalFNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGalFNavDataFactory>(new PNBGalFNavDataFactory(*this));
+   }
 } // namespace gnsstk

@@ -345,4 +345,11 @@ namespace gnsstk
                                  TrackingCode::CA);
       navOut->signal.nav = NavType::GPSLNAV;
    }
+
+
+   std::unique_ptr<NavDataFactory> SEMNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<SEMNavDataFactory>(new SEMNavDataFactory(*this));
+   }
 }

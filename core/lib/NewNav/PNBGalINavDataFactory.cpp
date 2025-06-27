@@ -754,4 +754,12 @@ namespace gnsstk
       almAcc.clear();
       ephAcc.clear();
    }
+   
+   
+   std::unique_ptr<PNBNavDataFactory> PNBGalINavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBGalINavDataFactory>(new PNBGalINavDataFactory(*this));
+   }
+
 } // namespace gnsstk

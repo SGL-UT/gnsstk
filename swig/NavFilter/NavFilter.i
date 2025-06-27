@@ -59,16 +59,6 @@ from __future__ import absolute_import
 %include "Exception.i"
 
 // =============================================================
-//  Section 8: function class templates
-// =============================================================
-
-namespace std
-{
-   template <typename ArgumentType, typename ResultType> struct unary_function {};
-   template <class Arg1, class Arg2, class Result> struct binary_function {};
-}
-
-// =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
 // =============================================================
@@ -77,11 +67,8 @@ namespace std
 %import "PackedNavBits.hpp"
 
 %include "NavFilterKey.hpp"
-%template(std_binary_function_NavFilterKey) std::binary_function<gnsstk::NavFilterKey *, gnsstk::NavFilterKey *, bool >;
 %include "NavFilter.hpp"
 %include "CNav2SanityFilter.hpp"
-%template(std_binary_function_CNavFilterData) std::binary_function< gnsstk::CNavFilterData,gnsstk::CNavFilterData,bool >;
-%template(std_binary_function_CNavFilterDataPtr) std::binary_function< gnsstk::CNavFilterData *, gnsstk::CNavFilterData *, bool >;
 %include "CNavFilterData.hpp"
 %include "CNavCookFilter.hpp"
 %include "NavFilterMgr.hpp"
@@ -90,7 +77,6 @@ namespace std
 %include "CNavParityFilter.hpp"
 %include "CNavTOWFilter.hpp"
 %include "GenericNavFilterData.hpp"
-%template(std_binary_function_LNavFilterData) std::binary_function< gnsstk::LNavFilterData *, gnsstk::LNavFilterData *, bool >;
 %include "LNavFilterData.i"
 %include "LNavAlmValFilter.hpp"
 %include "LNavCookFilter.hpp"

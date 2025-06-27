@@ -3,6 +3,7 @@
 .*.swp
 .idea
 .vscode
+CMakePresets.json
 
 # Python compiled byte-code
 *.pyc
@@ -35,3 +36,4 @@ api/
 quickref.rst
 NewNavInc.h
 NewNavInit.h
+/.vs

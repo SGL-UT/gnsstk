@@ -49,25 +49,22 @@ namespace gnsstk
       /** Define a wrapper class for all known PNBNavDataFactory
        * classes, allowing a single class to be used to handle all
        * GNSSes.
-       * @warning Because the factories used by this class are
-       *   maintained in a static object, the validity filters and
-       *   type filters are essentially "non-volatile" across object
-       *   instantiations.  That is, if you create one
-       *   PNBMultiGNSSNavDataFactory, change the filter settings,
-       *   destroy it and create another, the filter settings will be
-       *   the same as they were in the destroyed object.  Do not
-       *   expect the filter settings to be reinitialized with each
-       *   constructed PNBMultiGNSSNavDataFactory.  Additionally,
-       *   contained factories will retain their state unless you
-       *   explicitly call resetState().  When using contiguous data,
-       *   it's probably best to not use resetState(), but when using
-       *   non-contiguous data, using resetState() prevents invalid
-       *   assembly of data. */
+       */
    class PNBMultiGNSSNavDataFactory : public PNBNavDataFactory
    {
    public:
          /// Initialize myFactories.
       PNBMultiGNSSNavDataFactory();
+   
+      PNBMultiGNSSNavDataFactory(const PNBMultiGNSSNavDataFactory& ndf);
+
+      PNBMultiGNSSNavDataFactory& operator=(const PNBMultiGNSSNavDataFactory& ndf);
+      
+         // Move constructor/assignment are deleted until there is a requirement for them.
+
+      PNBMultiGNSSNavDataFactory(const PNBMultiGNSSNavDataFactory&& ndf) = delete;
+
+      PNBMultiGNSSNavDataFactory&& operator=(const PNBMultiGNSSNavDataFactory&& ndf) = delete;
 
          /** Set the factories' handling of valid and invalid
           * navigation data.  This should be called before any addData()
@@ -124,6 +121,9 @@ namespace gnsstk
           */
       void setControl(const FactoryControl& ctrl) override;
 
+         /// @copydoc PNBNavDataFactory::clone()
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /** Known PNB -> nav data factories, organized by navigation
           * message type.  Declared static so that the user doesn't
@@ -133,7 +133,17 @@ namespace gnsstk
         /** Keep a cached copy of the shared_ptr to the static
          * PNBNavDataFactoryMap so that windows doesn't destroy it before
          * destroying this. */
-     std::shared_ptr<PNBNavDataFactoryMap> myFactories;
+     std::shared_ptr<PNBNavDataFactoryMap> myFactories = std::make_shared<PNBNavDataFactoryMap>();
+
+   private:
+
+         /** Clone a map of factory objects into this instance's #myFactories
+          * 
+          * Clears out the current #myFactories then updates it with clones of given factories.
+          * 
+          * @param[in] from collection of factories to clone into this instance's #myFactories.
+          */
+      void cloneToMyFactories(const PNBNavDataFactoryMap& from);
    }; // class PNBMultiGNSSNavDataFactory
 
       //@}

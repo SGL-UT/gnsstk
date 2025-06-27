@@ -1598,4 +1598,10 @@ namespace gnsstk
         << "End dump SP3NavDataFactory." << endl;
    }
 
+   std::unique_ptr<NavDataFactory> SP3NavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<SP3NavDataFactory>(new SP3NavDataFactory(*this));
+   }
+
 } // namespace gnsstk

@@ -104,8 +104,8 @@ public:
       /// Grant access to protected data.
    gnsstk::NavMessageMap& getData()
    { return data; }
-   static std::shared_ptr<gnsstk::NavDataFactoryMap> getFactories()
-   { return factories(); }
+   std::shared_ptr<gnsstk::NavDataFactoryMap> getFactories()
+   { return myFactories; }
 };
 
    /// Expose NavDataFactory protected members
@@ -142,8 +142,28 @@ public:
       /// Exercise loadIntoMap by loading data with different options in place.
    unsigned loadIntoMapTest();
    unsigned getFactoryTest();
+   unsigned multipleFactoriesTest();
+   unsigned cloneTest();
+   unsigned copyAssignment();
 };
 
+unsigned MultiFormatNavDataFactory_T ::
+multipleFactoriesTest()
+{
+   TUDEF("MultiFormatNavDataFactory", "MultiFormatNavDataFactory");
+   gnsstk::MultiFormatNavDataFactory fact;
+   gnsstk::MultiFormatNavDataFactory fact2;
+   std::string dpath = gnsstk::getPathData() + gnsstk::getFileSep();
+   TUCSM("loadIntoMap");
+   TUASSERT(fact.addDataSource(dpath + "arlm2000.15n"));
+   TUASSERT(fact.addDataSource(dpath + "test_input_SP3a.sp3"));
+   TUCSM("size");
+   TUASSERTE(size_t, 507+232, fact.size());
+   TUASSERTE(size_t, 0, fact2.size());
+   TURETURN();
+
+   TURETURN();
+}
 
 unsigned MultiFormatNavDataFactory_T ::
 constructorTest()
@@ -281,12 +301,12 @@ editTest()
               gnsstk::TrackingCode::Y, gnsstk::NavType::GPSLNAV),
       satID2e(23, 32, gnsstk::SatelliteSystem::GPS, gnsstk::CarrierBand::L1,
               gnsstk::TrackingCode::CA, gnsstk::NavType::GPSLNAV);
-   gnsstk::MultiFormatNavDataFactory fact;
+   TestClass fact;
    std::string dpath = gnsstk::getPathData() + gnsstk::getFileSep();
       // get pointers to known factories to verify results
    gnsstk::RinexNavDataFactory *rinFact = nullptr;
    gnsstk::SP3NavDataFactory *sp3Fact = nullptr;
-   for (auto& i : *(TestClass::getFactories()))
+   for (auto& i : *(fact.getFactories()))
    {
       gnsstk::NavDataFactory *p = i.second.get();
       if (rinFact == nullptr)
@@ -435,7 +455,7 @@ unsigned MultiFormatNavDataFactory_T ::
 numSignalsTest()
 {
    TUDEF("MultiFormatNavDataFactory", "numSignals");
-   gnsstk::MultiFormatNavDataFactory fact;
+   TestClass fact;
    gnsstk::NavSignalID expSig(gnsstk::SatelliteSystem::GPS,
                              gnsstk::CarrierBand::L1,
                              gnsstk::TrackingCode::CA,
@@ -450,7 +470,7 @@ numSignalsTest()
       // two (there's no way to know where the time offset data in a
       // RINEX file came from).
    TUASSERTE(size_t, 2, fact.numSignals());
-   for (const auto& fi : *(TestClass::getFactories()))
+   for (const auto& fi : *(fact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(fi.second.get());
       TUASSERT(tfp != nullptr);
@@ -497,14 +517,14 @@ setValidityFilterTest()
    TUDEF("MultiFormatNavDataFactory", "setValidityFilter");
    TestClass mfact;
    mfact.setValidityFilter(gnsstk::NavValidityType::ValidOnly);
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::ValidOnly,
                 tfp->getValidityFilter());
    }
    mfact.setValidityFilter(gnsstk::NavValidityType::Any);
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavValidityType, gnsstk::NavValidityType::Any,
@@ -522,19 +542,19 @@ setTypeFilterTest()
    gnsstk::NavMessageTypeSet nmts1 { gnsstk::NavMessageType::Unknown };
    gnsstk::NavMessageTypeSet nmts2 { gnsstk::NavMessageType::Ephemeris };
    mfact.setTypeFilter(nmts1);
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, nmts1, tfp->getTypeFilter());
    }
    mfact.setTypeFilter(nmts2);
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, nmts2, tfp->getTypeFilter());
    }
    mfact.setTypeFilter(gnsstk::allNavMessageTypes);
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
@@ -550,28 +570,28 @@ addTypeFilterTest()
    TUDEF("MultiFormatNavDataFactory", "clearTypeFilter");
    TestClass mfact;
    gnsstk::NavMessageTypeSet exp3 { gnsstk::NavMessageType::Almanac };
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
                 tfp->getTypeFilter());
    }
    TUCATCH(mfact.clearTypeFilter());
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERT(tfp->getTypeFilter().empty());
    }
    TUCSM("addTypeFilter");
    TUCATCH(mfact.addTypeFilter(gnsstk::NavMessageType::Almanac));
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, exp3, tfp->getTypeFilter());
    }
       // Set the type filter back to all so that other tests work.
    TUCATCH(mfact.setTypeFilter(gnsstk::allNavMessageTypes));
-   for (const auto& i : *(TestClass::getFactories()))
+   for (const auto& i : *(mfact.getFactories()))
    {
       TestFactory *tfp = reinterpret_cast<TestFactory*>(i.second.get());
       TUASSERTE(gnsstk::NavMessageTypeSet, gnsstk::allNavMessageTypes,
@@ -585,11 +605,12 @@ unsigned MultiFormatNavDataFactory_T ::
 loadIntoMapTest()
 {
    TUDEF("MultiFormatNavDataFactory", "loadIntoMap");
+   TestClass fact;
 
       // get pointers to known factories to verify results
    gnsstk::RinexNavDataFactory *rinFact = nullptr;
    gnsstk::SP3NavDataFactory *sp3Fact = nullptr;
-   for (auto& i : *(TestClass::getFactories()))
+   for (auto& i : *(fact.getFactories()))
    {
       gnsstk::NavDataFactory *p = i.second.get();
       if (rinFact == nullptr)
@@ -610,7 +631,6 @@ loadIntoMapTest()
    }
 
       // test loading RINEX 2 nav
-   gnsstk::MultiFormatNavDataFactory fact;
    std::string f2name = gnsstk::getPathData() + gnsstk::getFileSep() +
       "arlm2000.15n";
       // this should implicitly load into the data map
@@ -646,6 +666,97 @@ getFactoryTest()
    TURETURN();
 }
 
+unsigned MultiFormatNavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("MultiFormatNavDataFactory", "clone");
+   gnsstk::MultiFormatNavDataFactory uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   gnsstk::MultiFormatNavDataFactory& uut2Ref = dynamic_cast<gnsstk::MultiFormatNavDataFactory&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   auto nd = std::make_shared<gnsstk::GPSLNavHealth>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->svHealth = 0;
+   uut2Ref.getFactory<gnsstk::RinexNavDataFactory>()->addNavData(nd);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+
+   auto uut3 = uut2Ref.clone();
+   gnsstk::MultiFormatNavDataFactory& uut3Ref = dynamic_cast<gnsstk::MultiFormatNavDataFactory&>(*uut3);
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+   TUASSERTE(unsigned, 1, uut3Ref.size());
+
+   gnsstk::NavDataPtr pt2 = uut2Ref.getFactory<gnsstk::RinexNavDataFactory>()->getNavMessageMap().begin()->second.begin()->second.begin()->second;
+   gnsstk::NavDataPtr pt3 = uut3Ref.getFactory<gnsstk::RinexNavDataFactory>()->getNavMessageMap().begin()->second.begin()->second.begin()->second;
+   // TUASSERT(pt2 != pt3);
+
+   TURETURN();
+}
+
+unsigned MultiFormatNavDataFactory_T ::
+copyAssignment()
+{
+   TUDEF("MultiFormatNavDataFactory", "copyAssignment");
+   gnsstk::MultiFormatNavDataFactory uut;
+   auto nd = std::make_shared<gnsstk::GPSLNavHealth>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->svHealth = 0;
+   uut.getFactory<gnsstk::RinexNavDataFactory>()->addNavData(nd);
+   TUASSERTE(unsigned, 1, uut.size());
+
+   gnsstk::MultiFormatNavDataFactory uut2;
+   TUASSERTE(unsigned, 0, uut2.size());
+   uut2 = uut;
+   TUASSERTE(unsigned, 1, uut2.size());
+   
+   auto nd2 = std::make_shared<gnsstk::GPSLNavHealth>();
+   nd2->timeStamp = gnsstk::CivilTime(2024, 4, 5);
+   nd2->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd2->svHealth = 0;
+   uut2.getFactory<gnsstk::RinexNavDataFactory>()->addNavData(nd2);
+
+   TUASSERTE(unsigned, 1, uut.size());
+   TUASSERTE(unsigned, 2, uut2.size());
+
+   // Copy assignment of self should still work
+   uut = uut;
+   TUASSERTE(unsigned, 1, uut.size());
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -665,6 +776,9 @@ int main()
    errorTotal += testClass.addTypeFilterTest();
    errorTotal += testClass.loadIntoMapTest();
    errorTotal += testClass.getFactoryTest();
+   errorTotal += testClass.multipleFactoriesTest();
+   errorTotal += testClass.cloneTest();
+   errorTotal += testClass.copyAssignment();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

@@ -81,6 +81,8 @@ public:
    { return false; }
    std::string getFactoryFormats() const override
    { return "Test"; }
+   std::unique_ptr<gnsstk::NavDataFactory> clone() override
+   { return std::unique_ptr<TestFactory>(new TestFactory(*this)); }
 };
 
 

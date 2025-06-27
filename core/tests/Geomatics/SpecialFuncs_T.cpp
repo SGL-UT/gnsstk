@@ -107,10 +107,10 @@ public:
     {
         TUDEF("SpecialFuncs", "beta");
         // since it uses natural log gamma, <0 should die
-        TUTHROW(beta(-1, 1));
-        TUTHROW(beta(1, -1));
+        TUTHROW(gnsstk::beta(-1, 1));
+        TUTHROW(gnsstk::beta(1, -1));
         // and then normal
-        TUASSERTFEPS(beta(1, 1), 1.0, 1e-8);
+        TUASSERTFEPS(gnsstk::beta(1, 1), 1.0, 1e-8);
         TURETURN();
     }
     int seriesIncompGammaTest(void)

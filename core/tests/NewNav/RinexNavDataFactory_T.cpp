@@ -132,6 +132,7 @@ public:
    template <class NavClass>
    void verifyDataType(gnsstk::TestUtil& testFramework,
                        gnsstk::NavMessageMap& nmm);
+   unsigned cloneTest();
 };
 
 
@@ -1234,15 +1235,15 @@ loadIntoMapQZSSTest()
                                                 gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime expXT = gnsstk::CivilTime(2014,5,13,7,15,0,
                                                 gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime expti2 = gnsstk::CivilTime(2014,5,13,7,15,0,
+   gnsstk::CommonTime expti2 = gnsstk::CivilTime(2014,5,13,7,15,12,
                                                  gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2014,5,13,10,0,0,
+   gnsstk::CommonTime exptf2 = gnsstk::CivilTime(2014,5,13,9,15,12,
                                                  gnsstk::TimeSystem::QZS);
    gnsstk::CommonTime toeExp = gnsstk::GPSWeekSecond(1792,202512,
                                                      gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198900,
+   gnsstk::CommonTime beginExp = gnsstk::GPSWeekSecond(1792, 198912,
                                                        gnsstk::TimeSystem::QZS);
-   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(1792, 208800,
+   gnsstk::CommonTime endExp = gnsstk::GPSWeekSecond(1792, 206112,
                                                      gnsstk::TimeSystem::QZS);
    TUASSERT(uut.addDataSource(fname));
    TUASSERTE(size_t, 3, uut.size());
@@ -1380,6 +1381,42 @@ verifyDataType(gnsstk::TestUtil& testFramework,
    }
 }
 
+unsigned RinexNavDataFactory_T ::
+cloneTest()
+{
+   TUDEF("RinexNavDataFactory", "clone");
+   gnsstk::RinexNavDataFactory uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   gnsstk::RinexNavDataFactory& uut2Ref = dynamic_cast<gnsstk::RinexNavDataFactory&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   auto nd = std::make_shared<gnsstk::GPSLNavHealth>();
+   nd->timeStamp = gnsstk::CivilTime(2024, 4, 4);
+   nd->signal = gnsstk::NavMessageID{
+      gnsstk::NavSatelliteID{
+         1, 
+         gnsstk::SatelliteSystem::GPS, 
+         gnsstk::CarrierBand::Any, 
+         gnsstk::TrackingCode::Any, 
+         gnsstk::NavType::GPSLNAV
+      }, 
+      gnsstk::NavMessageType::Almanac
+   };
+   nd->svHealth = 0;
+   uut2Ref.addNavData(nd);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+
+   auto uut3 = uut2Ref.clone();
+   gnsstk::RinexNavDataFactory& uut3Ref = dynamic_cast<gnsstk::RinexNavDataFactory&>(*uut3);
+   TUASSERTE(unsigned, 1, uut2Ref.size());
+   TUASSERTE(unsigned, 1, uut3Ref.size());
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -1391,6 +1428,7 @@ int main()
    errorTotal += testClass.loadIntoMapQZSSTest();
    errorTotal += testClass.decodeSISATest();
    errorTotal += testClass.encodeSISATest();
+   errorTotal += testClass.cloneTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

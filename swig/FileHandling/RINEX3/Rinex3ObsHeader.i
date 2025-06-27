@@ -163,4 +163,3 @@ Rinex3ObsHeader.allValid302 = _FileHandling.cvar.Rinex3ObsHeader_allValid302
 Rinex3ObsHeader.allValid303 = _FileHandling.cvar.Rinex3ObsHeader_allValid303
 %};
 
-%template(std_unary_function_Rinex3ObsHeader) std::unary_function<gnsstk::Rinex3ObsHeader, bool>;

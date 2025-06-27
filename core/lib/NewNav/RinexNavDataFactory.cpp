@@ -1353,4 +1353,10 @@ namespace gnsstk
       }
       return -1;
    }
+
+   std::unique_ptr<NavDataFactory> RinexNavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<RinexNavDataFactory>(new RinexNavDataFactory(*this));
+   }
 }

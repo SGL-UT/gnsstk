@@ -117,7 +117,6 @@ from __future__ import absolute_import
 %feature("flatnested");
 %include "BinexData.hpp"
 %feature("flatnested", "");
-%template(std_binary_function_BinexData) std::binary_function<gnsstk::BinexData, gnsstk::BinexData, bool>;
 %include "BinexFilterOperators.i"
 %include "FFBinaryStream.hpp"
 %include "BinexStream.hpp"
@@ -143,15 +142,10 @@ from __future__ import absolute_import
 %include "Rinex3ClockStream.hpp"
 %include "Rinex3NavBase.hpp"
 %include "Rinex3NavHeader.hpp"
-%template(std_unary_function_Rinex3NavHeader) std::unary_function<gnsstk::Rinex3NavHeader, bool>;
 %include "Rinex3NavStream.hpp"
 %include "RinexNavBase.hpp"
 %include "RinexNavData.i"
-%template(std_binary_function_RinexNavData) std::binary_function<gnsstk::RinexNavData,gnsstk::RinexNavData,bool>;
-%template(std_unary_function_RinexNavData) std::unary_function<gnsstk::RinexNavData,bool>;
 %include "Rinex3NavData.i"
-%template(std_binary_function_Rinex3NavData) std::binary_function<gnsstk::Rinex3NavData,gnsstk::Rinex3NavData,bool>;
-%template(std_unary_function_Rinex3NavData) std::unary_function<gnsstk::Rinex3NavData,bool>;
 %include "Rinex3NavFilterOperators.i"
 %include "Rinex3ObsBase.hpp"
 %include "Rinex3ObsHeader.i"
@@ -162,7 +156,6 @@ from __future__ import absolute_import
 %template(std_map_RinexSatID_RinexObsTypeMap) std::map<gnsstk::SatID, std::map<gnsstk::RinexObsType, gnsstk::RinexDatum> >;
 %include "Rinex3ObsData.hpp"
 %template(std_vector_Rinex3ObsData) std::vector<gnsstk::Rinex3ObsData>;
-%template(std_binary_function_Rinex3ObsData) std::binary_function<gnsstk::Rinex3ObsData,gnsstk::Rinex3ObsData,bool>;
 %include "Rinex3ObsFilterOperators.i"
 %include "Rinex3ObsStream.hpp"
 %feature("flatnested");
@@ -177,14 +170,11 @@ from __future__ import absolute_import
 %feature("flatnested");
 %include "RinexMetHeader.hpp"
 %feature("flatnested", "");
-%template(std_unary_function_RinexMetHeader) std::unary_function<gnsstk::RinexMetHeader,bool>;
 %include "RinexMetData.i"
-%template(std_binary_function_RinexMetData) std::binary_function<gnsstk::RinexMetData,gnsstk::RinexMetData,bool>;
 %include "RinexMetFilterOperators.i"
 %include "RinexMetStream.hpp"
 %include "RinexNavHeader.hpp"
 %template (FileStore_RinexNavHeader) gnsstk::FileStore<gnsstk::RinexNavHeader>;
-%template(std_unary_function_RinexNavHeader) std::unary_function<gnsstk::RinexNavHeader,bool>;
 %include "RinexNavFilterOperators.i"
 %include "RinexNavStream.hpp"
 %include "RinexObsBase.hpp"
@@ -192,9 +182,7 @@ from __future__ import absolute_import
 %include "RinexObsHeader.hpp"
 %feature("flatnested", "");
 %template(std_vector_RinexObsType) std::vector<gnsstk::RinexObsType>;
-%template(std_unary_function_RinexObsHeader) std::unary_function<gnsstk::RinexObsHeader, bool>;
 %include "RinexObsData.hpp"
-%template(std_binary_function_RinexObsData) std::binary_function<gnsstk::RinexObsData,gnsstk::RinexObsData,bool>;
 %include "RinexObsFilterOperators.i"
 %include "RinexObsStream.hpp"
 %include "RinexUtilities.hpp"

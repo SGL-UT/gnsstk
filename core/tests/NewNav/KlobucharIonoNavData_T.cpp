@@ -106,10 +106,10 @@ getIonoCorrTest()
    uut.beta[1]  = -7.30126485E+04;
    uut.beta[2]  = -1.32803702E+04;
    uut.beta[3]  =  3.38181850E+04;
-   TUASSERTFE(13.174577965354167475,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2));
-   TUASSERTFE(7.9994064218713107906,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
+   TUASSERTFEPS(13.174577965354167475,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L2), 1e-13);
+   TUASSERTFEPS(7.9994064218713107906,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1), 1e-13);
    TURETURN();
 }
 
@@ -131,8 +131,8 @@ rolloverTest()
    uut.beta[1] = 0.0;
    uut.beta[2] = -196608.0;
    uut.beta[3] = -65536.0;
-   TUASSERTFE(5.4106367748768136039,
-              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1));
+   TUASSERTFEPS(5.4106367748768136039,
+              uut.getIonoCorr(when, rx, sv, gnsstk::CarrierBand::L1), 1e-13);
    TURETURN();
 }
 

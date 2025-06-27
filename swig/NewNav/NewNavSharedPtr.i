@@ -1,5 +1,4 @@
 %include "std_shared_ptr.i"
-
  /* note: If you get this compiler error
   *
   * In function ‘PyObject* _wrap_delete_OrbitDataKepler(PyObject*, PyObject*)’:
@@ -108,5 +107,6 @@
 %shared_ptr(gnsstk::PNBBDSD2NavDataFactory)
 %shared_ptr(gnsstk::PNBGLOCNavDataFactory)
 %shared_ptr(gnsstk::PNBGLOFNavDataFactory)
- // silence warnings from swig
+
+// silence warnings from swig
 %shared_ptr(gnsstk::TimeSystemCorrection)

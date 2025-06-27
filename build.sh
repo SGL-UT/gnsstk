@@ -23,8 +23,6 @@ user_install_prefix+="/gnsstk"
 
 system_install_prefix+="/gnsstk"
 
-cppstd=c++11
-
 usage()
 {
     cat << EOF
@@ -89,8 +87,6 @@ OPTIONS:
 
    -p                   Build supported packages (source, binary, deb,  ...)
 
-   -C <c++-std>         Specify the C++ standard to use in g++ (default=${cppstd})
-
    -v                   Include debugging output.
 EOF
 }
@@ -145,8 +141,6 @@ while getopts ":hab:cdepi:j:xnP:sutTKgC:v" OPTION; do
            EXTRA_CMAKE_ARGS="$EXTRA_CMAKE_ARGS -DCMAKE_BUILD_TYPE=debug"
            ;;
         g) coverage_switch=1
-           ;;
-        C) cppstd=${OPTARG}
            ;;
         v) verbose+=1
            ;;
@@ -213,7 +207,6 @@ if ((verbose>0)); then
     log "enable_profiler      = $(ptof $enable_profiler)"
     log "verbose              = $(ptof $verbose)"
     log "num_threads          = $num_threads"
-    log "cppstd               = $cppstd"
     log "cmake args           = $@"
     log "time                 =" `date`
     log "hostname             =" $hostname
@@ -273,7 +266,6 @@ args+=${test_switch:+" -DTEST_SWITCH=ON"}
 args+=${coverage_switch:+" -DCOVERAGE_SWITCH=ON"}
 args+=${enable_trace:+" -DDEBUGTRACE=ON"}
 args+=${build_docs:+" --graphviz=$build_root/doc/graphviz/gnsstk_graphviz.dot"}
-args+=" -DCPPSTD=${cppstd}"
 if [ $no_address_sanitizer ]; then
     args+=" -DADDRESS_SANITIZER=OFF"
 else

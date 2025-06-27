@@ -150,6 +150,11 @@ public:
    }
    std::string getFactoryFormats() const override
    { return "BUNK"; }
+
+   std::unique_ptr<gnsstk::NavDataFactory> clone() override
+   {
+      return std::unique_ptr<TestClass>(new TestClass(*this));
+   }
 };
 
 
@@ -176,6 +181,7 @@ public:
    unsigned countTest();
    unsigned getFirstLastTimeTest();
    unsigned findAllTest();
+   unsigned cloneTest();
 
    void MakeAssertions(gnsstk::TestUtil& testFramework,
                      gnsstk::NavDataPtr result, gnsstk::CommonTime expTime, 
@@ -2031,6 +2037,29 @@ getFirstLastTimeTest()
    TURETURN();
 }
 
+unsigned NavDataFactoryWithStore_T ::
+cloneTest()
+{
+   TUDEF("NavDataFactoryWithStore", "clone");
+   TestClass uut;
+
+   TUASSERTE(unsigned, 0, uut.size());
+   auto uut2 = uut.clone();
+   TestClass& uut2Ref = dynamic_cast<TestClass&>(*uut2);
+   TUASSERTE(unsigned, 0, uut2Ref.size());
+
+   fillFactory(testFramework, uut2Ref);
+   TUASSERTE(unsigned, 0, uut.size());
+   TUASSERTE(unsigned, 8, uut2Ref.size());
+
+   auto uut3 = uut2Ref.clone();
+   TestClass& uut3Ref = dynamic_cast<TestClass&>(*uut3);
+   TUASSERTE(unsigned, 8, uut2Ref.size());
+   TUASSERTE(unsigned, 8, uut3Ref.size());
+
+   TURETURN();
+}
+
 
 int main()
 {
@@ -2053,6 +2082,7 @@ int main()
    errorTotal += testClass.countTest();
    errorTotal += testClass.getFirstLastTimeTest();
    errorTotal += testClass.findAllTest();
+   errorTotal += testClass.cloneTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

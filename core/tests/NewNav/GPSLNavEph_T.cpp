@@ -248,6 +248,25 @@ fixFitTest()
       TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
    }
 
+   // GPS III upload behavior -- the curve midpoint is not aligned to an hour boundary.
+   // The curve midpoint will be aligned to a 5 minute boundary and the Toe will be 
+   // negatively offset from that 5 minute boundary.
+   {
+      gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2121, 603360)};
+      gnsstk::CommonTime endExp{gnsstk::GPSWeekSecond(2122, 13200)};
+      gnsstk::GPSLNavEph obj;
+      obj.signal.system = gnsstk::SatelliteSystem::GPS;
+      obj.fitIntFlag = 0;
+      obj.iodc = 13;
+      // On first upload, midpoint is determined to be 2 hours out
+      // from transmit aligned to 5 minutes. 
+      obj.Toe = gnsstk::GPSWeekSecond(2122, 5984);
+      obj.xmitTime = gnsstk::GPSWeekSecond(2121,603360);
+      TUCATCH(obj.fixFit());
+      TUASSERTE(gnsstk::CommonTime, beginExp, obj.beginFit);
+      TUASSERTE(gnsstk::CommonTime, endExp, obj.endFit);
+   }
+
    // QZSS normal operations -- 2 hour curve fit interval, broadcasted every hour
    {
       gnsstk::CommonTime beginExp{gnsstk::GPSWeekSecond(2122, 0)};

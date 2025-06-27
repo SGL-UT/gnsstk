@@ -56,6 +56,13 @@ namespace gnsstk
       /// @ingroup NavFactory
       //@{
 
+   class NavDataFactory; // forward declaration
+
+      /// Managed pointer to NavDataFactory.
+   typedef std::shared_ptr<NavDataFactory> NavDataFactoryPtr;
+      /// Map signal to a factory.
+   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
+
       /** Abstract base class that defines the interface for searching
        * for navigation data. */
    class NavDataFactory
@@ -413,7 +420,22 @@ namespace gnsstk
           * fill out the signals as appropriate. */
       NavSignalSet supportedSignals;
 
+         /** Clone the factory.
+          *
+          * This polymorphic clone method is required for 
+          * MultiFormatNavDataFactory to duplicate it's static list of known
+          * Nav Data Factories.
+          *
+          * @warning Currently this method does not guarantee a deep copy
+          *   of underlying data, such as in the case of NavDataFactoryWithStore
+          *   derived classes.
+          *
+          * @returns a shared pointer to the cloned factory
+          */ 
+      virtual std::unique_ptr<NavDataFactory> clone() = 0;
+      
    protected:
+
          /// Configuration for the behavior of this factory.
       FactoryControl factControl;
 
@@ -437,11 +459,6 @@ namespace gnsstk
       CommonTime referenceTimeEpoch{};
       bool referenceTimeEpochValid{false};
    };
-
-      /// Managed pointer to NavDataFactory.
-   typedef std::shared_ptr<NavDataFactory> NavDataFactoryPtr;
-      /// Map signal to a factory.
-   typedef std::multimap<NavSignalID, NavDataFactoryPtr> NavDataFactoryMap;
 
       //@}
 

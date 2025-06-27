@@ -115,6 +115,9 @@ public:
    {
       return false;
    }
+
+   std::unique_ptr<gnsstk::NavDataFactory> clone() override
+   { return std::unique_ptr<TestClass>(new TestClass(*this)); }
 };
 
 

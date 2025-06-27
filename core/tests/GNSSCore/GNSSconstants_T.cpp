@@ -36,38 +36,50 @@
 //
 //==============================================================================
 
-/**
- * @file BinexFilterOperators.hpp
- * Operators for FileFilter using Binex data
- */
+#include <math.h>
+#include "TestUtil.hpp"
+#include "GNSSconstants.hpp"
 
-#ifndef GNSSTK_BINEXFILTEROPERATORS_HPP
-#define GNSSTK_BINEXFILTEROPERATORS_HPP
-
-#include "FileFilter.hpp"
-#include "BinexData.hpp"
-
-#include <set>
-
-namespace gnsstk
+class GNSSconstants_T
 {
-      /// @ingroup FileHandling
-      //@{
+public:
+   GNSSconstants_T();
+   unsigned equivalenceTest();
+
+};
 
 
-      /// Determine if two BinexData objects are equal.
-   struct BinexDataOperatorEquals
-   {
-   public:
-      bool operator()(const BinexData& l,
-                      const BinexData& r) const
-      {
-         return (l == r);
-      }
-   };
-
-      //@}
-
+GNSSconstants_T ::
+GNSSconstants_T()
+{
 }
 
-#endif // GNSSTK_BINEXFILTEROPERATORS_HPP
+
+unsigned GNSSconstants_T ::
+equivalenceTest()
+{
+   TUDEF("Constants", "Constants");
+   using gnsstk::PI;
+   using gnsstk::C_MPS;
+
+   // These are the values dictated in IS-GPS-200. Please do not miscellaneously/minorly tidy them.
+   TUASSERTFE(PI, 3.1415926535898);
+   TUASSERTFE(C_MPS, 2.99792458e8);
+
+   TURETURN();
+}
+
+
+int main()
+{
+   unsigned errorTotal = 0;
+   GNSSconstants_T testClass;
+
+   errorTotal += testClass.equivalenceTest();
+
+   std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
+             << std::endl;
+
+   return errorTotal;
+}
+

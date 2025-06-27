@@ -351,19 +351,19 @@ getXvtTest()
    TUASSERTE(bool, true, uut.getXvt(toi, xvt));
    TUASSERTFESMRT(xExpected, xvt.x[0]);
    TUASSERTFESMRT(yExpected, xvt.x[1]);
-   TUASSERTFESMRT(zExpected, xvt.x[2]);
+   TUASSERTFEPS(zExpected, xvt.x[2], 1e-6);
       // This is a bit of a cheat.  All I can figure is that numeric
       // error gets accumulated in the LSBs leading to v[0] being just
       // slightly out of spec.  That or the fact that it's negative
       // has an effect on the representable digits.  Either way, this
       // same code and its results are tested pretty thoroughly,
       // step-by-step, in other test methods.
-   TUASSERTFEPS(xdotExpected, xvt.v[0], 1.5e-12);
-   TUASSERTFESMRT(ydotExpected, xvt.v[1]);
+   TUASSERTFEPS(xdotExpected, xvt.v[0], 1e-9);
+   TUASSERTFEPS(ydotExpected, xvt.v[1], 1e-9);
    TUASSERTFESMRT(zdotExpected, xvt.v[2]);
    TUASSERTFESMRT(clkbiasExpected, xvt.clkbias);
    TUASSERTFESMRT(clkdriftExpected, xvt.clkdrift);
-   TUASSERTFESMRT(relcorrExpected, xvt.relcorr);
+   TUASSERTFEPS(relcorrExpected, xvt.relcorr, 1e-18);
    TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
 
    TUASSERTFESMRT(DeltatprExpected, uut.math.Deltatpr);
@@ -396,22 +396,22 @@ getXvtTest()
    TUASSERTFESMRT(omegaExpected, uut.math.uncorrected.omega);
    TUASSERTFESMRT(lambdaExpected, uut.math.uncorrected.lambda);
    TUASSERTFESMRT(hExpected, uut.math.uncorrected.h);
-   TUASSERTFESMRT(lExpected, uut.math.uncorrected.l);
+   TUASSERTFEPS(lExpected, uut.math.uncorrected.l, 1e-15);
    TUASSERTFESMRT(pExpected, uut.math.uncorrected.p);
 
-   TUASSERTFESMRT(deltaa1_aExpected, uut.math.k1.a);
+   TUASSERTFEPS(deltaa1_aExpected, uut.math.k1.a, 1e-15);
    TUASSERTFESMRT(deltah1Expected, uut.math.k1.h);
    TUASSERTFESMRT(deltal1Expected, uut.math.k1.l);
-   TUASSERTFESMRT(deltalambda1Expected, uut.math.k1.lambda);
+   TUASSERTFEPS(deltalambda1Expected, uut.math.k1.lambda, 1e-15);
    TUASSERTFESMRT(deltai1Expected, uut.math.k1.i);
-   TUASSERTFESMRT(deltaL1Expected, uut.math.k1.Lk);
+   TUASSERTFEPS(deltaL1Expected, uut.math.k1.Lk, 1e-15);
 
-   TUASSERTFESMRT(deltaa2_aExpected, uut.math.k2.a);
+   TUASSERTFEPS(deltaa2_aExpected, uut.math.k2.a, 1e-15);
    TUASSERTFESMRT(deltah2Expected, uut.math.k2.h);
-   TUASSERTFESMRT(deltal2Expected, uut.math.k2.l);
-   TUASSERTFESMRT(deltalambda2Expected, uut.math.k2.lambda);
-   TUASSERTFESMRT(deltai2Expected, uut.math.k2.i);
-   TUASSERTFESMRT(deltaL2Expected, uut.math.k2.Lk);
+   TUASSERTFEPS(deltal2Expected, uut.math.k2.l, 1e-15);
+   TUASSERTFEPS(deltalambda2Expected, uut.math.k2.lambda, 1e-15);
+   TUASSERTFEPS(deltai2Expected, uut.math.k2.i, 1e-15);
+   TUASSERTFEPS(deltaL2Expected, uut.math.k2.Lk, 1e-15);
 
    TURETURN();
 }
@@ -471,7 +471,7 @@ UncorrectedTest()
    TUCSM("sethl");
    TUCATCH(uut.sethl(epsilonA));
    TUASSERTFESMRT(hExpected, uut.h);
-   TUASSERTFESMRT(lExpected, uut.l);
+   TUASSERTFEPS(lExpected, uut.l, 1e-15);
    TURETURN();
 }
 

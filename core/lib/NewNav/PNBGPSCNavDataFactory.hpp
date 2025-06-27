@@ -176,6 +176,10 @@ namespace gnsstk
           * @param[in,out] s The stream to write the debug output to. */
       void dumpState(std::ostream& s) const;
 
+
+         /// @copydoc PNBNavDataFactory::clone()
+      std::unique_ptr<PNBNavDataFactory> clone() override;
+
    protected:
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
           * ephemeris data, where index 0 is message 10 and so on. */

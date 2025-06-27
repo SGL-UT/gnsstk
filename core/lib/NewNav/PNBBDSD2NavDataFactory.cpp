@@ -413,9 +413,6 @@ namespace gnsstk
                // Stop processing if we don't have consecutive subframes.
                // BeiDou doesn't have anything like IODC/IODE to match
                // subframes.
-               /** @bug I can't find in the ICD where it says what the
-                * scale factor is for the SOW field.  It's stored in
-                * 20 bits even though 604800 only requires 19 bits. */
             unsigned long sowA, sowB;
             if (i == pg3)
             {
@@ -1005,6 +1002,12 @@ namespace gnsstk
             s << endl;
          }
       }
+   }
+
+   std::unique_ptr<PNBNavDataFactory> PNBBDSD2NavDataFactory ::
+   clone()
+   {
+      return std::unique_ptr<PNBBDSD2NavDataFactory>(new PNBBDSD2NavDataFactory(*this));
    }
 
 
