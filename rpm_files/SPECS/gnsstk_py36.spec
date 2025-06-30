@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 14.5.0
+%define version 14.5.1
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 30 2025 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v14.5.1 release
+- Default findAll return false
 * Thu Sep 05 2024 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v14.5.0 release
 - Add test coverage to Epoch clock model

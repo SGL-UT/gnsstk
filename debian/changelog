@@ -1,3 +1,10 @@
+gnsstk (14.5.1-1) focal; urgency=low
+
+  * Updated to version 14.5.1
+  * Default findAll return false
+
+ -- David Barber <dbarber@arlut.utexas.edu>  Mon, 30 Jun 2025 10:46:10 -0500
+
 gnsstk (14.5.0-1) focal; urgency=low
 
   * Updated to version 14.5.0
