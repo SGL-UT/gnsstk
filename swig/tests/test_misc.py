@@ -8,7 +8,7 @@ except ImportError:
     from collections import Hashable
 
 sys.path.insert(0, os.path.abspath(".."))
-from gnsstk.test_utils import args, run_unit_tests
+from gnsstk.test_utils import run_unit_tests
 import gnsstk
 
 class EnumConversion_test(unittest.TestCase):
