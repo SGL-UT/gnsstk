@@ -59,6 +59,9 @@
 #include "NavLibrary.hpp"
 #include "TropModel.hpp"
 
+   // Forward declaration of testing class
+class PRSolution_T;
+
 namespace gnsstk
 {
    using FilteredSats = std::vector<std::pair<int, std::reference_wrapper<SatID>>>;
@@ -1084,6 +1087,8 @@ namespace gnsstk
          Z = 2,
          P_HAT = 3
       };
+
+      friend class ::PRSolution_T;
 
    }; // end class PRSolution
 
