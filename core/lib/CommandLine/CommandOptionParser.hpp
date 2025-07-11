@@ -143,9 +143,6 @@ namespace gnsstk
       std::ostream& displayUsageDoxygen(std::ostream& out);
 
    private:
-         /// changes the size of the option array for getopt_long.
-      void resizeOptionArray(struct option* &oldArray, unsigned long& oldSize);
-
          /// The vector of CommandOptions for the parser
       CommandOptionVec optionVec;
          /// The vector of error strings for displaying to the user.
