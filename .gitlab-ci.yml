@@ -854,7 +854,7 @@ package_redhat_8:
   needs: []
   extends: .normal_job
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     # source gcc9 for std C++17
