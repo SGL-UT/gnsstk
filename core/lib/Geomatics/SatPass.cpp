@@ -1194,7 +1194,7 @@ namespace gnsstk
             dt = N * dt;
             return;
          }
-         if (refTime == CommonTime::BEGINNING_OF_TIME)
+         if (refTime == Epoch(CommonTime::BEGINNING_OF_TIME))
          {
             refTime = firstTime;
          }

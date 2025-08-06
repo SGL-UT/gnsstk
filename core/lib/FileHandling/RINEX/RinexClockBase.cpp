@@ -58,7 +58,7 @@ namespace gnsstk
 
    string RinexClockBase::writeTime(const CivilTime& dt) const
    {
-      if (dt == CommonTime::BEGINNING_OF_TIME)
+      if (dt == CivilTime(CommonTime::BEGINNING_OF_TIME))
       {
          return std::string(26, ' ');
       }
@@ -111,4 +111,3 @@ namespace gnsstk
 
 
 }  // namespace
-
