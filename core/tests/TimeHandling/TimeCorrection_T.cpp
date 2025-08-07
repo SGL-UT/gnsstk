@@ -118,9 +118,11 @@ unsigned TimeCorrection_T :: testTimeAdjust8BitWeekRollover()
    TUDEF("TestCorrection", "timeAdjust8BitWeekRollover");
    long refWeek = 0;
 
+   // Test case no longer works since the underlying logic relies on
+   // a current timestamp. See TKS-823 for more info.
    // ref week equals zero
-   refWeek = 0;
-   TUASSERTE(long, 2248, timeAdjust8BitWeekRollover(200, refWeek));
+   // refWeek = 0;
+   // TUASSERTE(long, 2248, timeAdjust8BitWeekRollover(200, refWeek));
 
    // small toCorrectWeek
    refWeek = 2000;
