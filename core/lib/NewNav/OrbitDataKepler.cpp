@@ -284,7 +284,7 @@ namespace gnsstk
 
          // Compute velocity of rotation coordinates
       dek = amm / G;
-      dlk = amm * q / (G*G);
+      dlk = (dek*G) * q / (G*G);
       div = tdrinc - 2.0e0 * dlk *
          ( Cic  * s2al - Cis * c2al );
       domk = OMEGAdot - ell.angVelocity();
