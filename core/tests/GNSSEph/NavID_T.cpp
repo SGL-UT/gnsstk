@@ -78,9 +78,9 @@ public:
    unsigned asStringEnumTest();
 
    NavID testIDLNAV, testIDCNAVL2, testIDCNAVL5, testIDCNAV2, testIDMNAV,
-      testIDBD1, testIDBD2, testIDBCNAV1, testIDBCNAV2, testIDBCNAV3, testIDGloF, testIDGloC, testIDGalOS, testIDGalOS_2,
+      testIDBD1, testIDBD2, testIDBD2PhaseIII, testIDBCNAV1, testIDBCNAV2, testIDBCNAV3, testIDGloF, testIDGloC, testIDGalOS, testIDGalOS_2,
       testIDGalOS_F, testID_IRNSS_SPS, testIDUnkwn, testIDAny;
-   stringstream ln, l2, l5, cnav2, mn, d1, d2, c1, c2, c3, gf, gc, ginv, ginv_2, gfnv, is,
+   stringstream ln, l2, l5, cnav2, mn, d1, d2, d2p3, c1, c2, c3, gf, gc, ginv, ginv_2, gfnv, is,
       un, any;
 };
 
@@ -108,6 +108,9 @@ NavID_T()
         testIDBD2(SatID(5, SatelliteSystem::BeiDou),
                   ObsID(ObservationType::NavMsg, CarrierBand::B2,
                         TrackingCode::B1I)),
+        testIDBD2PhaseIII(SatID(59, SatelliteSystem::BeiDou),
+                  ObsID(ObservationType::NavMsg, CarrierBand::B2,
+                        TrackingCode::B2I)),
         testIDBCNAV1(SatID(10, SatelliteSystem::BeiDou),
                   ObsID(ObservationType::NavMsg, CarrierBand::L1,
                         TrackingCode::B1CD)),
@@ -172,6 +175,9 @@ constructorTest()
 
       //BeiDou D2
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2.navType);
+
+      //Beidou D2 Phase III
+   TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2PhaseIII.navType);
 
       //BeiDou BCNav1
    TUASSERTE(gnsstk::NavType, NavType::BCNav1, testIDBCNAV1.navType);
@@ -243,6 +249,9 @@ streamOutputTest()
    c3 << testIDBCNAV3;
    TUASSERTE(std::string, "BCNav3", c3.str());
 
+   d2p3 << testIDBD2PhaseIII;
+   TUASSERTE(std::string, "BeiDou_D2", d2p3.str());
+
    gf << testIDGloF;
    TUASSERTE(std::string, "GloCivilF", gf.str());
 
@@ -296,6 +305,9 @@ stringConstructorTest()
 
    NavID testIDBD2String(d2.str());
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2String.navType);
+
+   NavID testIDBD2PhaseIIIString(d2p3.str());
+   TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2PhaseIIIString.navType);
 
    NavID testIDBCNAV1String(c1.str());
    TUASSERTE(gnsstk::NavType, NavType::BCNav1, testIDBCNAV1String.navType);
