@@ -129,7 +129,27 @@ namespace gnsstk
          }
          case SatelliteSystem::BeiDou:
          {
-            if ( sidr.id>5 &&
+            if ( oidr.band==CarrierBand::L1 &&
+                (oidr.code==TrackingCode::B1CD ||
+                 oidr.code==TrackingCode::B1CDP ))
+            {
+               navType = NavType::BCNav1;
+            }
+            else if ( oidr.band==CarrierBand::L5 &&
+                (oidr.code==TrackingCode::B2aI ||
+                 oidr.code==TrackingCode::B2aQ ||
+                 oidr.code==TrackingCode::B2aIQ ))
+            {
+               navType = NavType::BCNav2;
+            }
+            else if ( oidr.band==CarrierBand::B2 &&
+                (oidr.code==TrackingCode::B2bI ||
+                 oidr.code==TrackingCode::B2bQ ||
+                 oidr.code==TrackingCode::B2bIQ))
+            {
+               navType = NavType::BCNav3;
+            }
+            else if ( sidr.id>5 &&
                  ( oidr.band==CarrierBand::B1   ||
                    oidr.band==CarrierBand::B2   ||
                    oidr.band==CarrierBand::B3 ) &&
@@ -224,4 +244,3 @@ namespace gnsstk
    {
    }
 } // namespace gnsstk
-
