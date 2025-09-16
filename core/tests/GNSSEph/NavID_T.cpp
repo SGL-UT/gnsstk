@@ -78,9 +78,9 @@ public:
    unsigned asStringEnumTest();
 
    NavID testIDLNAV, testIDCNAVL2, testIDCNAVL5, testIDCNAV2, testIDMNAV,
-      testIDBD1, testIDBD2, testIDGloF, testIDGloC, testIDGalOS, testIDGalOS_2,
+      testIDBD1, testIDBD2, testIDBCNAV1, testIDBCNAV2, testIDBCNAV3, testIDGloF, testIDGloC, testIDGalOS, testIDGalOS_2,
       testIDGalOS_F, testID_IRNSS_SPS, testIDUnkwn, testIDAny;
-   stringstream ln, l2, l5, cnav2, mn, d1, d2, gf, gc, ginv, ginv_2, gfnv, is,
+   stringstream ln, l2, l5, cnav2, mn, d1, d2, c1, c2, c3, gf, gc, ginv, ginv_2, gfnv, is,
       un, any;
 };
 
@@ -108,6 +108,15 @@ NavID_T()
         testIDBD2(SatID(5, SatelliteSystem::BeiDou),
                   ObsID(ObservationType::NavMsg, CarrierBand::B2,
                         TrackingCode::B1I)),
+        testIDBCNAV1(SatID(10, SatelliteSystem::BeiDou),
+                  ObsID(ObservationType::NavMsg, CarrierBand::L1,
+                        TrackingCode::B1CD)),
+        testIDBCNAV2(SatID(10, SatelliteSystem::BeiDou),
+                  ObsID(ObservationType::NavMsg, CarrierBand::L5,
+                        TrackingCode::B2aI)),
+        testIDBCNAV3(SatID(10, SatelliteSystem::BeiDou),
+                  ObsID(ObservationType::NavMsg, CarrierBand::B2,
+                        TrackingCode::B2bI)),
         testIDGloF(SatID(2, SatelliteSystem::Glonass),
                    ObsID(ObservationType::NavMsg, CarrierBand::G1,
                          TrackingCode::Standard)),
@@ -158,11 +167,20 @@ constructorTest()
       //GPS MNAV
    TUASSERTE(gnsstk::NavType, NavType::GPSMNAV, testIDMNAV.navType);
 
-      //Beidou D1
+      //BeiDou D1
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D1, testIDBD1.navType);
 
-      //Beidou D2
+      //BeiDou D2
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2.navType);
+
+      //BeiDou BCNav1
+   TUASSERTE(gnsstk::NavType, NavType::BCNav1, testIDBCNAV1.navType);
+
+      //BeiDou BCNav2
+   TUASSERTE(gnsstk::NavType, NavType::BCNav2, testIDBCNAV2.navType);
+
+      //BeiDou BCNav3
+   TUASSERTE(gnsstk::NavType, NavType::BCNav3, testIDBCNAV3.navType);
 
       //Glonass Civil F
    TUASSERTE(gnsstk::NavType, NavType::GloCivilF, testIDGloF.navType);
@@ -211,10 +229,19 @@ streamOutputTest()
    TUASSERTE(std::string, "GPS_MNAV", mn.str());
 
    d1 << testIDBD1;
-   TUASSERTE(std::string, "Beidou_D1", d1.str());
+   TUASSERTE(std::string, "BeiDou_D1", d1.str());
 
    d2 << testIDBD2;
-   TUASSERTE(std::string, "Beidou_D2", d2.str());
+   TUASSERTE(std::string, "BeiDou_D2", d2.str());
+
+   c1 << testIDBCNAV1;
+   TUASSERTE(std::string, "BCNav1", c1.str());
+
+   c2 << testIDBCNAV2;
+   TUASSERTE(std::string, "BCNav2", c2.str());
+
+   c3 << testIDBCNAV3;
+   TUASSERTE(std::string, "BCNav3", c3.str());
 
    gf << testIDGloF;
    TUASSERTE(std::string, "GloCivilF", gf.str());
@@ -270,6 +297,15 @@ stringConstructorTest()
    NavID testIDBD2String(d2.str());
    TUASSERTE(gnsstk::NavType, NavType::BeiDou_D2, testIDBD2String.navType);
 
+   NavID testIDBCNAV1String(c1.str());
+   TUASSERTE(gnsstk::NavType, NavType::BCNav1, testIDBCNAV1String.navType);
+
+   NavID testIDBCNAV2String(c2.str());
+   TUASSERTE(gnsstk::NavType, NavType::BCNav2, testIDBCNAV2String.navType);
+
+   NavID testIDBCNAV3String(c3.str());
+   TUASSERTE(gnsstk::NavType, NavType::BCNav3, testIDBCNAV3String.navType);
+
    NavID testIDGloFString(gf.str());
    TUASSERTE(gnsstk::NavType, NavType::GloCivilF, testIDGloFString.navType);
 
@@ -310,6 +346,9 @@ inequalityTest()
    testSet.insert(testIDGloF);
    testSet.insert(testIDBD2);
    testSet.insert(testIDBD1);
+   testSet.insert(testIDBCNAV1);
+   testSet.insert(testIDBCNAV2);
+   testSet.insert(testIDBCNAV3);
    testSet.insert(testIDMNAV);
    testSet.insert(testIDCNAV2);
    testSet.insert(testIDCNAVL5);
@@ -375,4 +414,3 @@ int main()
 
    return errorTotal;
 }
-

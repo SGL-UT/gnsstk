@@ -53,21 +53,24 @@ namespace gnsstk
       {
          switch (e)
          {
-            case NavType::Unknown:   return "Unknown";
-            case NavType::Any:       return "Any";
-            case NavType::GPSLNAV:   return "GPS_LNAV";
-            case NavType::GPSCNAVL2: return "GPS_CNAV_L2";
-            case NavType::GPSCNAVL5: return "GPS_CNAV_L5";
-            case NavType::GPSCNAV2:  return "GPS_CNAV2";
-            case NavType::GPSMNAV:   return "GPS_MNAV";
-            case NavType::BeiDou_D1: return "Beidou_D1";
-            case NavType::BeiDou_D2: return "Beidou_D2";
-            case NavType::GloCivilF: return "GloCivilF";
-            case NavType::GloCivilC: return "GloCivilC";
-            case NavType::GalFNAV:   return "GalFNAV";
-            case NavType::GalINAV:   return "GalINAV";
-            case NavType::IRNSS_SPS: return "IRNSS_SPS";
-            default:                 return "???";
+            case NavType::Unknown:    return "Unknown";
+            case NavType::Any:        return "Any";
+            case NavType::GPSLNAV:    return "GPS_LNAV";
+            case NavType::GPSCNAVL2:  return "GPS_CNAV_L2";
+            case NavType::GPSCNAVL5:  return "GPS_CNAV_L5";
+            case NavType::GPSCNAV2:   return "GPS_CNAV2";
+            case NavType::GPSMNAV:    return "GPS_MNAV";
+            case NavType::BeiDou_D1:  return "BeiDou_D1";
+            case NavType::BeiDou_D2:  return "BeiDou_D2";
+            case NavType::BCNav1:     return "BCNav1";
+            case NavType::BCNav2:     return "BCNav2";
+            case NavType::BCNav3:     return "BCNav3";
+            case NavType::GloCivilF:  return "GloCivilF";
+            case NavType::GloCivilC:  return "GloCivilC";
+            case NavType::GalFNAV:    return "GalFNAV";
+            case NavType::GalINAV:    return "GalINAV";
+            case NavType::IRNSS_SPS:  return "IRNSS_SPS";
+            default:                  return "???";
          } // switch (e)
       } // asString(NavType)
 
@@ -88,10 +91,18 @@ namespace gnsstk
             return NavType::GPSCNAV2;
          if (s == "GPS_MNAV")
             return NavType::GPSMNAV;
-         if (s == "Beidou_D1")
+         if (s == "BeiDou_D1" ||
+             s == "Beidou_D1")            // For backwards compatability with old files
             return NavType::BeiDou_D1;
-         if (s == "Beidou_D2")
+         if (s == "BeiDou_D2" ||
+             s == "Beidou_D2")            // For backwards compatability with old files
             return NavType::BeiDou_D2;
+         if (s == "BCNav1")
+            return NavType::BCNav1;
+         if (s == "BCNav2")
+            return NavType::BCNav2;
+         if (s == "BCNav3")
+            return NavType::BCNav3;
          if (s == "GloCivilF")
             return NavType::GloCivilF;
          if (s == "GloCivilC")
