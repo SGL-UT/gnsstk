@@ -36,6 +36,7 @@
 //
 //==============================================================================
 
+#include "GNSSconstants.hpp"
 #include "NavID.hpp"
 
 
@@ -149,7 +150,7 @@ namespace gnsstk
             {
                navType = NavType::BCNav3;
             }
-            else if ( sidr.id>5 &&
+            else if ( (sidr.id>=MIN_MEO_BDS && sidr.id<=MAX_MEO_BDS) &&
                  ( oidr.band==CarrierBand::B1   ||
                    oidr.band==CarrierBand::B2   ||
                    oidr.band==CarrierBand::B3 ) &&
@@ -165,7 +166,7 @@ namespace gnsstk
             {
                navType = NavType::BeiDou_D1;
             }
-            else if ( sidr.id<=5 &&
+            else if ( (sidr.id<=MAX_GEO_BDS_II || sidr.id>=MIN_GEO_BDS_III) &&
                       ( oidr.band==CarrierBand::B1   ||
                         oidr.band==CarrierBand::B2   ||
                         oidr.band==CarrierBand::B3 )&&
