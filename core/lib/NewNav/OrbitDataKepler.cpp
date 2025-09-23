@@ -283,7 +283,7 @@ namespace gnsstk
       xvt.x[2] = zef;
 
          // Compute velocity of rotation coordinates
-      dek = amm / G;
+      dek = (amm + (0.5 * dndot * elapte)) / G;
       dlk = (dek*G) * q / (G*G);
       div = tdrinc - 2.0e0 * dlk *
          ( Cic  * s2al - Cis * c2al );
