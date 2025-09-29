@@ -934,7 +934,7 @@ namespace gnsstk
                }
             }
          }
-         else if(mapObsTypes.find("R") != mapObsTypes.end())
+         else if(version >= 3.02 && (mapObsTypes.find("R") != mapObsTypes.end()))
          {
             FFStreamError err("Glonass Slot Freq No required for files containing Glonass Observations ");
             GNSSTK_THROW(err);
