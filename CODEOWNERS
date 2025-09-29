@@ -2,8 +2,8 @@
 CODEOWNERS @kuck @dbarber
 
 [Documentation]
-ref/papers/ @renfrob @rain @kuck
-ref/usersguide/ @johnk @renfrob @rain
+ref/papers/ @renfrob @kuck
+ref/usersguide/ @renfrob
 
 # [Stakeholder Review]
 # Ensure stakeholder review for the design documents, which should
@@ -17,36 +17,36 @@ ref/usersguide/ @johnk @renfrob @rain
 * @sgl-tks
 
 # Core lib
-core/lib/ @johnk
-core/lib/AppFrame/ @johnk @anthony
-core/lib/CommandLine/CommandLine.cpp @anthony @magliocca @johnk
-core/lib/CommandLine/CommandLine.hpp @anthony @magliocca @johnk
-core/lib/CommandLine/ @johnk @anthony
-core/lib/FileDirProc/ @johnk @anthony
+core/lib/
+core/lib/AppFrame/ @anthony
+core/lib/CommandLine/CommandLine.cpp @anthony @magliocca
+core/lib/CommandLine/CommandLine.hpp @anthony @magliocca
+core/lib/CommandLine/ @anthony
+core/lib/FileDirProc/ @anthony
 core/lib/FileHandling/ @anthony @bbauer
-core/lib/Geomatics/ @magliocca @johnk @butcher
-core/lib/GNSSCore/ @anthony @johnk @jmedeiros
-core/lib/GNSSEph/ @johnk @anthony @renfrob
+# core/lib/Geomatics/
+core/lib/GNSSCore/ @anthony  @jmedeiros
+core/lib/GNSSEph/ @anthony @renfrob
 core/lib/Math/ @anthony @magliocca @malik
-core/lib/NavFilter/ @johnk @anthony @renfrob
+core/lib/NavFilter/ @anthony @renfrob
 core/lib/NewNav/ @malik @jmedeiros @ddavies @bmechler
-core/lib/ORD/ @malik @johnk @rcathriner
+core/lib/ORD/ @malik  @rcathriner
 core/lib/PosSol/ @magliocca @renfrob @malik
 core/lib/RefTime/ @magliocca @renfrob
-core/lib/TestFramework/ @anthony @johnk
-core/lib/TimeHandling/ @anthony @johnk @renfrob
-core/lib/Utilities/ @johnk @anthony
+core/lib/TestFramework/ @anthony
+core/lib/TimeHandling/ @anthony  @renfrob
+core/lib/Utilities/  @anthony
 
 # Core tests
 core/tests/ @code-reviewers/cpp
 
 # Ext -- unsupported & unmaintained, not part of the API
-ext/ @johnk @dbarber
+ext/  @dbarber
 
 # Other
 data/ @dbarber @kuck
 deprecated/ @dbarber @kuck
-examples/ @johnk @magliocca @renfrob
+examples/  @magliocca @renfrob
 
 [CPP Reviewers]
 *.cpp   @code-reviewers/cpp
