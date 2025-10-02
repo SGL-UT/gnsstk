@@ -61,7 +61,7 @@ from __future__ import absolute_import
 // =============================================================
 //  Section 8: Otherwise undefined std classes that SWIG complains about
 // =============================================================
-
+%import "STLTemplates.i"
 namespace std
 {
    class fstream {};
@@ -75,6 +75,7 @@ namespace std
 %import "CommonTime.hpp"
 %import "SatelliteSystem.hpp"
 %import(module="gnsstk.GNSSCore") "SatID.hpp"
+%import(module="gnsstk.GNSSCore") "EllipsoidModel.hpp"
 %import "Vector.hpp"
 %import "Triple.hpp"
 %import(module="gnsstk.FileHandling") "FFData.hpp"
@@ -82,6 +83,7 @@ namespace std
 %import(module="gnsstk.FileHandling") "FFTextStream.hpp"
 %import "Position.hpp"
 %import "Matrix.hpp"
+%import "NavLibrary.hpp"
 
 %include "AntexBase.hpp"
 %feature("flatnested");
@@ -89,16 +91,18 @@ namespace std
 %feature("flatnested", "");
 %include "AntexHeader.hpp"
 %include "AntexStream.hpp"
+%apply std::string& OUTPUT {std::string& name }; 
 %include "AntennaStore.hpp"
+%clear std::string& name; 
 %include "EphTime.hpp"
 %include "AtmLoadTides.hpp"
 %include "CubicSpline.hpp"
 /* %include "SatPass.hpp" */
 /* %include "DiscCorr.hpp" */
 %include "IERSConvention.hpp"
-/* %include "EarthOrientation.hpp" */
-/* %include "EOPPrediction.hpp" */
-/* %include "EOPStore.hpp" */
+%include "EarthOrientation.hpp"
+%include "EOPPrediction.hpp"
+%include "EOPStore.hpp"
 %include "RobustStats.hpp"
 %include "StatsFilterHit.hpp"
 %include "FDiffFilter.hpp"
@@ -124,10 +128,31 @@ namespace std
 %include "OceanLoadTides.hpp"
 %feature("flatnested", "");
 %include "SolarSystemEphemeris.hpp"
+%typemap(in) double PV[6] {
+}
+%typemap(argout) double PV[6] {
+    $result = PyList_New(6);
+    for (int i = 0; i < 6; ++i) {
+        PyList_SET_ITEM($result, i, PyFloat_FromDouble($1[i]));
+    }
+}
+%apply double[6] { double PV[6] };
+%ignore SolarSystemEphemeris::relativeInertialPositionVelocity(double, SolarSystemEphemeris::Planet, SolarSystemEphemeris::Planet, double[6], bool);
+%rename(relativeInertialPositionVelocity) SolarSystemEphemeris::relativeInertialPositionVelocity(double, SolarSystemEphemeris::Planet, SolarSystemEphemeris::Planet, bool);
+%extend SolarSystemEphemeris {
+    void relativeInertialPositionVelocity(double MJD, Planet target, Planet center, bool kilometers=true) {
+        double PV[6];
+        $self->relativeInertialPositionVelocity(MJD, target, center, PV, kilometers);
+        return PV;  // Will be handled by the argout typemap
+    }
+}
 %include "SolidEarthTides.hpp"
 %include "SunEarthSatGeometry.i"
-/* %include "SolarSystem.hpp" */
-/* %include "PreciseRange.hpp" */
+%include "SolarSystem.hpp"
+%include "PreciseRange.hpp"
+/*%apply double& INOUT {double& shadow}; */
+%include "PhaseWindup.hpp"
+/* %clear double& shadow; */
 /* %include "Rinex3ObsFileLoader.hpp" */
 /* %include "SRIleastSquares.hpp" */
 /* %include "SatPassIterator.hpp" */

@@ -276,10 +276,12 @@ namespace gnsstk
           two happen because initializeWithBinaryFile() has not been called, or
           reading failed.
          */
+      std::vector<double> relativeInertialPositionVelocityPyWrapper(double MJD, Planet target,
+                                            Planet center, 
+                                            bool kilometers = true);
       void relativeInertialPositionVelocity(double MJD, Planet target,
                                             Planet center, double PV[6],
                                             bool kilometers = true);
-
          /**
           Return the value of 1 AU (Astronomical Unit) in km. If the file header
           has not been read, return -1.0.

@@ -59,6 +59,7 @@
 // geomatics
 #include "EphTime.hpp"
 #include "IERSConvention.hpp"
+#include "gnsstk_export.h"
 
 //------------------------------------------------------------------------------------
 namespace gnsstk
@@ -122,24 +123,30 @@ namespace gnsstk
           Epoch for the coordinate transformation time, used throughout the
           formulas = J2000 = January 1 2000 12h UT but use MJD for this constant
          */
+      GNSSTK_EXPORT
       static const double JulianEpoch;
 
          /**
           integer MJD J2000 epoch for use in maximizing precision of
           coordTransTime()
          */
+      GNSSTK_EXPORT
       static const int intJulianEpoch;
 
          /// pi, 2*pi and pi/2
+      GNSSTK_EXPORT
       static const double PI, TWOPI, HALFPI;
 
          /// convert degrees to radians and back
+      GNSSTK_EXPORT
       static const double DEG_TO_RAD, RAD_TO_DEG;
 
          /// convert arc seconds to radians
+      GNSSTK_EXPORT
       static const double ARCSEC_TO_RAD;
 
          /// how many arcseconds in 360 degrees?
+      GNSSTK_EXPORT
       static const double ARCSEC_PER_CIRCLE;
 
       //------------------------------------------------------------------------------
@@ -435,8 +442,8 @@ namespace gnsstk
           frame bias matrix. Only available in IERS2010.
           *** NB currently not tested. ***
           @throw Exception
-         */
       Matrix<double> ECEFtoJ2000(const EphTime& t, bool reduced = false);
+         */
 
    private:
       //------------------------------------------------------------------------------
