@@ -155,7 +155,7 @@ namespace gnsstk
                else if ((svid == 56) || (useQZSS && (svid == 61)))
                {
                      // process time offset
-                  rv = processSVID56(navIn, navOut);
+                  rv = processSVID56(svid, navIn, navOut);
                }
                break;
             default:
@@ -677,9 +677,15 @@ namespace gnsstk
       return true;
    }
 
-
    bool PNBGPSLNavDataFactory ::
    processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      unsigned long svid = navIn->asUnsignedLong(asbPageID,anbPageID,ascPageID);
+      return processSVID56(svid, navIn, navOut);
+   }
+
+   bool PNBGPSLNavDataFactory ::
+   processSVID56(unsigned long svid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
          // No checks for correct svid, just assume that the input
          // data has already been checked (it will have been by
@@ -711,6 +717,7 @@ namespace gnsstk
          iono->beta[1] = navIn->asSignedDouble(asbBeta1,anbBeta1,ascBeta1);
          iono->beta[2] = navIn->asSignedDouble(asbBeta2,anbBeta2,ascBeta2);
          iono->beta[3] = navIn->asSignedDouble(asbBeta3,anbBeta3,ascBeta3);
+         iono->svID = static_cast<uint8_t>(svid);
          navOut.push_back(p1);
       }
       if (!PNBNavDataFactory::processTim)
@@ -822,7 +829,7 @@ namespace gnsstk
          nmct->updateTNMCT();
 
          nmct->availabilityIndicator = static_cast<GPSNMCTAI>(navIn->asUnsignedLong(nsbAI, nnbAI, nscAI));
-         
+
          int prn = 1;
          unsigned startBit = nsbERD;
             // There are only 30 ERD slots.
