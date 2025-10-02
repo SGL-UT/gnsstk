@@ -112,6 +112,12 @@ add_test(NAME PreciseRange COMMAND $<TARGET_FILE:PreciseRange_T>)
 set_property(TEST PreciseRange PROPERTY LABELS Geomatics)
 
 ################################################################################
+add_executable(PhaseWindup_T PhaseWindup_T.cpp)
+target_link_libraries(PhaseWindup_T gnsstk)
+add_test(NAME PhaseWindup COMMAND $<TARGET_FILE:PhaseWindup_T>)
+set_property(TEST PhaseWindup PROPERTY LABELS Geomatics)
+
+################################################################################
 function(GenerateNewNavIncludes WHERE)
    message(STATUS "generating in ${WHERE}")
    set(INCFILE "${WHERE}/NewNavInc.h")

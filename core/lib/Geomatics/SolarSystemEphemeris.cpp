@@ -910,12 +910,20 @@ namespace gnsstk
          GNSSTK_THROW(e);
       }
    }
-
+   std::vector<double> SolarSystemEphemeris::relativeInertialPositionVelocityPyWrapper(
+               double MJD, SolarSystemEphemeris::Planet target,
+               SolarSystemEphemeris::Planet center, bool kilometers)
+   {
+       double PV[6];
+       // Call the original function
+       relativeInertialPositionVelocity(MJD, target, center, PV, kilometers);
+       return std::vector<double>(PV, PV + 6);
+   }
    //---------------------------------------------------------------------------------
       // get an inertial position of one body relative to another.
    void SolarSystemEphemeris::relativeInertialPositionVelocity(
                double MJD, SolarSystemEphemeris::Planet target,
-               SolarSystemEphemeris::Planet center, double pv[6], bool kilometers)
+               SolarSystemEphemeris::Planet center, double PV[6], bool kilometers)
    {
       try
       {
@@ -923,7 +931,7 @@ namespace gnsstk
 
             // initialize
          for (i = 0; i < 6; i++)
-            pv[i] = 0.0;
+            PV[i] = 0.0;
 
             // trivial; return
          if (target == center)
@@ -968,7 +976,7 @@ namespace gnsstk
          if (target == idNutations || target == idLibrations)
          {
             inertialPositionVelocity(
-               MJD, target == idNutations ? NUTATIONS : LIBRATIONS, pv);
+               MJD, target == idNutations ? NUTATIONS : LIBRATIONS, PV);
             return;
          }
 
@@ -1069,14 +1077,14 @@ namespace gnsstk
             // final relative result
          for (i = 0; i < 6; i++)
          {
-            pv[i] = pvtarget[i] - pvcenter[i];
+            PV[i] = pvtarget[i] - pvcenter[i];
          }
 
          if (!kilometers)
          {
             double AU = constants["AU"];
             for (i = 0; i < 6; i++)
-               pv[i] /= AU;
+               PV[i] /= AU;
          }
       }
       catch (Exception& e)

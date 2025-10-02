@@ -175,9 +175,9 @@
 /* #include "DiscCorr.hpp" */
 #include "ENUUtil.hpp"
 #include "IERSConvention.hpp"
-/* #include "EarthOrientation.hpp" */
-/* #include "EOPPrediction.hpp" */
-/* #include "EOPStore.hpp" */
+#include "EarthOrientation.hpp"
+#include "EOPPrediction.hpp"
+#include "EOPStore.hpp"
 #include "EngAlmanac.hpp"
 #include "EngEphemeris.hpp"
 #include "NavValidityType.hpp"
@@ -386,8 +386,9 @@
 #include "SolarSystemEphemeris.hpp"
 #include "SolidEarthTides.hpp"
 #include "SunEarthSatGeometry.hpp"
-/* #include "SolarSystem.hpp" */
-/* #include "PreciseRange.hpp" */
+#include "SolarSystem.hpp"
+#include "PreciseRange.hpp"
+#include "PhaseWindup.hpp"
 #include "RACRotation.hpp"
 /* #include "RTFileFrame.hpp" */
 #include "Rinex3ClockBase.hpp"

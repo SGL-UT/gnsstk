@@ -132,6 +132,10 @@ namespace gnsstk
          }
          return *this;
       }
+      void addSeconds(double seconds) 
+      {
+        *this += seconds;
+      }
 
          /**
           set the TimeSystem
