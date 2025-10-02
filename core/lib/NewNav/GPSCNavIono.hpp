@@ -73,13 +73,26 @@ namespace gnsstk
       CommonTime getUserTime() const override;
 
       /*! @copydoc KlobucharIonoNavData::isSameData()
-      * 
-      * No additional data checked at GPSCNavIono 
-      */ 
+      *
+      * No additional data checked at GPSCNavIono
+      */
       bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
-      uint32_t pre; ///< The preamble from the start of the subframe.
-      bool alert;   ///< Alert flag
+      uint32_t pre;          ///< The preamble from the start of the subframe.
+      bool alert;            ///< Alert flag
+
+      /** The source CNav message type.
+       *
+       * Usually 30 for GPS CNav and 30 or 61 for QZSS CNav.
+       * QZSS has two different iono messages optimized for
+       * different regions -- both of which are different than
+       * GPS's optimization of iono parameters. Users may
+       * use this msgType to interpret the right use of
+       * iono parameters as necessary.
+       *
+       * A message type of 0 shall indicate an unknown source.
+       */
+      uint8_t msgType = 0;
    };
 
       //@}

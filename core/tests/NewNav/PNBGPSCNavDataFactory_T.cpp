@@ -86,6 +86,7 @@ public:
    unsigned processRedAlmOrbTest();
    unsigned process12Test();
    unsigned process30Test();
+   unsigned process61Test();
       /** Test decoding of message type 31 - clock & reduced almanac.
        * @note The truth data for the almanacs in this test have not
        *   been vetted. */
@@ -662,6 +663,7 @@ process30Test()
          TUASSERTFE(-5.242880000e+05, iono->beta[3]);
          TUASSERTE(uint32_t, 0x8b, iono->pre);
          TUASSERTE(bool, false, iono->alert);
+         TUASSERTE(uint8_t, 30, iono->msgType);
       }
       else if ((isc = dynamic_cast<gnsstk::GPSCNavISC*>(i.get())) != nullptr)
       {
@@ -685,6 +687,63 @@ process30Test()
    TURETURN();
 }
 
+unsigned PNBGPSCNavDataFactory_T ::
+process61Test()
+{
+   // The process30 method is reused to process message type 61
+   // from QZSS. Message type 61 is the same format as 30 but indicates
+   // the Iono parameters to be optimized for the Asia-Pacific region.
+   TUDEF("PNBGPSCNavDataFactory", "process61");
+   GPSFactoryCounter fc(testFramework);
+   gnsstk::PNBGPSCNavDataFactory uut;
+   gnsstk::NavMessageID nmidExp(
+      gnsstk::NavSatelliteID(ephCNAVQZSSL5sid, ephCNAVQZSSL5sid, oidCNAVQZSSL5,
+                            gnsstk::NavType::GPSCNAVL5),
+      gnsstk::NavMessageType::Iono);
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNavIono *iono = nullptr;
+   gnsstk::GPSCNavISC *isc = nullptr;
+   TUASSERTE(bool, true, uut.process30(msg61CNAVQZSSL5, navOut));
+   for (const auto& i : navOut)
+   {
+      if ((iono = dynamic_cast<gnsstk::GPSCNavIono*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gnsstk::NavMessageType::Iono;
+         TUASSERTE(gnsstk::CommonTime, msg61CNAVQZSSL5ct, iono->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, iono->signal);
+         TUASSERTFE( 4.656612870e-09, iono->alpha[0]);
+         TUASSERTFE( 1.490116118e-08, iono->alpha[1]);
+         TUASSERTFE(-5.960464478e-08, iono->alpha[2]);
+         TUASSERTFE(-1.192092897e-07, iono->alpha[3]);
+         TUASSERTFE( 8.192000000e+04, iono->beta[0]);
+         TUASSERTFE( 8.192000000e+04, iono->beta[1]);
+         TUASSERTFE(-6.553600000e+04, iono->beta[2]);
+         TUASSERTFE(-5.242880000e+05, iono->beta[3]);
+         TUASSERTE(uint32_t, 0x8b, iono->pre);
+         TUASSERTE(bool, false, iono->alert);
+         TUASSERTE(uint8_t, 61, iono->msgType);
+      }
+      else if ((isc = dynamic_cast<gnsstk::GPSCNavISC*>(i.get())) != nullptr)
+      {
+         nmidExp.messageType = gnsstk::NavMessageType::ISC;
+         TUASSERTE(gnsstk::CommonTime, msg61CNAVQZSSL5ct, isc->timeStamp);
+         TUASSERTE(gnsstk::NavMessageID, nmidExp, isc->signal);
+         TUASSERTFE(5.58793545E-09, isc->isc);
+         TUASSERTE(uint32_t, 0x8b, isc->pre);
+         TUASSERTE(bool, false, isc->alert);
+         TUASSERTFE(-3.49245965E-10, isc->iscL1CA);
+         TUASSERTFE(-3.14321369E-09, isc->iscL2C);
+         TUASSERTFE(6.43194653E-09, isc->iscL5I5);
+         TUASSERTFE(6.54836185E-09, isc->iscL5Q5);
+      }
+      else
+      {
+         TUFAIL("What is this?");
+      }
+   }
+   fc.validateResults(navOut, __LINE__, 2, 0, 0, 0, 0, 1, 1);
+   TURETURN();
+}
 
 unsigned PNBGPSCNavDataFactory_T ::
 process31Test()
@@ -1139,6 +1198,7 @@ int main()
    errorTotal += testClass.processRedAlmOrbTest();
    errorTotal += testClass.process12Test();
    errorTotal += testClass.process30Test();
+   errorTotal += testClass.process61Test();
    errorTotal += testClass.process31Test();
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();

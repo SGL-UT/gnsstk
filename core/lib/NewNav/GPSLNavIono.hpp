@@ -62,14 +62,14 @@ namespace gnsstk
           */
       bool validate() const override;
 
-      /*! @copydoc KlobucharIonoNavData::isSameData() 
-       * 
-       * Additional Checks at the GPSLNavIono Level 
-       * 
+      /*! @copydoc KlobucharIonoNavData::isSameData()
+       *
+       * Additional Checks at the GPSLNavIono Level
+       *
        *    <table>
        *     <tr><td>isf<td>Integrity status flag
-       *     <tr><td>alert<td>Alert flag from HOW 
-       *    </table> 
+       *     <tr><td>alert<td>Alert flag from HOW
+       *    </table>
        */
       bool isSameData(const NavDataPtr& right, bool ignore_timestamp = false) const override;
 
@@ -79,6 +79,22 @@ namespace gnsstk
       bool isf;        ///< Integrity status flag.
       bool alert;      ///< Alert flag from HOW.
       bool asFlag;     ///< Anti-spoof flag from HOW.
+
+      /** The source LNav message SV ID.
+       *
+       * SV ID is the term used in the IS-GPS-200 for identifying
+       * pages of subframe 4 and 5. For non-almanac pages, the "SV ID"
+       * servese as a "page ID" identifying the type of content.
+       *
+       * For GPS LNav, this should be 56 to identify page 18
+       * of subframe 4. For QZSS LNav this could either 56 or 61
+       * for different optimized iono parameters. Users may
+       * use this svID to interpret the right use of iono
+       * parameters as necessary.
+       *
+       * An svID of 0 shall indicate an unknown source.
+       */
+      uint8_t svID = 0;
    };
 
       //@}
