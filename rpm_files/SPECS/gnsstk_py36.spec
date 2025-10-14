@@ -1,5 +1,5 @@
 %define name python3-gnsstk
-%define version 15.0.0
+%define version 15.1.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -67,6 +67,20 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 14 2025  <>
+- Updated for v15.1.0 release
+- Add regional boolean variable to GPSCNavIono class.
+- Add PreciseRange and PhaseWindup to SWIG
+- Update CODEOWNERS
+- Fix NavID to correctly inference NavType of BeiDou's Phase III GEO SVs.
+- Add nav type enums supporting BeiDou B-CNav1, B-CNav2, and B-CNav3
+- Update `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly rate `dek` directly in the true anomaly rate `dlk` calculation.  This directly propagates the `dek` term for anticipated future changes to `dek` per the Jira Issue, but currently does not have any effect upon calculations.
+- Fix to temporarily ignore bad TimeHandling test case.
+- Fix pipeline job package_redhat_8_py36 to use larger gitlab runner size
+- Update CommandOptionParser to use memory safe data structure instead of C-style array.
+- Fix cpp static analysis pipeline job
+- Fix PRSolution to not fail with GlobalTropModel edge case.
+- Update refactor swig CMakeLists.txt
 * Mon Jun 23 2025 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v15.0.0 release
 - Ensuring correct destruction of NavData with virtual destructor
