@@ -225,9 +225,9 @@
 /* %import(module="gnsstk") "DiscCorr.hpp" */
 %import(module="gnsstk") "ENUUtil.hpp"
 %import(module="gnsstk") "IERSConvention.hpp"
-/* %import(module="gnsstk") "EarthOrientation.hpp" */
-/* %import(module="gnsstk") "EOPPrediction.hpp" */
-/* %import(module="gnsstk") "EOPStore.hpp" */
+%import(module="gnsstk") "EarthOrientation.hpp"
+%import(module="gnsstk") "EOPPrediction.hpp"
+%import(module="gnsstk") "EOPStore.hpp"
 %import(module="gnsstk") "EngAlmanac.hpp"
 %import(module="gnsstk") "EngEphemeris.hpp"
 %import(module="gnsstk") "NavValidityType.hpp"
@@ -458,8 +458,9 @@
 %import(module="gnsstk") "SolarSystemEphemeris.hpp"
 %import(module="gnsstk") "SunEarthSatGeometry.i"
 %import(module="gnsstk") "SolidEarthTides.hpp"
-/* %import(module="gnsstk") "SolarSystem.hpp" */
-/* %import(module="gnsstk") "PreciseRange.hpp" */
+%import(module="gnsstk") "SolarSystem.hpp"
+%import(module="gnsstk") "PreciseRange.hpp"
+%import(module="gnsstk") "PhaseWindup.hpp"
 %import(module="gnsstk") "RACRotation.hpp"
 %import(module="gnsstk") "RNDouble.hpp"
 /* %import(module="gnsstk") "RTFileFrame.hpp" */

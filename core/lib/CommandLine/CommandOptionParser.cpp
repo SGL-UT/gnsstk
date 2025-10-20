@@ -138,8 +138,7 @@ namespace gnsstk
 #endif
 
       string shortOptString;
-      struct option* optArray = NULL;
-      unsigned long optArraySize = 0;
+      vector<option> optArray;
 
       CommandOption *trailing = NULL;
 
@@ -169,9 +168,7 @@ namespace gnsstk
                   // add long options
                if (!optionVec[index]->longOpt.empty())
                {
-                  resizeOptionArray(optArray, optArraySize);
-                  optArray[optArraySize - 1] =
-                     optionVec[index]->toGetoptLongOption();
+                  optArray.push_back(optionVec[index]->toGetoptLongOption());
                   com[optionVec[index]->longOpt] = optionVec[index];
                }
 
@@ -189,9 +186,7 @@ namespace gnsstk
       }
 
          // add the getopt_long terminator value
-      resizeOptionArray(optArray, optArraySize);
-      struct option lastOption = {0,0,0,0};
-      optArray[optArraySize - 1] = lastOption;
+      optArray.push_back(option{0, 0, 0, 0});
 
          // use '+' to make getopt not mangle the inputs (if i remember right)
       shortOptString.insert((string::size_type)0, (string::size_type)1, '+');
@@ -208,7 +203,7 @@ namespace gnsstk
       while (optind < argc)
       {
          if ((cha = getopt_long(argc, argv, shortOptString.c_str(),
-                                optArray, &optionIndex)) == -1)
+                                optArray.data(), &optionIndex)) == -1)
          {
             if (!trailing)
                errorStrings.push_back("Excess arguments");
@@ -244,7 +239,7 @@ namespace gnsstk
             if (cha != 0)
                thisOption = string(1,(char)cha);
             else
-               thisOption = string(optArray[optionIndex].name);
+               thisOption = string(optArray.at(optionIndex).name);
 
                // try to find the option in our option map
             map<string, CommandOption*>::iterator itr = com.find(thisOption);
@@ -338,8 +333,6 @@ namespace gnsstk
             }
          }
       }
-
-      delete [] optArray;
    }
 
 
@@ -550,18 +543,4 @@ namespace gnsstk
 
       return out;
    }
-
-
-      // resizes the array for getopt_long
-   void CommandOptionParser::resizeOptionArray(struct option *&oldArray,
-                                               unsigned long& oldSize)
-   {
-      struct option* newArray = new struct option[1 + oldSize];
-      std::memcpy(newArray, oldArray, oldSize * sizeof(struct option));
-      delete [] oldArray;
-      oldArray = newArray;
-      newArray = NULL;
-      oldSize += 1;
-   }
-
 }  // end namespace gnsstk

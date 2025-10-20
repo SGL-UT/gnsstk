@@ -1,6 +1,6 @@
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gnsstk.test_utils import args,run_unit_tests
+from gnsstk.test_utils import run_unit_tests
 import gnsstk
 
 

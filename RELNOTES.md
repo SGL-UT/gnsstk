@@ -1,46 +1,39 @@
-GNSSTk 15.0.0 Release Notes
+GNSSTk 15.1.0 Release Notes
 ========================
 
- * This release introduces a major update to the toolkit.
- * It includes the following:
-   * Adding std C++17 support while deprecating std C++11 support. (**api breaking**)
-   * Updating MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to allow multiple independent instances. (**api breaking**)
-   * Updating  GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact specification of the IS-GPS-200
- * Additionally, it contains bug fixes updates and build CI/CD updates.
+ * This minor release includes the following:
+     * Adding PreciseRange and PhaseWindup to SWIG
+     * Adding nav type enums supporting BeiDou B-CNav1, B-CNav2
+     * Adding B-CNav3, and regional boolean variable to GPSCNavIono class
+     * Updating CommandOptionParser to use memory safe data structure
+     * Updating `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly rate `dek` directly in the true anomaly rate `dlk` calculation
+     * Reducing impact of ABI incompatibility
+ * It also includes bug fixes, pipeline fixes, and repository CODEOWNER changes. 
 
-Updates since v14.6.0
+Updates since v15.0.0
 ---------------------
+  * Update/refactor swig CMakeLists.txt
+  * Update CommandOptionParser to use memory safe data structure instead of C-style array.
+  * Update `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly rate `dek` directly in the true anomaly rate `dlk` calculation.  This directly propagates the `dek` term for anticipated future changes to `dek` per the Jira Issue, but currently does not have any effect upon calculations.
+  * Update CODEOWNERS
+  * Update reducing impact of ABI incompatibility
 
-**Known Issues**
-  * Some distributions (such as RHEL 8) may support different versions of gcc (such as gcc 8.x and 9.x but gcc 8.x is the default). A version of gcc (such as gcc 9 on RHEL 8) that supports C++17 and the C++17 ABI is stable must be chosen to build. Note that gcc 8.x on RHEL 8 may support some C++17 but the C++17 ABI is not stable and thus should not be used.
-  * Support for MSVC14 (Microsoft Visual Studio 14) and older compilers is removed. Only Microsoft Visual Studio 19 and newer versions are supported.
-
-**Build System and Test Suite**
-  * Fix df_diff comparisons, off-by-one error, and cmake test usage of df_diff.
-
-**Gitlab CI**
-  * Update Fortify pipeline scan job
-  * Update submodule ref to point to latest gnsstk-data merge
-  * Fix gitlab pipeline jobs retry for only system failures.
-  * Fix Fortify pipeline retry condition
 
 **Library Changes**
-  * Add C++17 support for Toolkits
-  * Update MultiFormatNavDataFactory and PNBMultiGNSSNavDataFactory to allow multiple independent instances.
-  * Update GNSSconstants Align PI, TWO_PI, SQRT_PI to the exact specification of the IS-GPS-200
+  * Add nav type enums supporting BeiDou B-CNav1, B-CNav2, and B-CNav3
+  * Add PreciseRange and PhaseWindup to SWIG
+  * Add regional boolean variable to GPSCNavIono class.
 
-Fixes since v14.6.0
+Fixes since v15.0.0
 --------------------
-  * Fix EngNav such that subframe pattern ID look-ups disallow unassigned SV ID values.
-  * Fix PNBBDSD1NavDataFactory Change SOW cracking from asSignedDouble() to asUnsignedInt()
-  * Fix SNAPPER Check ptr for null before calling string constructor. Running SNAPPER with lambda in cloud doesn't have the env variable $HOME by default
-  * Fix GPSLNavEph fit interval computation.
-  * Fix correct destruction of NavData with virtual destructor
-
-Removed Code due to Deprecation
--------------------------------
-  * No longer build and publish packages with std C++11
+  * Fix PRSolution to not fail with GlobalTropModel edge case.
+  * Fix cpp static analysis pipeline job
+  * Fix pipeline job package_redhat_8_py36 to use larger gitlab runner size
+  * Fix to temporarily ignore bad TimeHandling test case.
+  * Fix NavID to correctly inference NavType of BeiDou's Phase III GEO SVs.
 
 New Modules
 -------------------------------
-     core/tests/GNSSCore/GNSSconstants_T.cpp
+     core/lib/Geomatics/PhaseWindup.cpp
+     core/lib/Geomatics/PhaseWindup.hpp
+     core/tests/Geomatics/PhaseWindup_T.cpp

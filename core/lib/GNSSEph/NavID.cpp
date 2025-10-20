@@ -36,6 +36,7 @@
 //
 //==============================================================================
 
+#include "GNSSconstants.hpp"
 #include "NavID.hpp"
 
 
@@ -129,7 +130,27 @@ namespace gnsstk
          }
          case SatelliteSystem::BeiDou:
          {
-            if ( sidr.id>5 &&
+            if ( oidr.band==CarrierBand::L1 &&
+                (oidr.code==TrackingCode::B1CD ||
+                 oidr.code==TrackingCode::B1CDP ))
+            {
+               navType = NavType::BCNav1;
+            }
+            else if ( oidr.band==CarrierBand::L5 &&
+                (oidr.code==TrackingCode::B2aI ||
+                 oidr.code==TrackingCode::B2aQ ||
+                 oidr.code==TrackingCode::B2aIQ ))
+            {
+               navType = NavType::BCNav2;
+            }
+            else if ( oidr.band==CarrierBand::B2 &&
+                (oidr.code==TrackingCode::B2bI ||
+                 oidr.code==TrackingCode::B2bQ ||
+                 oidr.code==TrackingCode::B2bIQ))
+            {
+               navType = NavType::BCNav3;
+            }
+            else if ( (sidr.id>=MIN_MEO_BDS && sidr.id<=MAX_MEO_BDS) &&
                  ( oidr.band==CarrierBand::B1   ||
                    oidr.band==CarrierBand::B2   ||
                    oidr.band==CarrierBand::B3 ) &&
@@ -145,7 +166,7 @@ namespace gnsstk
             {
                navType = NavType::BeiDou_D1;
             }
-            else if ( sidr.id<=5 &&
+            else if ( (sidr.id<=MAX_GEO_BDS_II || sidr.id>=MIN_GEO_BDS_III) &&
                       ( oidr.band==CarrierBand::B1   ||
                         oidr.band==CarrierBand::B2   ||
                         oidr.band==CarrierBand::B3 )&&
@@ -224,4 +245,3 @@ namespace gnsstk
    {
    }
 } // namespace gnsstk
-

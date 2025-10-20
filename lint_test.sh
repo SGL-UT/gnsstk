@@ -55,13 +55,14 @@ if [ ! -z "${NEW_FILES// }" ]; then
 
     echo "$LINTER $NEW_FILES | grep -oP \"(?<=Total errors found: ).*$\""
     echo $TEMPFILE
-    $LINTER $NEW_FILES 2> $TEMPFILE
+    #$LINTER $NEW_FILES 2> $TEMPFILE
+    $LINTER $NEW_FILES > $TEMPFILE 2>&1
     NEW_SCORE=$(grep -oP "(?<=Total errors found: ).*$" $TEMPFILE)
 
     echo "New Score: ${NEW_SCORE// }."
 
     # Call a second time to output the results to the console... useful when debugging.
-    cat $TEMPFILE
+    # cat $TEMPFILE
     rm $TEMPFILE
 fi
 if [ -z "${NEW_SCORE// }" ]; then
@@ -104,7 +105,8 @@ if [ ! -z "${OLD_FILES// }" ]; then
 
     echo "$LINTER $OLD_FILES | grep -oP \"(?<=Total errors found: ).*$\""
     echo $TEMPFILE
-    $LINTER $OLD_FILES 2> $TEMPFILE
+    # $LINTER $OLD_FILES 2> $TEMPFILE
+    $LINTER $OLD_FILES > $TEMPFILE 2>&1
     OLD_SCORE=$(grep -oP "(?<=Total errors found: ).*$" $TEMPFILE)
     rm $TEMPFILE
     git checkout -q $CURRENT_BRANCH

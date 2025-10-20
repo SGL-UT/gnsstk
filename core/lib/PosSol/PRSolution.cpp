@@ -59,6 +59,7 @@
 #include "SVHealth.hpp"
 #include "NavValidityType.hpp"
 #include "NavSearchOrder.hpp"
+#include "TropModel.hpp"
 
 
 namespace gnsstk
@@ -1066,14 +1067,23 @@ namespace gnsstk
          // Global model sets the upper limit - first test it
       GlobalTropModel* p = dynamic_cast<GlobalTropModel*>(pTropModel);
       bool bad(p && rxPos.getHeight() > p->getHeightLimit());
-      
       if (bad || rxPos.elevation(svPos) < 0.0 || rxPos.getHeight() < -1000.0)
       {
          return std::make_tuple(false, 0.0);
       }
-      
-      double tropDelay = pTropModel->correction(rxPos, svPos, time);
-      return std::make_tuple(true, tropDelay);
+
+      try
+      {
+         double tropDelay = pTropModel->correction(rxPos, svPos, time);
+         return std::make_tuple(true, tropDelay);
+      }
+      catch(InvalidTropModel& itme)
+      {
+         LOG(DEBUG) << "Trop model threw exception. Cannot apply trop delay."
+                    << " Exception: " << itme;
+      }
+
+      return std::make_tuple(false, 0.0);
    }
 
 

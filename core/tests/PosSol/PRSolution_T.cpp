@@ -36,6 +36,7 @@
 //
 //==============================================================================
 
+#include "CommonTime.hpp"
 #include "SP3NavDataFactory.hpp"
 #include "NavDataFactory.hpp"
 #include "GlobalTropModel.hpp"
@@ -44,6 +45,7 @@
 #include "PRSolution.hpp"
 #include "TestUtil.hpp"
 #include "logstream.hpp"
+#include "Position.hpp"
 
 using namespace gnsstk;
 
@@ -70,6 +72,7 @@ public:
    unsigned prSolutionOutputCLKString();
    unsigned prSolutionErrorCodeString();
    unsigned prSolutionConfigString();
+   unsigned tropExceptionTest();
 };
 
 
@@ -648,6 +651,44 @@ unsigned PRSolution_T::prSolutionConfigString()
    TURETURN();
 }
 
+
+   /* PRSolution should catch exceptions from GlobalTropModel regardless
+    * if the receiver height is below the trop model height limit.
+    *
+    * GlobalTropModel's height limit is not a hard limit and can actually
+    * fluctuate a few meters depending on the receiver's latitude and longitude.
+    *
+    * PRSolution used to only check the receiver position against the "constant"
+    * height limit before computing the trop correction. This would occasionally
+    * fail when the actual computed height limit is lower than initial "constant"
+    * height limit causing an exception to bubble up through PRSolution.
+    *
+    * This test ensures that PRSolution can gracefully continue despite
+    * the edge case of GlobalTropModel.
+    */
+unsigned PRSolution_T ::
+tropExceptionTest()
+{
+   TUDEF("PRSolution", "computeTropDelay");
+   gnsstk::GlobalTropModel tropModel{};
+   double earth_equitorial_radius = 6378137;
+   double trop_height = 44243;
+      // Create a dummy RX position that is just under
+      // GlobalTropModel's "constant" height limit.
+   gnsstk::Position rxPosition{1, earth_equitorial_radius + trop_height - 1, 1};
+   TUASSERT(rxPosition.getHeight() < tropModel.getHeightLimit());
+      // Dummy SV position ensure's > 3 degree elevation 
+      // so that trop model is executed
+   gnsstk::Position svPosition{17308210, 20473271, 0.0};
+      // Time doesn't matter 
+   gnsstk::CommonTime time{};
+
+   gnsstk::PRSolution prs{};
+   TUCATCH(prs.computeTropDelay(svPosition, rxPosition, &tropModel, time));
+   TURETURN();
+}
+
+
 int main()
 {
    PRSolution_T testClass;
@@ -671,9 +712,11 @@ int main()
    errorTotal += testClass.prSolutionOutputCLKString();
    errorTotal += testClass.prSolutionErrorCodeString();
    errorTotal += testClass.prSolutionConfigString();
+   errorTotal += testClass.tropExceptionTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
             << std::endl;
 
    return errorTotal;
 }
+

@@ -92,7 +92,7 @@ namespace gnsstk
          }
          else if ((msgType == 30) || (isQZSS && (msgType == 61)))
          {
-            rv = rv && process30(navIn, navOut);
+            rv = rv && process30(msgType, navIn, navOut);
          }
          else if ((msgType == 12) || (isQZSS && (msgType == 28)))
          {
@@ -574,9 +574,16 @@ namespace gnsstk
          processRedAlmOrb(msgType,rsb12p7,pre,alert,wna,toa,navIn,navOut);
    }
 
-
    bool PNBGPSCNavDataFactory ::
    process30(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
+   {
+      unsigned long msgType = navIn->asUnsignedLong(esbMsgType,enbMsgType,
+                                                       escMsgType);
+      return process30(msgType, navIn, navOut);
+   }
+
+   bool PNBGPSCNavDataFactory ::
+   process30(unsigned msgType, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut)
    {
       if (PNBNavDataFactory::processIono)
       {
@@ -600,6 +607,7 @@ namespace gnsstk
             // GPSCNavIono
          iono->pre = navIn->asUnsignedLong(esbPre,enbPre,escPre);
          iono->alert = navIn->asBool(esbAlert);
+         iono->msgType = static_cast<uint8_t>(msgType);
          navOut.push_back(p0);
       }
       if (PNBNavDataFactory::processISC)

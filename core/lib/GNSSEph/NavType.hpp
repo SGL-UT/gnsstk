@@ -71,6 +71,9 @@ namespace gnsstk
       GalFNAV,
       GalINAV,
       IRNSS_SPS,
+      BCNav1,
+      BCNav2,
+      BCNav3,
       Last,      ///< Used to verify that all items are described at compile time
    }; // enum class NavType
 

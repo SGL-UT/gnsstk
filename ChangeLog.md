@@ -1,3 +1,34 @@
+# Version 15.1.0   Tuesday October 14, 2025
+
+Modifications by Author
+-----------------------
+     Benjamin Feuge-Miller <benjaminfm@arlut.utexas.edu> (1):
+           SPA-829: Variable substitution
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           fix cpplinter script
+           update gl pipeline pkg redhat 8 job to use larger gitlab runner size
+
+     Joe Skeens <jskeens@arlut.utexas.edu> (1):
+           Add PreciseRange and PhaseWindup to SWIG
+
+     Kyle Herrity <kherrity@arlut.utexas.edu> (1):
+           Simplify swig CMakeLists.txt and remove unused import
+
+     Scott Rabidoux <rabidoux@arlut.utexas.edu> (1):
+           Provide info to disambiguate iono parameter regions.
+
+     Taben Malik <malik@arlut.utexas.edu> (7):
+           PRSolution should gracefully handle GlobalTropModel exceptions
+           Replace error-prone C array in option parsing with C++ vector
+           Temporarily ignore bad TimeHandling test case. See TKS-823 for more info
+           Add new BeiDou nav types for B-CNav1, B-CNav2, and B-CNav3
+           BeiDou PRNs 59-63 are reserved for GEO satellites which broadcast D2Nav
+           Cleaning up CODEOWNERS
+           Reducing impact of ABI incompatibility
+
+
+
 # Version 15.0.0   Monday June 23, 2025
 
 Modifications by Author

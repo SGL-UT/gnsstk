@@ -1,3 +1,28 @@
+gnsstk (15.1.0-1) focal; urgency=low
+
+  * Updated to version 15.1.0
+  * Update refactor swig CMakeLists.txt
+  * Fix PRSolution to not fail with GlobalTropModel edge case.
+  * Fix cpp static analysis pipeline job
+  * Update CommandOptionParser to use memory safe data structure instead
+    of C-style array.
+  * Fix pipeline job package_redhat_8_py36 to use larger gitlab runner
+    size
+  * Fix to temporarily ignore bad TimeHandling test case.
+  * Update `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly
+    rate `dek` directly in the true anomaly rate `dlk` calculation. This
+    directly propagates the `dek` term for anticipated future changes to
+    `dek` per the Jira Issue, but currently does not have any effect
+    upon calculations.
+  * Add nav type enums supporting BeiDou B-CNav1, B-CNav2, and B-CNav3
+  * Fix NavID to correctly inference NavType of BeiDou's Phase III GEO
+    SVs.
+  * Update CODEOWNERS
+  * Add PreciseRange and PhaseWindup to SWIG
+  * Add regional boolean variable to GPSCNavIono class.
+
+ -- Cherie Formacion <cformacion@arlut.utexas.edu>  Tue, 14 Oct 2025 16:23:55 -0500
+
 gnsstk (15.0.0-1) focal; urgency=low
 
   * Updated to version 15.0.0

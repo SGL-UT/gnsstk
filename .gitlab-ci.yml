@@ -138,6 +138,8 @@ static_analysis:
     - standard
   image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
   script:
+    - pip3 install cpplint
+    - apt install -y bc
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
   allow_failure: true
@@ -852,7 +854,7 @@ package_redhat_8:
   needs: []
   extends: .normal_job
   tags:
-    - large
+    - extra-large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
     # source gcc9 for std C++17

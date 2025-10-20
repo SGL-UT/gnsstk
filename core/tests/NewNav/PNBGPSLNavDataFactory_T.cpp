@@ -860,6 +860,7 @@ processSVID56Test()
          TUASSERTFE(-4.915200000e+04, iono->beta[1]);
          TUASSERTFE(-1.966080000e+05, iono->beta[2]);
          TUASSERTFE( 6.553600000e+04, iono->beta[3]);
+         TUASSERTE(uint8_t, 56, iono->svID);
       }
    }
    fc.validateResults(navOut, __LINE__, 2, 0, 0, 1, 0, 1);
@@ -1348,6 +1349,7 @@ processSVID56QZSSTest()
          TUASSERTFE(-5.242880000e+05, iono->beta[1]);
          TUASSERTFE(-6.094848000e+06, iono->beta[2]);
          TUASSERTFE( 8.323072000e+06, iono->beta[3]);
+         TUASSERTE(uint8_t, 56, iono->svID);
       }
    }
    fc.validateResults(navOut, __LINE__, 2, 0, 0, 1, 0, 1);
@@ -1395,6 +1397,7 @@ processSVID56QZSSTest()
          TUASSERTFE( 3.112960000e+05, iono->beta[1]);
          TUASSERTFE(-8.257536000e+06, iono->beta[2]);
          TUASSERTFE( 8.323072000e+06, iono->beta[3]);
+         TUASSERTE(uint8_t, 61, iono->svID);
       }
    }
    fc.validateResults(navOut, __LINE__, 2, 0, 0, 1, 0, 1);

@@ -125,13 +125,24 @@ namespace gnsstk
        * @return true if successful. */
       bool processSVID63(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
-         /** Process SV/page ID 56.  This includes GPS-UTC time offset
-          * data and ionospheric corrections.
+         /** Process SV/page ID 56 (or 61 for QZSS LNav).
+          *
+          * Left for backwards compatibility.
+          * Please use \ref processSVID56(unsigned long,const PackedNavBitsPtr&,NavDataPtrList&)
+         */
+      bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+
+         /** Process SV/page ID 56 (or 61 for QZSS LNav).
+          *
+          * This includes GPS-UTC time offset data and ionospheric corrections.
+          *
+          * @param[in] svid The SV ID (a.k.a. "page ID") which represents the
+          *   source subframe and page.
           * @param[in] navIn The PackedNavBits data containing the subframe.
           * @param[out] navOut The GPSLNavTimeOffset object generated from
           *   navIn.
           * @return true if successful. */
-      bool processSVID56(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool processSVID56(unsigned long svid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
 
 
       bool processNMCT(unsigned sfid, const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);

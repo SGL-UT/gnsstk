@@ -2,7 +2,7 @@
 
 import unittest, sys, os
 sys.path.insert(0, os.path.abspath(".."))
-from gnsstk.test_utils import args, assertSequenceAlmostEqual, run_unit_tests, vec_to_list
+from gnsstk.test_utils import assertSequenceAlmostEqual, run_unit_tests, vec_to_list
 
 import gnsstk
 

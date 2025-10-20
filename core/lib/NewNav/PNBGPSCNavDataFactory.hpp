@@ -108,13 +108,25 @@ namespace gnsstk
       bool process12(unsigned msgType, const PackedNavBitsPtr& navIn,
                      NavDataPtrList& navOut);
 
+         /** Process message type 30.
+          *
+          * Left for backwards compatibility.
+          * Please use \ref process30(unsigned,const PackedNavBitsPtr&,NavDataPtrList&)
+          */
+      bool process30(const PackedNavBitsPtr& navIn,
+                     NavDataPtrList& navOut);
+
          /** Process message type 30.  This includes ionospheric
           * correction information for single-frequency users.
+          * This also can process message type 61 from QZSS CNav.
+          * @param[in] msgType Type of the message that contains the
+          *   packet being decoded.
           * @param[in] navIn The PackedNavBits data containing the message.
           * @param[out] navOut The GPSCNavIono object generated from
           *   navIn.
           * @return true if successful. */
-      bool process30(const PackedNavBitsPtr& navIn, NavDataPtrList& navOut);
+      bool process30(unsigned msgType, const PackedNavBitsPtr& navIn,
+                     NavDataPtrList& navOut);
 
          /** Process message type 31.  This includes reduced almanac data.
           * @param[in] msgType Type of the message that contains the
