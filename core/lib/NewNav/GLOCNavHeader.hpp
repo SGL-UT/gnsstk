@@ -41,6 +41,7 @@
 
 #include "CommonTime.hpp"
 #include "SVHealth.hpp"
+#include <cstdint>
 
 namespace gnsstk
 {
