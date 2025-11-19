@@ -329,7 +329,7 @@ build_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -539,7 +539,7 @@ test_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -827,7 +827,7 @@ package_conda:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
