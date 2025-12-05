@@ -69,11 +69,9 @@ namespace gnsstk
       {
          // cerr << "preamble:  " << hex << navIn->asUnsignedLong(0,8,1) << dec
          //      << endl;
-         // unsigned long prn = navIn->asUnsignedLong(8, 6, 1);
-         // cerr << "prn = " << prn << endl;
+         unsigned long prn = navIn->asUnsignedLong(8, 6, 1);
          unsigned long msgType = navIn->asUnsignedLong(esbMsgType,enbMsgType,
                                                        escMsgType);
-         // cerr << "msgType = " << msgType << endl;
          unsigned long svid = 0;
             // Clock messages (30-37) may get processed twice, once
             // for ephemeris and once for whatever else they might
@@ -234,6 +232,7 @@ namespace gnsstk
             // User doesn't want ephemerides so don't do any processing.
          return true;
       }
+      
       if (ephAcc.find(prn) == ephAcc.end())
       {
             // set up a new ephemeris
@@ -251,9 +250,9 @@ namespace gnsstk
           (ephSF[ephM11]->getNumBits() != 300) ||
           (ephSF[ephMClk]->getNumBits() != 300))
       {
-         // cerr << "Not ready for full CNAV eph processing" << endl;
          return true;
       }
+      
          // Stop processing if we don't have matching toe/toc in
          // each of the three message types.
          /** @note Some data elements, e.g. toe, are stored internally
@@ -266,12 +265,24 @@ namespace gnsstk
       double toc = ephSF[csitoc]->asUnsignedLong(csbtoc,cnbtoc,csctoc);
       if ((toe10 != toe11) || (toe10 != toc))
       {
-         // cerr << "toe/toc mismatch, not processing" << endl;
             // Even though the mismatch might be considered an error,
             // we don't really want to mark it as such and rather
             // consider it as a "valid" but unprocessable data set.
          return true;
       }
+      
+         // We only have t_sub_op in MT10 and MT3x, however, these
+         // should also match for a proper set of messages
+      double top10 = ephSF[esitoe1]->asUnsignedLong(esbtop,enbtop,esctop);
+      double top3x = ephSF[csitoc]->asUnsignedLong(csbtop,cnbtop,csctop);
+      if (top10 != top3x)
+      {
+            // Even though the mismatch might be considered an error,
+            // we don't really want to mark it as such and rather
+            // consider it as a "valid" but unprocessable data set.
+         return true;
+      }
+      
       NavDataPtr p0 = std::make_shared<GPSCNavEph>();
       GPSCNavEph *eph = dynamic_cast<GPSCNavEph*>(p0.get());
          // NavData
@@ -280,7 +291,7 @@ namespace gnsstk
          NavSatelliteID(prn, navIn->getsatSys(), navIn->getobsID(),
                         navIn->getNavID()),
          NavMessageType::Ephemeris);
-      // cerr << "Ready for full CNAV eph processing for " << (NavSignalID)eph->signal << endl;
+
          // OrbitData = empty
          // OrbitDataKepler
       eph->xmitTime = eph->timeStamp;
@@ -380,8 +391,8 @@ namespace gnsstk
       eph->uraNED2 = ephSF[csiURAned2]->asUnsignedLong(csbURAned2,cnbURAned2,
                                                       cscURAned2);
       eph->fixFit();
-      // cerr << "add CNAV eph" << endl;
       navOut.push_back(p0);
+      
          // Clear out the broadcast ephemeris that's been processed.
       ephAcc.erase(prn);
       return true;
