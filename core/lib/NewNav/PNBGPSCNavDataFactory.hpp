@@ -193,9 +193,11 @@ namespace gnsstk
       std::unique_ptr<PNBNavDataFactory> clone() override;
 
    protected:
+      typedef std::map<unsigned, std::vector<PackedNavBitsPtr>> NAV_PTR_MAP;
+      
          /** Map GPS PRN to a vector of PackedNavBits for accumulating
           * ephemeris data, where index 0 is message 10 and so on. */
-      std::map<unsigned, std::vector<PackedNavBitsPtr> > ephAcc;
+      NAV_PTR_MAP ephAcc;
    };
 
       //@}
