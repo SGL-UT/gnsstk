@@ -9,9 +9,6 @@ For readability, each issue should span two lines:
 Path Manipulation usr/include/c++/8/fstream:627
 31C026DF9A40A23D25FAD304B21E58E3
 
-Path Manipulation usr/include/c++/8/fstream:517
-5285F459AD4D3F73AF850F7FF90DF0F2
-
 String Termination Error builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:81
 67B30A9F68EB593D925DD30B4B2CC0D9
 
@@ -20,3 +17,51 @@ A175D9AD61CEE4B00B7E4A8202F4F523
 
 Path Manipulation usr/include/c++/8/fstream:517
 D24EC54B80E608495B128D878D6FEC29
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+0ADC86A1490D8203529DB2C6559A098E
+
+Insecure Randomness  builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:89
+16AC7C56A41EB3C62176171C8336AFDF  
+
+String Termination Error  builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:100
+0C182C71E17E16F12FA11FBEF84AB15E  
+
+String Termination Error  "builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:120
+3813C9E9FD5B696E1F121861D94024E8
+
+String Termination Error  "builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:120
+52A21EEF2ABF3FA25827BA94F51810FB
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+4C741094062EB679CBD024A2C2BBD333
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+6D276CC4B50B015C3A6AD7D361C96B19
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+5285F459AD4D3F73AF850F7FF90DF0F2
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+6FE96AC371087C03A2D330D35A031883
+
+Insecure Randomness: Weak Entropy Source builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:89
+8AE4C4212A3D70A706E0031000678095
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+ACBC5EBFC8BC5D18A3520BD6273336F3
+
+Insecure Randomness  builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:90
+C5923F853D4170F79B30A889327ECFA2
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+D24EC54B80E608495B128D878D6FEC29
+
+Insecure Compiler Optimization  opt/rh/gcc-toolset-9/root/usr/include/c++/9/bits/stl_bvector.h:419
+B0E70089E21EFD4817AA57CE55C1EC02
+
+Insecure Compiler Optimization  opt/rh/gcc-toolset-9/root/usr/include/c++/9/bits/stl_bvector.h:1141
+D6DBA0F257313E11682467175B87BA69
+
+Path Manipulation opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+DAD159E15BCBCA293672515DE44916AA
