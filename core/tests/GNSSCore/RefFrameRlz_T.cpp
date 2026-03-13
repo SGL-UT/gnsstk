@@ -140,42 +140,68 @@ getRefFrameRlzTest()
    typedef std::pair<gnsstk::RefFrameSys, gnsstk::CommonTime> InpPair;
    typedef std::map<InpPair, gnsstk::RefFrameRlz> ExpMap;
    gnsstk::TimeSystem ts(gnsstk::TimeSystem::UTC); // short alias.
+   // InpPair: input reference frame and a common time
+   // RefFrameRlz: expected reference frame realization for the given frame and time
+   // ------------------------------------------------------------------------------
+   // The given common time may be any time after the expected realization began and
+   // before the next realization begins. See getRefFrameRlz() comments in RefFrameRlz.cpp
+   // for exact start dates of each realization for WGS 84 and ITRF/ IGS.
    ExpMap inOutMap
-      {{InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(0,0,ts)),
+        // WGS 84 G0 is the original WGS 84 reference frame. Any time before week
+        // 730, when WGS 84 G730 was released, results in this realization.
+      {{InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(0, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G0},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(730,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(730, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G730},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(873,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(873, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G873},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(1150,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(1150, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G1150},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(1674,0,ts)),
+        // WGS 84 G1674 wasn't employed in NGA precise ephemeris until week
+        // 1687, and even then, didn't start on the 0th day of week 1687, so
+        // it's easiest to use the start of the next week (1688) for our input
+        // rather than identify the exact SOW it started.
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(1688, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G1674},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(1762,0,ts)),
+        // WGS 84 G1762 didn't start on the 0th day of week 1762, so it's easiest
+        // to use the start of the next week (1763).
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(1763, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G1762},
-       {InpPair(gnsstk::RefFrameSys::WGS84,gnsstk::GPSWeekSecond(2139,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(2139, 0, ts)),
         gnsstk::RefFrameRlz::WGS84G2139},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(1994,1,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::WGS84, gnsstk::GPSWeekSecond(2296, 0, ts)),
+        gnsstk::RefFrameRlz::WGS84G2296},
+        // The first ITRF realization supported by the GNSSTk RefFrameRlz class
+        // is ITRF94, so anytime before ITRF96 begins (March 1, 1998), will
+        // result in ITRF94.
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(1994, 1, 0, ts)),
         gnsstk::RefFrameRlz::ITRF94},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(1996,1,0,ts)),
+        // First day ITRF96 used in IGS PE: March 1, 1998 (DOY 60).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(1998, 60, 0, ts)),
         gnsstk::RefFrameRlz::ITRF96},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(1997,1,0,ts)),
+        // First day ITRF97 used in IGS PE: August 1, 1999 (DOY 213).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(1999, 213, 0, ts)),
         gnsstk::RefFrameRlz::ITRF97},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(2000,1,0,ts)),
+        // First day ITRF2000 used in IGS PE: December 2, 2001 (DOY 336).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(2001, 336, 0, ts)),
         gnsstk::RefFrameRlz::ITRF2000},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(2005,1,0,ts)),
+        // First day ITRF2005 used in IGS PE: November 5, 2006 (DOY 309).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(2006, 309, 0, ts)),
         gnsstk::RefFrameRlz::ITRF2005},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(2008,1,0,ts)),
+        // First day ITRF2008 used in IGS PE: April 17, 2011 (DOY 107).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(2011, 107, 0, ts)),
         gnsstk::RefFrameRlz::ITRF2008},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(2014,1,0,ts)),
+        // First day ITRF2014 used in IGS PE: January 29, 2017 (DOY 29).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(2017, 29, 0, ts)),
         gnsstk::RefFrameRlz::ITRF2014},
-       {InpPair(gnsstk::RefFrameSys::ITRF,gnsstk::YDSTime(2020,1,0,ts)),
+        // First day ITRF2020 used in IGS PE: November 27, 2022 (DOY 331).
+       {InpPair(gnsstk::RefFrameSys::ITRF, gnsstk::YDSTime(2022, 331, 0, ts)),
         gnsstk::RefFrameRlz::ITRF2020},
-       {InpPair(gnsstk::RefFrameSys::PZ90,gnsstk::YDSTime(2006,1,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::PZ90, gnsstk::YDSTime(2006, 1, 0, ts)),
         gnsstk::RefFrameRlz::PZ90KGS},
-       {InpPair(gnsstk::RefFrameSys::PZ90,gnsstk::YDSTime(2007,263,61200,ts)),
+       {InpPair(gnsstk::RefFrameSys::PZ90, gnsstk::YDSTime(2007, 263, 61200, ts)),
         gnsstk::RefFrameRlz::PZ90Y2007},
-       {InpPair(gnsstk::RefFrameSys::CGCS2000,gnsstk::YDSTime(2022,364,0,ts)),
+       {InpPair(gnsstk::RefFrameSys::CGCS2000, gnsstk::YDSTime(2022, 364, 0, ts)),
         gnsstk::RefFrameRlz::CGCS2000Y2008},
       };
 
