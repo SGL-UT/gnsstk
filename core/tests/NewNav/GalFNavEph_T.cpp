@@ -143,15 +143,18 @@ getXvtTest()
    TUDEF("GalFNavEph", "getXvt");
    gnsstk::GalFNavEph uut;
    gnsstk::Xvt xvt;
-   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::ITRF2014);
+   // Expected reference frame for the input time:
+   //   GAL/GPS week 1854 starts on 7/19/2015.
+   //   ITRF2008 was effective 4/17/2011 - 1/29/2017.
+   gnsstk::RefFrame expRF(gnsstk::RefFrameRlz::ITRF2008);
    uut.xmitTime = gnsstk::GALWeekSecond(1854, .720000000000e+04);
    uut.Toe = gnsstk::GALWeekSecond(1854, .143840000000e+05);
-   uut.Toc = gnsstk::CivilTime(2015,7,19,3,59,44.0,gnsstk::TimeSystem::GAL);
+   uut.Toc = gnsstk::CivilTime(2015, 7, 19, 3, 59, 44.0, gnsstk::TimeSystem::GAL);
    uut.health = gnsstk::SVHealth::Healthy;
-   gnsstk::CivilTime civ(2015,7,19,2,0,35.0,gnsstk::TimeSystem::GAL);
+   gnsstk::CivilTime civ(2015, 7, 19, 2, 0, 35.0, gnsstk::TimeSystem::GAL);
    TUASSERT(uut.getXvt(civ, xvt));
    TUASSERTE(gnsstk::Xvt::HealthStatus, gnsstk::Xvt::Healthy, xvt.health);
-   TUASSERTE(gnsstk::RefFrame,expRF,xvt.frame);
+   TUASSERTE(gnsstk::RefFrame, expRF, xvt.frame);
    TURETURN();
 }
 
