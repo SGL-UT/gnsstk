@@ -311,7 +311,7 @@ if [ $test_switch ]; then
           run cmake --build . --target RUN_TESTS --config Release
           ;;
       *)
-          run ctest -v -j $num_threads
+          run ctest -j $num_threads
           test_status=$?
   esac
   unset ignore_failures
