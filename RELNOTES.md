@@ -1,39 +1,34 @@
-GNSSTk 15.1.0 Release Notes
+GNSSTk 15.2.0 Release Notes
 ========================
 
  * This minor release includes the following:
-     * Adding PreciseRange and PhaseWindup to SWIG
-     * Adding nav type enums supporting BeiDou B-CNav1, B-CNav2
-     * Adding B-CNav3, and regional boolean variable to GPSCNavIono class
-     * Updating CommandOptionParser to use memory safe data structure
-     * Updating `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly rate `dek` directly in the true anomaly rate `dlk` calculation
-     * Reducing impact of ABI incompatibility
- * It also includes bug fixes, pipeline fixes, and repository CODEOWNER changes. 
+     * Adding RefFrameRlz missing G2296 realization of WGS 84
+     * Fixing PNBGPSCNavDataFactory Add_MT_assembly_checks
+     * Fixing RefFrameRlz incorrect reference frame adoption dates for WGS 84 and ITRF realizations.
+     * Updating `NewNav/OrbitDataKepler.cpp` with changes to the eccentric anomaly rate `dek` specified in the Proposed Change Notice to IS-GPS-200 as of 2025-08-27.
+ * It also includes the following CI/CD updates:
+     * Fixing conda pkg pipeline job by pinning version of conda glibc to 2.28
+     * Updating fortify scan results with filtering
+     * Fixing build.sh script to remove non-existent ctest `v` flag.
 
-Updates since v15.0.0
+Updates since v15.1.0
 ---------------------
-  * Update/refactor swig CMakeLists.txt
-  * Update CommandOptionParser to use memory safe data structure instead of C-style array.
-  * Update `NewNav/OrbitDataKepler.cpp` to use the eccentric anomaly rate `dek` directly in the true anomaly rate `dlk` calculation.  This directly propagates the `dek` term for anticipated future changes to `dek` per the Jira Issue, but currently does not have any effect upon calculations.
-  * Update CODEOWNERS
-  * Update reducing impact of ABI incompatibility
 
+**Build System and Test Suite**
+  * Update fortify scan to exclude ext libraries.
+  * Update fortify_filter-issues.txt Adding files.
+  * Update fortify-filter-issues.txt Adding verbiage explaining fortify exclusions
+  * Fix build.sh to remove non-existent ctest `-v` flag.
+
+**Gitlab CI**
+  * Fix conda pkg pipeline job by pinning version of conda glibc to 2.28
 
 **Library Changes**
-  * Add nav type enums supporting BeiDou B-CNav1, B-CNav2, and B-CNav3
-  * Add PreciseRange and PhaseWindup to SWIG
-  * Add regional boolean variable to GPSCNavIono class.
+  * Add RefFrameRlz missing G2296 realization of WGS 84.
+  * Update `NewNav/OrbitDataKepler.cpp` with changes to the eccentric anomaly rate `dek` specified in the Proposed Change Notice to IS-GPS-200 as of 2025-08-27.
 
-Fixes since v15.0.0
+Fixes since v15.1.0
 --------------------
-  * Fix PRSolution to not fail with GlobalTropModel edge case.
-  * Fix cpp static analysis pipeline job
-  * Fix pipeline job package_redhat_8_py36 to use larger gitlab runner size
-  * Fix to temporarily ignore bad TimeHandling test case.
-  * Fix NavID to correctly inference NavType of BeiDou's Phase III GEO SVs.
+  * Fix PNBGPSCNavDataFactory Add_MT_assembly_checks
+  * Fix RefFrameRlz incorrect reference frame adoption dates for WGS 84 and ITRF realizations.
 
-New Modules
--------------------------------
-     core/lib/Geomatics/PhaseWindup.cpp
-     core/lib/Geomatics/PhaseWindup.hpp
-     core/tests/Geomatics/PhaseWindup_T.cpp
