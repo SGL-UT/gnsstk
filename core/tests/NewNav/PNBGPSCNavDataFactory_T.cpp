@@ -95,6 +95,10 @@ public:
    unsigned process35Test();
       // week rollover test for decoding ephemerides
    unsigned processEphWRTest();
+   
+      // Test to probably assemble data sets in which 
+      // "old" data needs to be ignored.
+   unsigned processEphOrderTest();
 
 #include "CNavTestDataDecl.hpp"
 };
@@ -1180,6 +1184,27 @@ processEphWRTest()
    TURETURN();
 }
 
+unsigned PNBGPSCNavDataFactory_T ::
+processEphOrderTest()
+{
+   TUDEF("PNBGPSCNavDataFactory", "processEphOrder");
+   gnsstk::PNBGPSCNavDataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   gnsstk::GPSCNavEph *eph;
+   TUCATCH(uut.setTypeFilter({gnsstk::NavMessageType::Ephemeris}));
+   TUASSERTE(bool, true, uut.addData(msg11_1_Asm, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg3x_1_Asm, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg10_1_Asm, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg11_2_Asm, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(msg3x_2_Asm, navOut));
+   TUASSERTE(gnsstk::NavDataPtrList::size_type, 1, navOut.size());
+    
+   TURETURN();
+}
 
 int main()
 {
@@ -1203,6 +1228,7 @@ int main()
    errorTotal += testClass.process33Test();
    errorTotal += testClass.process35Test();
    errorTotal += testClass.processEphWRTest();
+   errorTotal += testClass.processEphOrderTest();
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

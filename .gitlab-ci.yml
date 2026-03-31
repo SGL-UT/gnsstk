@@ -329,7 +329,7 @@ build_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -476,7 +476,7 @@ fortify-scan:
     - mkdir -p build
     - cd build
     - export gnsstk=`pwd`/install
-    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=ON -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
     - make all -j 4
     - !reference [.fortify_post_consolidated_cpp, script]
   retry: 
@@ -539,7 +539,7 @@ test_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:
@@ -827,7 +827,7 @@ package_conda:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6
+  image: $DOCKER_REGISTRY/sgl/rhel8-conda:python-3.6-libmamba
   before_script:
     - source /opt/miniconda/etc/profile.d/conda.sh
   script:

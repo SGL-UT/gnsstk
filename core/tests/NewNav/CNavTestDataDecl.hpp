@@ -54,3 +54,13 @@ gnsstk::ObsID oidCNAVWR;
 gnsstk::SatID ephCNAVWRsid;
 gnsstk::CommonTime msg10CNAVWRct, msg11CNAVWRct, msg30CNAVWRct;
 gnsstk::PackedNavBitsPtr msg10CNAVWR, msg11CNAVWR, msg30CNAVWR;
+
+// CNAV assembly ordering test data
+// These data are from an "edge case" observed on 11/2/2024 from SVN 71, PRN 26.
+// There were occasions on which t-sub-oe and t-sub-op did not change in a coordinated
+// manner. 
+//
+// Reuse oidCNAVGPSL2
+gnsstk::SatID ephCNAVAssemblyID;
+gnsstk::CommonTime msg10_1_Asmct, msg11_1_Asmct, msg11_2_Asmct, msg3x_1_Asmct, msg3x_2_Asmct; 
+gnsstk::PackedNavBitsPtr msg10_1_Asm, msg11_1_Asm, msg11_2_Asm, msg3x_1_Asm, msg3x_2_Asm; 

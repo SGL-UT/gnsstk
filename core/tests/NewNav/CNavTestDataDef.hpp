@@ -362,3 +362,107 @@ msg30CNAVWR->addUnsignedLong(0x3108FFF9, 32, 1);
 msg30CNAVWR->addUnsignedLong(0xAB99A5B7, 32, 1);
 msg30CNAVWR->addUnsignedLong(0x529, 12, 1);
 msg30CNAVWR->trimsize();
+
+
+// CNAV assembly ordering test data
+// These data are from an "edge case" observed on 11/2/2024 from SVN 71, PRN 26.
+// There were occasions on which t-sub-oe and t-sub-op did not change in a coordinated
+// manner. 
+//
+// Reuse oidCNAVGPSL2
+ephCNAVAssemblyID = gnsstk::SatID(26, gnsstk::SatelliteSystem::GPS);
+//msg10_1_Asmct = gnsstk::CivilTime(2024, 11, 2, 13, 43, 12);
+msg10_1_Asmct = gnsstk::GPSWeekSecond(2338, 567792); 
+msg10_1_Asm = std::make_shared<gnsstk::PackedNavBits>(ephCNAVAssemblyID,
+                                                        oidCNAVGPSL2,
+                                                        msg10_1_Asmct); 
+msg10_1_Asm->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg10_1_Asm->addUnsignedLong(0x8B68AB8D, 32, 1);
+msg10_1_Asm->addUnsignedLong(0x512447B1, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0x6FB00133, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0x229FFFB6, 32, 1);
+msg10_1_Asm->addUnsignedLong(0xB33D8800, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0x11688649, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0xDA7026D7, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0xB4005D28, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0xC16C60B7, 32, 1); 
+msg10_1_Asm->addUnsignedLong(0x868, 12, 1); 
+msg10_1_Asm->trimsize(); 
+
+
+//msg11_1_Asmct = gnsstk::CivilTime(2024, 11, 2, 12, 53, 48);
+msg11_1_Asmct = gnsstk::GPSWeekSecond(2338, 564828); 
+msg11_1_Asm = std::make_shared<gnsstk::PackedNavBits>(ephCNAVAssemblyID,
+                                                        oidCNAVGPSL2,
+                                                        msg11_1_Asmct); 
+msg11_1_Asm->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg11_1_Asm->addUnsignedLong(0x8B68BB7D, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0xE3B04494, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x7FCF497B, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x0316A052, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x1F8F3FF6, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0xBFFEA009, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x5A60124E, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0xC02F3000, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x804F6A49, 32, 1); 
+msg11_1_Asm->addUnsignedLong(0x79D, 12, 1);
+msg11_1_Asm->trimsize();
+
+
+//msg11_2_Asmct = gnsstk::CivilTime(2024, 11, 2, 13, 43, 24);
+msg11_2_Asmct = gnsstk::GPSWeekSecond(2338, 567804);
+msg11_2_Asm = std::make_shared<gnsstk::PackedNavBits>(ephCNAVAssemblyID,
+                                                        oidCNAVGPSL2,
+                                                        msg11_2_Asmct); 
+msg11_2_Asm->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg11_2_Asm->addUnsignedLong(0x8B68BB8D, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x63B04494, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x7FD4897B, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x03162052, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x1F8F3FF6, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0xBFFEA009, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x5A60124E, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0xC02F3000, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x804BA621, 32, 1);  
+msg11_2_Asm->addUnsignedLong(0x7F7, 12, 1);
+msg11_2_Asm->trimsize();
+
+
+//msg3x_1_Asmct = gnsstk::CivilTime(2024, 11, 2, 12, 54, 12);
+msg3x_1_Asmct = gnsstk::GPSWeekSecond(2338, 564852);
+msg3x_1_Asm = std::make_shared<gnsstk::PackedNavBits>(ephCNAVAssemblyID,
+                                                        oidCNAVGPSL2,
+                                                        msg3x_1_Asmct); 
+msg3x_1_Asm->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg3x_1_Asm->addUnsignedLong(0x8B6A1B7E, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x03AB68FE, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0xC00A7572, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0xFF925001, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0xFF87FF30, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x02448009, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x233C4B89, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x63112BBF, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x1034820F, 32, 1); 
+msg3x_1_Asm->addUnsignedLong(0x70A, 12, 1);
+msg3x_1_Asm->trimsize();
+
+
+
+//msg3x_2_Asmct = gnsstk::CivilTime(2024, 11, 2, 13, 43, 36);
+msg3x_2_Asmct = gnsstk::GPSWeekSecond(2338, 567816);
+msg3x_2_Asm = std::make_shared<gnsstk::PackedNavBits>(ephCNAVAssemblyID,
+                                                        oidCNAVGPSL2,
+                                                        msg3x_2_Asmct); 
+msg3x_2_Asm->setNavID(gnsstk::NavType::GPSCNAVL2);
+msg3x_2_Asm->addUnsignedLong(0x8B69EB8D, 32, 1);
+msg3x_2_Asm->addUnsignedLong(0x73B16C7E, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0xC00A75DA, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x7F99E000, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x0E0FF1FD, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0xC01900CA, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x2B02FE01, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x4AFDFEFD, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x228CE509, 32, 1); 
+msg3x_2_Asm->addUnsignedLong(0x7CD, 12, 1); 
+msg3x_2_Asm->trimsize();
+

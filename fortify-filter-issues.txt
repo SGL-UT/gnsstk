@@ -3,20 +3,74 @@ These values are found in the *scan_issues.csv fortify job pipeline artifact.
 See https://www.microfocus.com/documentation/fortify-static-code-analyzer-and-tools/2310/SCA_Help_23.1.0/index.htm#FilterFiles/FilterFileExample.htm
   for more details. You can also include categories instead of specific Rule IDs.
 For readability, each issue should span two lines:
-  First line is <Category> <Line affected>
+  First line is <Category> (<Verbiage on why this is exclusion is ok>) <Line affected>
   Second line is Issue ID.  Note: Issue ID is the only thing that is needed to actually exclude an issue. First line is for information purposes.
 
-Path Manipulation usr/include/c++/8/fstream:627
+Path Manipulation (Library code for file operations.) usr/include/c++/8/fstream:627
 31C026DF9A40A23D25FAD304B21E58E3
 
-Path Manipulation usr/include/c++/8/fstream:517
+Path Manipulation (Library code for file operations.) usr/include/c++/8/fstream:517
+D24EC54B80E608495B128D878D6FEC29
+
+Path Manipulation (Library code for implementing std::getline().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+0ADC86A1490D8203529DB2C6559A098E
+
+Insecure Randomness (Random number generator used to generate example statistics. These are not used outside of serving as an example.) builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:89
+16AC7C56A41EB3C62176171C8336AFDF  
+
+String Termination Error (This is test code using controlled input files. Input files are guaranteed to be NULL terminated.) builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:100
+0C182C71E17E16F12FA11FBEF84AB15E  
+
+String Termination Error (This is test code using controlled input files. Input files are guaranteed to be NULL terminated.) "builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:120
+3813C9E9FD5B696E1F121861D94024E8
+
+String Termination Error (This is test code using controlled input files. Input files are guaranteed to be NULL terminated.) "builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:120
+52A21EEF2ABF3FA25827BA94F51810FB
+
+Path Manipulation (Library code for implementing std::basic_filebuf::open().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+4C741094062EB679CBD024A2C2BBD333
+
+Path Manipulation (Library code for implementing std::basic_filebuf::open().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+6D276CC4B50B015C3A6AD7D361C96B19
+
+Path Manipulation (Library code for implementing std::getline().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
 5285F459AD4D3F73AF850F7FF90DF0F2
 
-String Termination Error builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:81
-67B30A9F68EB593D925DD30B4B2CC0D9
+Path Manipulation (Library code for implementing std::basic_filebuf::open().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+6FE96AC371087C03A2D330D35A031883
 
-String Termination Error builds/sgl-tks/gnsstk/core/tests/df_diff.cpp:81
-A175D9AD61CEE4B00B7E4A8202F4F523
+Insecure Randomness: Weak Entropy Source (Random number generator used to generate example statistics. These are not used outside of serving as an example.) builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:89
+8AE4C4212A3D70A706E0031000678095
 
-Path Manipulation usr/include/c++/8/fstream:517
+Path Manipulation (Library code for implementing std::getline().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
+ACBC5EBFC8BC5D18A3520BD6273336F3
+
+Insecure Randomness (Random number generator used to generate example statistics. These are not used outside of serving as an example.) builds/sgl-tks/gnsstk/examples/Stats_example_1.cpp:90
+C5923F853D4170F79B30A889327ECFA2
+
+Path Manipulation (Library code for implementing std::getline().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:533
 D24EC54B80E608495B128D878D6FEC29
+
+Insecure Compiler Optimization (Library code for vector initialization that uses memset. This is part of the the GCC toolset library code itself, so GCC should not optimize this away.) opt/rh/gcc-toolset-9/root/usr/include/c++/9/bits/stl_bvector.h:419
+B0E70089E21EFD4817AA57CE55C1EC02
+
+Insecure Compiler Optimization (Library code for vector initialization that uses memset. This is part of the the GCC toolset library code itself, so GCC should not optimize this away.) opt/rh/gcc-toolset-9/root/usr/include/c++/9/bits/stl_bvector.h:1141
+D6DBA0F257313E11682467175B87BA69
+
+Path Manipulation (Library code for implementing std::basic_filebuf::open().) opt/rh/gcc-toolset-9/root/usr/include/c++/9/fstream:660
+DAD159E15BCBCA293672515DE44916AA
+
+Password Management: Password in Comment (There is not an actual password in this comment. It is just describing how to get a different help description using command options.) builds/sgl-tks/gnsstk/core/lib/CommandLine/CommandOption.cpp:555
+BFCB3159EEFBD85FBD0D99A90BA0A4AE
+
+Privacy Violation (Flagged for string stream formatting with double. Double is not sensitive.) builds/sgl-tks/gnsstk/core/lib/Geomatics/AntexData.cpp:504
+C76A38C0A35765A6BC785F4C649BEE2A
+
+Privacy Violation (Flagged for string stream formatting with double. Double is not sensitive.) builds/sgl-tks/gnsstk/core/lib/Geomatics/AntexData.cpp:517
+3F44A411A40EF7B7BCA4D5A918C62EB6
+
+Privacy Violation (Flagged for string stream formatting with double. Double is not sensitive.) builds/sgl-tks/gnsstk/core/lib/Geomatics/AntexData.cpp:520
+D973F16D4144E984B94CF21AC4E3B8DF
+
+Privacy Violation (Flagged for string stream formatting with double. This is a simple utility function converting double -> string.) builds/sgl-tks/gnsstk/core/lib/Utilities/StringUtils.hpp:1695
+0DE9E898305D582A9E70E17D45198C36

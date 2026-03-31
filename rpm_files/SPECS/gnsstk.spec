@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 15.1.0
+%define version 15.2.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 30 2026 David Barber <dbarber@arlut.utexas.edu>
+- Updated for v15.2.0 release
+- Fix build.sh to remove non-existent ctest `-v` flag.
+- Add RefFrameRlz missing G2296 realization of WGS 84.
+- Fix RefFrameRlz incorrect reference frame adoption dates for WGS 84 and ITRF realizations.
+- Update fortify-filter-issues.txt Adding verbiage explaining fortify exclusions
+- Update fortify_filter-issues.txt Adding files.
+- Fix PNBGPSCNavDataFactory Add_MT_assembly_checks
+- Update fortify scan to exclude ext libraries.
+- Update `NewNav/OrbitDataKepler.cpp` with changes to the eccentric anomaly rate `dek` specified in the Proposed Change Notice to IS-GPS-200 as of 2025-08-27.
+- Fix conda pkg pipeline job by pinning version of conda glibc to 2.28
 * Tue Oct 14 2025  <>
 - Updated for v15.1.0 release
 - Add regional boolean variable to GPSCNavIono class.

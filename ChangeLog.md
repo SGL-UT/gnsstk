@@ -1,3 +1,31 @@
+# Version 15.2.0   Monday March 30, 2026
+
+Modifications by Author
+-----------------------
+     Avery Crawley <acrawley@arlut.utexas.edu> (1):
+           Update incorrect reference frame adoption dates
+
+     Benjamin Feuge-Miller <benjaminfm@arlut.utexas.edu> (1):
+           Updated CNAV velocity equation
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Fix Error in  PNBGPSCNavDataFactory
+
+     Dave Gettier <dave.gettier@arlut.utexas.edu> (1):
+           Adding exclusions from gnsstk_main_FULL_scan_issues.csv.html
+
+     David Barber <dbarber@arlut.utexas.edu> (2):
+           add sysroot_linux-64 >= 2.28 to conda recipe as a dependency
+           Exclude ext libraries from fortify scan
+
+     Gio Eloja <gio.eloja@arlut.utexas.edu> (1):
+           Adding verbiage explaining fortify exclusions
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           remove non-existent ctest -v flag
+
+
+
 # Version 15.1.0   Tuesday October 14, 2025
 
 Modifications by Author
