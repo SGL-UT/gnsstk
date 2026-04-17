@@ -73,3 +73,13 @@ gnsstk::CommonTime ephD1NAVSF1ct, ephD1NAVSF2ct, ephD1NAVSF3ct,
    almD1NAVSF4p24B2ct, almD1NAVSF5p24B2ct,
    almD1Default123ct;
 gnsstk::SatID ephD1NAVSid, almD1NAVSid, almD1NAVSidB;
+//
+// The following are added to support testing for 
+// the "stuck words 2-10" problem. The first one 
+// has an incorrect SOW for the given FraID.  The 
+// Other has a FraID that doesn't match the SOW 
+// and data payload.
+// The third item checks for invalid SOW values 
+// (that is, not even 6s multiples)
+//
+gnsstk::PackedNavBitsPtr ephD1NAVSF1_flawed1, ephD1NAVSF1_flawed2, ephD1NAVSF1_flawed3; 
