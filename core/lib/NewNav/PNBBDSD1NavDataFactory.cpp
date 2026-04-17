@@ -94,6 +94,49 @@ namespace gnsstk
          {
                /// @todo Implement a parity check
          }
+         
+         // We've discovered a BeiDou-3 D1 nav error
+         // in which words 2-10 become "stuck" for some
+         // period of time.  Since the 12 lsbs of the SOW
+         // are the 12 msbs of word 2, this means the 
+         // SOW is in conflict with the subframe ID
+         // for all data payloads other than for the 
+         // subframe for which that data were intended. 
+         // Therefore, if the FraID (subframe ID) is 
+         // inconsistent with the SOW, reject this message.
+         // 
+         // Concept: The Frame has a 6s cadence with subframe 1
+         // aligned with the even 30 mark of the second of week. 
+         // Therefore, we take the SOW modulo 30s, divide by 6
+         // and that gives us 0, 1, 2, 3, 4.  We add 1 in order
+         // to align with the "1-based" subframe IDs of 
+         // 1, 2, 3, 4, 5.  If this value doesn't match the
+         // FraID in the message, the data payload doesn't have
+         // a time that matches the FraID.
+         //
+         // Also, the SOW must be an even 6s value, so test 
+         // that also. 
+         //
+         // NOTE: At the time this is being added, there is no
+         // parity check being performed above.  It is possible
+         // this test would be OBE if parity was being checked.
+         unsigned long SOW = navIn->asUnsignedLong(fsbSOWm,fnbSOWm,
+                                                   fsbSOWl,fnbSOWl,
+                                                   fscSOW);
+         unsigned long remainder = SOW % 6;
+         if (remainder!=0)
+         {
+            return rv;            
+         }
+         unsigned long inferredSubframeID = ((SOW % 30) / 6) + 1; 
+         if (sfid != inferredSubframeID)
+         {
+            // This will return "true", but NavDataPtrList& NavOut 
+            // will empty.  That is an acceptable response. 
+            return rv;    
+         }
+         
+         // Process the message based on the subframe ID
          switch (sfid)
          {
             case 1:
