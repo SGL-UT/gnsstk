@@ -59,6 +59,9 @@ from __future__ import absolute_import
 
 %include "Exception.i"
 
+%include "std_shared_ptr.i"
+%shared_ptr(gnsstk::PackedNavBits)
+
 // =============================================================
 //  Section 10: C++ include files
 //  Include classes IN DEPENDENCY ORDER otherwise swig will fail.
