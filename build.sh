@@ -12,7 +12,7 @@
 #
 #----------------------------------------
 #----------------------------------------
-# Qué hora es? Dónde estamos? Y dónde vamos?
+# Default values for paths. Options can override these.
 #----------------------------------------
 
 source $(dirname "$BASH_SOURCE")/build_setup.sh
