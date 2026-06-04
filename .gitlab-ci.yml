@@ -136,10 +136,11 @@ static_analysis:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - pip3 install cpplint
-    - apt install -y bc
+    - apt-get update
+    - DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -y --no-install-recommends bc
     - ./lint_test.sh
   # Allow failures here to prevent blocking the rest of the pipeline.
   allow_failure: true
@@ -151,7 +152,7 @@ sgllint_lint:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files for required lines like copyright/license statements.'
@@ -186,7 +187,7 @@ protected_term_lint:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files for protected terms in files modified since the branch split from default.'
@@ -206,7 +207,7 @@ protected_history_lint:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - '######'
     - '# This job checks all files modified on this branch for sensitive terms.'
@@ -227,10 +228,11 @@ generate_documentation:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     # Install GraphViz
-    - sudo apt-get install -y graphviz
+    - apt-get update
+    - DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -y --no-install-recommends graphviz
     # Call doxygen w/alternate target directory
     - doxygen
   # Allow failures here to prevent blocking the rest of the pipeline.
@@ -246,7 +248,7 @@ build_ubuntu_20.04:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -263,7 +265,7 @@ build_ext_noswig:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -278,7 +280,7 @@ build_noext_noswig:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -294,7 +296,7 @@ build_swig_noext:
   extends: .normal_job
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - mkdir -p build
     - cd build
@@ -310,7 +312,7 @@ build_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - python3 -m virtualenv --system-site-packages -p /usr/bin/python3 myenv
     - source myenv/bin/activate
@@ -437,7 +439,7 @@ build_windows_vs2019:
 # Scanning Phase jobs
 
 sonar-scan:
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   stage: quality
   needs: []
   extends:
@@ -501,7 +503,7 @@ test_ubuntu_20.04:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - cd build
     - ctest -j 4
@@ -520,7 +522,7 @@ test_ubuntu_20.04_virtualenv:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -667,7 +669,7 @@ user_install_ubuntu_20.04:
   extends: .big_build
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - cd build
     - export gnsstk=`pwd`/install
@@ -685,7 +687,7 @@ virtualenv_install_ubuntu_20.04:
   extends: .normal_job
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - source myenv/bin/activate
     - cd build
@@ -799,7 +801,7 @@ package_ubuntu_20.04:
     BUILD_TYPE: fast
   tags:
     - extra-large
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - rm -rf ../*.deb .gitmodules
     # Mark the debian log so that this package is a backport.
@@ -939,7 +941,7 @@ deploy_ubuntu_20.04:
   extends: .big_build
   tags:
     - standard
-  image: $DOCKER_REGISTRY/sgl/ubuntu-20.04:pkgbuild
+  image: $DOCKER_REGISTRY/sgl/ubuntu-slim-20.04:pkgbuild
   script:
     - pushd debs
     - apt-get -y install ./*.deb
