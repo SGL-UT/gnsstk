@@ -87,10 +87,10 @@ public:
 unsigned PRSolution2_T ::
 raimComputeUnweightedTest()
 {
-      // A simple workflow test that exercises the typical usage of PRSolution.
-   TUDEF("PRSolution", "RAIMComputeUnweighted");
+      // A simple workflow test that exercises the typical usage of PRSolution2.
+   TUDEF("PRSolution2", "RAIMComputeUnweighted");
 
-      // There's a lot of logging code in PRSolution. Turning on all logging
+      // There's a lot of logging code in PRSolution2. Turning on all logging
       // at least to check that it doesn't break anything during this test.
    ConfigureLOG::Stream() = &std::cerr;
    ConfigureLOG::ReportingLevel() = ConfigureLOG::Level("DEBUG");
@@ -102,7 +102,7 @@ raimComputeUnweightedTest()
    NavLibrary navLib;
    navLib.addFactory(navFactory);
 
-      // PRSolution needs a trop model. Using Global for simplicity.
+      // PRSolution2 needs a trop model. Using Global for simplicity.
    GlobalTropModel tropModel;
    
    YDSTime time(2015, 200, 46800);
@@ -138,11 +138,11 @@ raimComputeUnweightedTest()
       24250681.418 + 7
    };
 
-   experimental::PRSolution solver;
+   experimental::PRSolution2 solver;
        // Shouldn't be valid, nothing has happened yet.
    TUASSERT(!solver.isValid());
 
-      // It will throw an exception until PRSolution::allowedGNSS has been set.
+      // It will throw an exception until PRSolution2::allowedGNSS has been set.
    TUTHROW(solver.RAIMComputeUnweighted(
       time,
       sats,
@@ -182,7 +182,7 @@ raimComputeUnweightedTest()
    TUASSERTFEPS(solver.Solution[1], -5444353.0, 10);
    TUASSERTFEPS(solver.Solution[2], 3225860, 10);
    TUASSERTFEPS(solver.Solution[3], 68.0, 10);
-      // Since PRSolution::hasMemory == true by default then the
+      // Since PRSolution2::hasMemory == true by default then the
       // APSolution field should be automtically populated for the next run.
    TUASSERTFEPS(solver.APSolution[0], -751000.0, 10);
    TUASSERTFEPS(solver.APSolution[1], -5444353.0, 10);
@@ -211,10 +211,10 @@ raimComputeUnweightedTest()
 unsigned PRSolution2_T ::
 notEnoughSvsTest()
 {
-      // A simple workflow test that exercises the typical usage of PRSolution.
-      // PRSolution requires at least 4 SVs (sometimes more) of data. If there
+      // A simple workflow test that exercises the typical usage of PRSolution2.
+      // PRSolution2 requires at least 4 SVs (sometimes more) of data. If there
       // is not enough data then it should return with an error.
-   TUDEF("PRSolution", "RAIMComputeUnweighted");
+   TUDEF("PRSolution2", "RAIMComputeUnweighted");
 
    std::string navfile = gnsstk::getPathData() + gnsstk::getFileSep() + "test_input_sp3_nav_2015_200.sp3";
    std::shared_ptr<NavDataFactory> navFactory = std::make_shared<SP3NavDataFactory>();
@@ -242,7 +242,7 @@ notEnoughSvsTest()
       22137165.177 + 2
    };
 
-   experimental::PRSolution solver;
+   experimental::PRSolution2 solver;
        // Shouldn't be valid, nothing has happened yet.
    TUASSERT(!solver.isValid());
    solver.allowedGNSS.push_back(SatelliteSystem::GPS);
@@ -264,10 +264,10 @@ notEnoughSvsTest()
 unsigned PRSolution2_T ::
 noEphemerisTest()
 {
-      // A simple workflow test that exercises the typical usage of PRSolution.
-      // PRSolution ephemeris data for the SVs. If there is not enough ephemeris
+      // A simple workflow test that exercises the typical usage of PRSolution2.
+      // PRSolution2 ephemeris data for the SVs. If there is not enough ephemeris
       // data then it should return with an error.
-   TUDEF("PRSolution", "RAIMComputeUnweighted");
+   TUDEF("PRSolution2", "RAIMComputeUnweighted");
 
    NavLibrary navLib;
    GlobalTropModel tropModel;
@@ -305,7 +305,7 @@ noEphemerisTest()
       24250681.418 + 7
    };
 
-   experimental::PRSolution solver;
+   experimental::PRSolution2 solver;
        // Shouldn't be valid, nothing has happened yet.
    TUASSERT(!solver.isValid());
    solver.allowedGNSS.push_back(SatelliteSystem::GPS);
@@ -324,13 +324,13 @@ noEphemerisTest()
    TURETURN();
 }
 
-// WtdAveStats UNIT Tests
+// WtdAveStats2 UNIT Tests
 
 unsigned PRSolution2_T::wtdAveStatsSetAndGetMessage()
 {
-   TUDEF("PRSolution", "wtdAveStatsSetMessage");
+   TUDEF("PRSolution2", "wtdAveStatsSetMessage");
 
-   gnsstk::experimental::WtdAveStats testAveStats;
+   gnsstk::experimental::WtdAveStats2 testAveStats;
    std::string testString = "test string";
    testAveStats.setMessage(testString);
 
@@ -342,9 +342,9 @@ unsigned PRSolution2_T::wtdAveStatsSetAndGetMessage()
 
 unsigned PRSolution2_T::wtdAveStatsSetLabel()
 {
-   TUDEF("PRSolution", "wtdAveStatsSetLabel");
+   TUDEF("PRSolution2", "wtdAveStatsSetLabel");
 
-   gnsstk::experimental::WtdAveStats testAveStats;
+   gnsstk::experimental::WtdAveStats2 testAveStats;
 
    // Add some data so dump as something to dump
    gnsstk::Vector<double> vector(3);
@@ -383,9 +383,9 @@ unsigned PRSolution2_T::wtdAveStatsSetLabel()
 
 unsigned PRSolution2_T::wtdAveStatsGetSol()
 {
-   TUDEF("PRSolution", "wtdAveStatsGetSol");
+   TUDEF("PRSolution2", "wtdAveStatsGetSol");
 
-   gnsstk::experimental::WtdAveStats testAveStats;
+   gnsstk::experimental::WtdAveStats2 testAveStats;
 
    // Add some data so dump as something to dump
    gnsstk::Vector<double> vector(3);
@@ -412,9 +412,9 @@ unsigned PRSolution2_T::wtdAveStatsGetSol()
 
 unsigned PRSolution2_T::wtdAveStatsEmptyDump()
 {
-   TUDEF("PRSolution", "wtdAveStatsEmptyDump");
+   TUDEF("PRSolution2", "wtdAveStatsEmptyDump");
    
-   gnsstk::experimental::WtdAveStats testAveStats;
+   gnsstk::experimental::WtdAveStats2 testAveStats;
    testAveStats.reset();
    std::ostringstream oss;
    testAveStats.dump(oss);
@@ -427,13 +427,13 @@ unsigned PRSolution2_T::wtdAveStatsEmptyDump()
    TURETURN();
 }
 
-// PRSolution UNIT Tests
+// PRSolution2 UNIT Tests
 
 unsigned PRSolution2_T::prSolutionOutputStringHeader()
 {
-   TUDEF("PRSolution", "prSolutionOutputStringHeader");
+   TUDEF("PRSolution2", "prSolutionOutputStringHeader");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
    std::string testTag = "test tag";
    std::string header = testSolver.outputStringHeader(testTag);
 
@@ -447,9 +447,9 @@ unsigned PRSolution2_T::prSolutionOutputStringHeader()
 
 unsigned PRSolution2_T::prSolutionFixAPSolution()
 {
-   TUDEF("PRSolution", "prSolutionFixAPSolution");
+   TUDEF("PRSolution2", "prSolutionFixAPSolution");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    double testX = 1;
    double testY = 2;
@@ -469,9 +469,9 @@ unsigned PRSolution2_T::prSolutionFixAPSolution()
 
 unsigned PRSolution2_T::prSolutionGetAPV()
 {
-   TUDEF("PRSolution", "prSolutionGetAPV");
+   TUDEF("PRSolution2", "prSolutionGetAPV");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    TUASSERTE(double, 0.0, testSolver.getAPV());
 
@@ -486,11 +486,11 @@ unsigned PRSolution2_T::prSolutionGetAPV()
 
 unsigned PRSolution2_T::prSolutionDumpSolution()
 {
-   TUDEF("PRSolution", "prSolutionDumpSolution");
+   TUDEF("PRSolution2", "prSolutionDumpSolution");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
-   gnsstk::experimental::WtdAveStats testAveStats;
+   gnsstk::experimental::WtdAveStats2 testAveStats;
 
    // Add some data so dump as something to dump
    gnsstk::Vector<double> vector(3);
@@ -532,14 +532,14 @@ unsigned PRSolution2_T::prSolutionDumpSolution()
 
 unsigned PRSolution2_T::prSolutionUpdateAPSolutionEdgeCases()
 {
-   TUDEF("PRSolution", "prSolutionUpdateAPSolutionEdgeCases");
+   TUDEF("PRSolution2", "prSolutionUpdateAPSolutionEdgeCases");
 
    gnsstk::Vector<double> vector(3);
    vector[0] = 1.1;
    vector[1] = 2.2;
    vector[2] = 3.3;
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    testSolver.APSolution.resize(0);
 
@@ -556,9 +556,9 @@ unsigned PRSolution2_T::prSolutionUpdateAPSolutionEdgeCases()
 
 unsigned PRSolution2_T::prSolutionOSStream()
 {
-   TUDEF("PRSolution", "prSolutionOSStream");
+   TUDEF("PRSolution2", "prSolutionOSStream");
 
-   experimental::WtdAveStats was;
+   experimental::WtdAveStats2 was;
 
    std::stringstream ss;
    ss << was;
@@ -570,9 +570,9 @@ unsigned PRSolution2_T::prSolutionOSStream()
 
 unsigned PRSolution2_T::prSolutionOutputPOSString()
 {
-   TUDEF("PRSolution", "prSolutionOutputPOSString");
+   TUDEF("PRSolution2", "prSolutionOutputPOSString");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    std::string testString = "test string";
    int iretFlag = -999;
@@ -591,9 +591,9 @@ unsigned PRSolution2_T::prSolutionOutputPOSString()
 
 unsigned PRSolution2_T::prSolutionOutputCLKStringEmpty()
 {
-   TUDEF("PRSolution", "prSolutionOutputCLKStringEmpty");
+   TUDEF("PRSolution2", "prSolutionOutputCLKStringEmpty");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    std::string testString = "test string";
    int iretFlag = -999;
@@ -607,9 +607,9 @@ unsigned PRSolution2_T::prSolutionOutputCLKStringEmpty()
 
 unsigned PRSolution2_T::prSolutionOutputCLKString()
 {
-   TUDEF("PRSolution", "prSolutionOutputCLKString");
+   TUDEF("PRSolution2", "prSolutionOutputCLKString");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    std::string testString = "test string";
    int iretFlag = 0;
@@ -623,9 +623,9 @@ unsigned PRSolution2_T::prSolutionOutputCLKString()
 
 unsigned PRSolution2_T::prSolutionErrorCodeString()
 {
-   TUDEF("PRSolution", "prSolutionErrorCodeString");
+   TUDEF("PRSolution2", "prSolutionErrorCodeString");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    TUASSERTE(std::string, "unknown", testSolver.errorCodeString(777));
    TUASSERTE(std::string, "ok but perhaps degraded", testSolver.errorCodeString(1));
@@ -640,9 +640,9 @@ unsigned PRSolution2_T::prSolutionErrorCodeString()
 
 unsigned PRSolution2_T::prSolutionConfigString()
 {
-   TUDEF("PRSolution", "prSolutionConfigString");
+   TUDEF("PRSolution2", "prSolutionConfigString");
 
-   experimental::PRSolution testSolver;
+   experimental::PRSolution2 testSolver;
 
    std::string testTag = "test tag";
    std::string configString = testSolver.configString(testTag);
@@ -661,24 +661,24 @@ unsigned PRSolution2_T::prSolutionConfigString()
 }
 
 
-   /* PRSolution should catch exceptions from GlobalTropModel regardless
+   /* PRSolution2 should catch exceptions from GlobalTropModel regardless
     * if the receiver height is below the trop model height limit.
     *
     * GlobalTropModel's height limit is not a hard limit and can actually
     * fluctuate a few meters depending on the receiver's latitude and longitude.
     *
-    * PRSolution used to only check the receiver position against the "constant"
+    * PRSolution2 used to only check the receiver position against the "constant"
     * height limit before computing the trop correction. This would occasionally
     * fail when the actual computed height limit is lower than initial "constant"
-    * height limit causing an exception to bubble up through PRSolution.
+    * height limit causing an exception to bubble up through PRSolution2.
     *
-    * This test ensures that PRSolution can gracefully continue despite
+    * This test ensures that PRSolution2 can gracefully continue despite
     * the edge case of GlobalTropModel.
     */
 unsigned PRSolution2_T ::
 tropExceptionTest()
 {
-   TUDEF("PRSolution", "computeTropDelay");
+   TUDEF("PRSolution2", "computeTropDelay");
    gnsstk::GlobalTropModel tropModel{};
    double earth_equitorial_radius = 6378137;
    double trop_height = 44243;
@@ -692,7 +692,7 @@ tropExceptionTest()
       // Time doesn't matter 
    gnsstk::CommonTime time{};
 
-   gnsstk::experimental::PRSolution prs{};
+   gnsstk::experimental::PRSolution2 prs{};
    TUCATCH(prs.computeTropDelay(svPosition, rxPosition, &tropModel, time));
    TURETURN();
 }
@@ -700,7 +700,7 @@ tropExceptionTest()
 unsigned PRSolution2_T ::
 raimComputeAPVTest()
 {
-   TUDEF("PRSolution", "RAIMComputeAPV");
+   TUDEF("PRSolution2", "RAIMComputeAPV");
    
    // Start and end times for GPS epoch observations
    gnsstk::CivilTime startCivil(2025,05,26,0,0,0, TimeSystem::GPS);
@@ -725,7 +725,7 @@ raimComputeAPVTest()
    double refPosZ = 3322110.441;
    
    // Define tropmodel, satellites, pseudorange values, and inverse covariance matrix (to be used later)
-   experimental::PRSolution prsol;
+   experimental::PRSolution2 prsol;
    prsol.allowedGNSS.push_back(SatelliteSystem::GPS);
    prsol.hasMemory = true;
    prsol.fixAPSolution(refPosX, refPosY, refPosZ);

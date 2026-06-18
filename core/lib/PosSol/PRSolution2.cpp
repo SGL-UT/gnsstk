@@ -66,11 +66,11 @@ namespace gnsstk
 {
    namespace experimental
    {
-      const std::string PRSolution::calfmt = std::string("%04Y/%02m/%02d %02H:%02M:%02S %P");
-      const std::string PRSolution::gpsfmt = std::string("%4F %10.3g");
-      const std::string PRSolution ::timfmt = gpsfmt + std::string(" ") + calfmt;
+      const std::string PRSolution2::calfmt = std::string("%04Y/%02m/%02d %02H:%02M:%02S %P");
+      const std::string PRSolution2::gpsfmt = std::string("%4F %10.3g");
+      const std::string PRSolution2::timfmt = gpsfmt + std::string(" ") + calfmt;
 
-      std::ostream& operator<<(std::ostream& os, const WtdAveStats& was)
+      std::ostream& operator<<(std::ostream& os, const WtdAveStats2& was)
       {
          was.dump(os, was.getMessage());
          return os;
@@ -78,7 +78,7 @@ namespace gnsstk
 
 
       // reset accumulators to calculate a new weighted average
-      void WtdAveStats ::
+      void WtdAveStats2 ::
       reset(void)
       {
          N = 0;
@@ -91,7 +91,7 @@ namespace gnsstk
       }
 
 
-      void WtdAveStats ::
+      void WtdAveStats2 ::
       add(const Vector<double>& Sol, const Matrix<double>& Cov)
       {
          try {
@@ -133,7 +133,7 @@ namespace gnsstk
       }
       
 
-      void WtdAveStats ::
+      void WtdAveStats2 ::
       dump(std::ostream& os, std::string msg) const
       {
          try {
@@ -173,7 +173,7 @@ namespace gnsstk
       }
 
 
-      int PRSolution ::
+      int PRSolution2 ::
       PreparePRSolution(const CommonTime& nominalReceive,
                         std::vector<SatID>& sats,
                         const std::vector<double>& pseudoranges,
@@ -199,7 +199,7 @@ namespace gnsstk
       }
 
 
-      int PRSolution ::
+      int PRSolution2 ::
       SimplePRSolution(const CommonTime& T,
                      const std::vector<SatID>& Sats,
                      const Matrix<double>& SVP,
@@ -384,10 +384,10 @@ namespace gnsstk
             GNSSTK_RETHROW(e);
          }
 
-      } // end PRSolution ::SimplePRSolution
+      } // end PRSolution2 ::SimplePRSolution
 
 
-      int PRSolution ::
+      int PRSolution2 ::
       RAIMComputeUnweighted(const CommonTime& Tr,
                            std::vector<SatID>& Sats,
                            const std::vector<double>& Pseudorange,
@@ -410,7 +410,7 @@ namespace gnsstk
       }
 
 
-      int PRSolution ::
+      int PRSolution2 ::
       RAIMCompute(const CommonTime& Tr,
                   std::vector<SatID>& Sats,
                   const std::vector<double>& Pseudorange,
@@ -778,10 +778,10 @@ namespace gnsstk
          {
             GNSSTK_RETHROW(e);
          }
-      }  // end PRSolution ::RAIMCompute()
+      }  // end PRSolution2 ::RAIMCompute()
 
 
-      int PRSolution ::
+      int PRSolution2 ::
       DOPCompute()
       {
          try
@@ -805,7 +805,7 @@ namespace gnsstk
       }
 
       
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputValidString(int iret)
       {
          std::ostringstream oss;
@@ -836,7 +836,7 @@ namespace gnsstk
       }
 
       
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputNAVString(std::string tag, int iret, const Vector<double>& Vec)
       {
          std::ostringstream oss;
@@ -873,7 +873,7 @@ namespace gnsstk
       }
 
 
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputPOSString(const std::string& tag, int iret, const Vector<double>& Vec)
       {
          std::ostringstream oss;
@@ -908,7 +908,7 @@ namespace gnsstk
       }
 
 
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputCLKString(std::string tag, int iret)
       {
          std::ostringstream oss;
@@ -945,7 +945,7 @@ namespace gnsstk
 
 
       // NB must call DOPCompute() if SimplePRSol() only was called.
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputRMSString(const std::string& tag, int iret)
       {
          std::ostringstream oss;
@@ -1027,10 +1027,10 @@ namespace gnsstk
          oss << outputValidString(iret);
 
          return oss.str();
-      }  // end PRSolution ::outputRMSString
+      }  // end PRSolution2 ::outputRMSString
 
 
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       outputString(const std::string& tag, int iret, const Vector<double>& Vec)
       {
          std::ostringstream oss;
@@ -1042,7 +1042,7 @@ namespace gnsstk
       }
 
 
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       errorCodeString(int iret)
       {
          std::string str("unknown");
@@ -1074,7 +1074,7 @@ namespace gnsstk
       }
 
 
-      std::string PRSolution ::
+      std::string PRSolution2 ::
       configString(const std::string& tag)
       {
          std::ostringstream oss;
@@ -1090,21 +1090,21 @@ namespace gnsstk
       }
       
       
-      void PRSolution :: 
+      void PRSolution2 :: 
       markSatellite(SatID& sat) const
       {
          sat.id = -std::abs(sat.id);
       }
 
 
-      bool PRSolution :: 
+      bool PRSolution2 :: 
       isMarked(const SatID& sat) const
       {
          return sat.id <= 0;
       }
 
 
-      FilteredSats PRSolution ::
+      FilteredSats PRSolution2 ::
       filterMarkedSats(std::vector<SatID>& sats) const
       {
          FilteredSats filteredSats;
@@ -1121,7 +1121,7 @@ namespace gnsstk
       }
 
 
-      FilteredConstSats PRSolution :: 
+      FilteredConstSats PRSolution2 :: 
       filterMarkedSats(const std::vector<SatID>& sats) const
       {
          FilteredConstSats filteredSats;
@@ -1138,7 +1138,7 @@ namespace gnsstk
       }
 
       
-      void PRSolution :: 
+      void PRSolution2 :: 
       markDisallowedGNSS(std::vector<SatID>& sats, 
                         const std::vector<SatelliteSystem>& allowed) const
       {
@@ -1152,7 +1152,7 @@ namespace gnsstk
       }
 
 
-      double PRSolution ::
+      double PRSolution2 ::
       computeRange(Position& svPos, 
                   const Position& rxPos, 
                   bool firstIteration) const
@@ -1177,7 +1177,7 @@ namespace gnsstk
       }
 
 
-      std::tuple<bool, double> PRSolution :: 
+      std::tuple<bool, double> PRSolution2 :: 
       computeTropDelay(const Position& svPos, 
                      const Position& rxPos, 
                      TropModel *pTropModel, 
@@ -1207,7 +1207,7 @@ namespace gnsstk
       }
 
 
-      bool PRSolution ::
+      bool PRSolution2 ::
       getSatPVT(Xvt& svXvt, 
                const CommonTime& nominalReceive, 
                double pseudorange, 
@@ -1238,7 +1238,7 @@ namespace gnsstk
       }
 
 
-      bool PRSolution ::
+      bool PRSolution2 ::
       computePartialsAndResiduals(
             Matrix<double>& partials,
             Vector<double>& residuals,
@@ -1306,7 +1306,7 @@ namespace gnsstk
       }
 
       
-      bool PRSolution ::
+      bool PRSolution2 ::
       singlePointWLSSolution(Vector<double>& dX,
                            Matrix<double>& partials,
                            Matrix<double>& G,
@@ -1356,7 +1356,7 @@ namespace gnsstk
       }
 
       
-      std::tuple<bool, double, int> PRSolution ::
+      std::tuple<bool, double, int> PRSolution2 ::
       iterativeSinglePointWLSSolution(Vector<double>& totaldX,
                                  Matrix<double>& partials,
                                  Matrix<double>& G,
@@ -1416,7 +1416,7 @@ namespace gnsstk
       }
 
 
-      Matrix<double> PRSolution ::
+      Matrix<double> PRSolution2 ::
       createSVP(
             std::vector<SatID>& sats, 
             const CommonTime& time, 
@@ -1442,7 +1442,7 @@ namespace gnsstk
             
             if (!success)
             {
-               LOG(DEBUG) << "Warning - PRSolution ignores satellite (no ephemeris) "
+               LOG(DEBUG) << "Warning - PRSolution2 ignores satellite (no ephemeris) "
                   << RinexSatID(sat) << " at time " << printTime(time, timfmt);
                markSatellite(sat);
                continue;
@@ -1464,7 +1464,7 @@ namespace gnsstk
       }
 
 
-      void PRSolution ::
+      void PRSolution2 ::
       computeSlopes(Vector<double>& slopes, 
                   const Matrix<double>& partials, 
                   const Matrix<double>& G, 
@@ -1496,7 +1496,7 @@ namespace gnsstk
       }
 
 
-      Matrix<double> PRSolution ::
+      Matrix<double> PRSolution2 ::
       filterWeights(const Matrix<double>& weights, 
                   const FilteredConstSats& filteredSats) const
       {
@@ -1520,7 +1520,7 @@ namespace gnsstk
       }
 
 
-      std::vector<SatelliteSystem> PRSolution ::
+      std::vector<SatelliteSystem> PRSolution2 ::
       filterGNSS(const std::vector<SatelliteSystem>& allowedGNSS, 
                const FilteredConstSats& filteredSats) const
       {
@@ -1550,7 +1550,7 @@ namespace gnsstk
 
 
 
-      const Vector<double> PRSolution::PRSNullVector;
+      const Vector<double> PRSolution2::PRSNullVector;
 
    }
 } // namespace gnsstk::experimental

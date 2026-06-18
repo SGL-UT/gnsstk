@@ -1,0 +1,71 @@
+= GNSSTk PRSolution2 Migration Plan
+
+When employing PRSolution for certain datasets (typically around a full day) to get an overall pseudorange solution for the entire dataset,
+the APV value (and thus the covariance scaled by that APV) is unrealistically large.
+The output text associated with this APV value is also nonsensical,
+with references to "sigma" for the APV and also units of meters provided after the APV value (which is by definition unitless).
+
+These bugs and others have been corrected in a new experimental namespace with PRSolution2.
+It is recommended to migrate to this new namespace if possible, though there are several breaking changes to consider.
+
+Eventually, PRSolution2 will be moved out of the experimental namespace and replace PRSolution.
+
+== Deprecation Timeline
+
+Note that PRSolution is **not** deprecated this release, though the plan is to deprecate PRSolution by next year.
+
+* **June 24, 2026:** GNSSTk v15.3.0 release, PRSolution2 is available in experimental namespace (C++ only)
+* **September 23, 2026:** GNSSTk v16.0.0 release, PRSolution2 is moved out of experimental namespace and supported with Python bindings
+* **January 13, 2027:** GNSSTk TBD release, Deprecation warnings for PRSolution
+* **TBD, 2027:** GNSSTk TBD major release, PRSolution is removed and officially deprecated
+
+== Current Migration Steps
+
+Note that PRSolution2 is temporarily in an experimental namespace and not supported in Python.
+Additional migration documentation will be provided for the GNSSTk v16 release to use PRSolution2
+in the general gnsstk namespace and to facilitate migrating Python applications to use PRSolution2.
+
+.__Using the experimental namespace:__
+. Update your includes from ``PRSolution.hpp`` to ``PRSolution2.hpp``
+. When ``using namespace gnsstk;``, you'll also need ``using namespace gnsstk::experimental;`` to use the new PRSolution2
+. When defining PRSolution2 objects, change the namespace and class name:
+** ``PRSolution prsObj;`` -> ``gnsstk::experimental::PRSolution2 prsObj;``
+** ``WtdAveStats statsObj;`` -> ``gnsstk::experimental::WtdAveStats2 statsObj;``
+
+.__Adapting to API changes:__
+[start=4]
+. Update public PRSolution2 member names (API breaking):
+** ``PreFitResidual`` -> ``PreFitResiduals``
+** ``RMSResidual`` -> ``PostFitResiduals_RMS``
+** ``Convergence`` -> ``dX_norm_final``
+. Update public PRSolution2 function calls (API breaking):
+** ``addToMemory(Solution, Covariance, PreFitResidual, Partials, invMeasCov)`` -> ``addToMemory(Solution, Covariance, PostFitResiduals, invMeasCov)``
+. Account for output changes (API breaking):
+** Warning from ``PreparePRSolution()``
+*** Previous: ``Warning - PRSolution ignores satellite (no ephemeris)``
+*** Experimental: ``Warning - PRSolution2 ignores satellite (no ephemeris)``
+** Output from ``dumpSolution()``
+*** Previous:
+
+    Covariance: RAIM solution GPS:12
+                            ECEF_X         ECEF_Y         ECEF_Z
+             ECEF_X      1.366e-04
+             ECEF_Y      5.204e-05      2.463e-04
+             ECEF_Z     -5.404e-05     -1.503e-04      3.999e-04
+    APV: RAIM solution GPS:12 sigma = 1.168 meters with 27830 degrees of freedom.
+
+*** Experimental:
+
+    PRS RAIM solution GPS:12: APV = 1.168 with 27830 degrees of freedom.
+    PRS RAIM solution GPS:12: Formal postfit covariance [meters^2], scaled by APV =
+                            ECEF_X         ECEF_Y         ECEF_Z
+             ECEF_X      1.366e-04
+             ECEF_Y      5.204e-05      2.463e-04
+             ECEF_Z     -5.404e-05     -1.503e-04      3.999e-04
+
+. Account for calculation changes (not API breaking but answer changing):
+** ``::sqrt(prsObj.getAPV())`` -> ``prsObj.getAPV()``
+. Optionally use API additions:
+** PRSolution2 Constructor has new ``chiSquareSum`` parameter (``double``) with default value of zero
+** PRSolution2 has new public ``chiSquareSum`` member (``double``)
+** PRSolution2 has new public ``PostFitResiduals`` member (``Vector<double>``)
