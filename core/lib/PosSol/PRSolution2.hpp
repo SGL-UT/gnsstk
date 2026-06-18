@@ -75,9 +75,9 @@ namespace gnsstk
        * Solution algorithms and Tropospheric models. */
       //@{
 
-      /// Class WtdAveStats encapsulates statistics on the PR solution and residuals
+      /// Class WtdAveStats2 encapsulates statistics on the PR solution and residuals
       /// for a time series of data.
-      class WtdAveStats {
+      class WtdAveStats2 {
       private:
          unsigned int N;
          //unused
@@ -91,7 +91,7 @@ namespace gnsstk
       public:
 
          // ctor
-         WtdAveStats(void)
+         WtdAveStats2(void)
          {
             reset();
             label[0]="ECEF_X";  label[1]="ECEF_Y"; label[2]="ECEF_Z";
@@ -122,9 +122,9 @@ namespace gnsstk
          // dump statistics and weighted average
          void dump(std::ostream& os, std::string msg="") const;
 
-         friend std::ostream& operator<<(std::ostream& s, const WtdAveStats& as);
+         friend std::ostream& operator<<(std::ostream& s, const WtdAveStats2& as);
 
-      }; // end class WtdAveStats
+      }; // end class WtdAveStats2
 
       /// This class defines an interface to routines which compute a position
       /// and time solution from pseudorange data, with a data editing algorithm
@@ -153,11 +153,11 @@ namespace gnsstk
       /// available (either in the data or after the RAIM algorithm), in this case the
       /// clock bias for that system is undefined and set to zero.
 
-      class PRSolution
+      class PRSolution2
       {
       public:
             /// Constructor
-         PRSolution() : RMSLimit{6.5},
+         PRSolution2() : RMSLimit{6.5},
                         SlopeLimit{1000.},
                         NSatsReject{-1},
                         MaxNIterations{10},
@@ -250,7 +250,7 @@ namespace gnsstk
          std::vector<SatelliteSystem> dataGNSS;
 
          /// The "memory" of this object, used only when hasMemory is true.
-         WtdAveStats was;
+         WtdAveStats2 was;
          double chiSquareSum;
          double APV;
          int ndata,nsol,ndof;
@@ -431,7 +431,7 @@ namespace gnsstk
 
          /// Compute DOPs using the partials matrix from the last successful solution.
          /// RAIMCompute(), if successful, calls this before returning.
-         /// Results stored in PRSolution::TDOP,PDOP,GDOP.
+         /// Results stored in PRSolution2::TDOP,PDOP,GDOP.
          int DOPCompute(void);
 
          // output -----------------------------------------------------
@@ -587,7 +587,7 @@ namespace gnsstk
          }
 
          /// add newly computed solution (must be valid); update counts and chiSquareSum
-         /// input parameters are from PRSolution after computing a solution.
+         /// Input parameters are from PRSolution2 after computing a solution.
          void addToMemory(const Vector<double>& Sol, const Matrix<double>& Cov,
                   const Vector<double>& PostFitResid, const Matrix<double>& invMeasCov)
          {
@@ -1064,7 +1064,7 @@ namespace gnsstk
                const std::vector<SatelliteSystem>& allowedGNSS, 
                const FilteredConstSats& filteredSats) const;
 
-            /// Provides human readable names to the exit codes of PRSolution
+            /// Provides human readable names to the exit codes of PRSolution2
          enum RETURN_CODE {
             DEGRADED = 1,
             OK = 0,
@@ -1083,7 +1083,7 @@ namespace gnsstk
 
          friend class ::PRSolution2_T;
 
-      }; // end class PRSolution
+      }; // end class PRSolution2
 
       //@}
 
