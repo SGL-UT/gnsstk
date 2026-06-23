@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 15.2.0
+%define version 15.3.0
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 23 2026  <>
+- Updated for v15.3.0 release
+- Add an experimental namespace with changes to fix PRSolution module APV calculation
+- Add BeiDou D1 Invalid Navigation Message Data Test
+- Add PackedNavBit class to SWIG
+- Add documentation for PRSolution2 migration
+- Update PRSolution2 classes with names distinct from PRSolution classes
+- Update build script to clean install directory separately from build directory
 * Mon Mar 30 2026 David Barber <dbarber@arlut.utexas.edu>
 - Updated for v15.2.0 release
 - Fix build.sh to remove non-existent ctest `-v` flag.

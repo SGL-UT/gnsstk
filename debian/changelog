@@ -1,3 +1,18 @@
+gnsstk (15.3.0-1) focal; urgency=low
+
+  * Updated to version 15.3.0
+  * Update build script to clean install directory separately from build
+    directory
+  * Update PRSolution2 classes with names distinct from PRSolution
+    classes
+  * Add documentation for PRSolution2 migration
+  * Add PackedNavBit class to SWIG
+  * Add BeiDou D1 Invalid Navigation Message Data Test
+  * Add an experimental namespace with changes to fix PRSolution module
+    APV calculation
+
+ -- Cherie Formacion <cformacion@arlut.utexas.edu>  Tue, 23 Jun 2026 09:25:04 -0500
+
 gnsstk (15.2.0-1) focal; urgency=low
 
   * Updated to version 15.2.0
