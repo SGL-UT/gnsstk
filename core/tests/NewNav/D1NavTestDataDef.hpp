@@ -632,3 +632,48 @@ almD1Default3->addUnsignedLong(0x00000000,30,1);
 almD1Default3->addUnsignedLong(0x00000000,30,1);
 almD1Default3->addUnsignedLong(0x000007ff,30,1);
 almD1Default3->trimsize();
+
+ephD1NAVSF1_flawed1 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+                                                     ephD1NAVSF1ct);
+ephD1NAVSF1_flawed1->setNavID(gnsstk::NavType::BeiDou_D1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x38901541,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x17A00020,30,1);   // 24 second ago,. 
+ephD1NAVSF1_flawed1->addUnsignedLong(0x0654A846,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x30052F4E,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x2D070427,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x3EC1CDC2,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x30BF8085,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x1C0028C1,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x3F47E038,30,1);
+ephD1NAVSF1_flawed1->addUnsignedLong(0x1A8AE13D,30,1);
+ephD1NAVSF1_flawed1->trimsize();
+
+ephD1NAVSF1_flawed2 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+                                                     ephD1NAVSF1ct);
+ephD1NAVSF1_flawed2->setNavID(gnsstk::NavType::BeiDou_D1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x38902541,30,1);   // FraUD coerced to 2
+ephD1NAVSF1_flawed2->addUnsignedLong(0x18000020,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x0654A846,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x30052F4E,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x2D070427,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x3EC1CDC2,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x30BF8085,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x1C0028C1,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x3F47E038,30,1);
+ephD1NAVSF1_flawed2->addUnsignedLong(0x1A8AE13D,30,1);
+ephD1NAVSF1_flawed2->trimsize();
+
+ephD1NAVSF1_flawed3 = std::make_shared<gnsstk::PackedNavBits>(ephD1NAVSid,oidD1NAV,
+                                                     ephD1NAVSF1ct);
+ephD1NAVSF1_flawed3->setNavID(gnsstk::NavType::BeiDou_D1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x38901541,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x17F80020,30,1);   // -2s from reality. 
+ephD1NAVSF1_flawed3->addUnsignedLong(0x0654A846,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x30052F4E,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x2D070427,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x3EC1CDC2,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x30BF8085,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x1C0028C1,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x3F47E038,30,1);
+ephD1NAVSF1_flawed3->addUnsignedLong(0x1A8AE13D,30,1);
+ephD1NAVSF1_flawed3->trimsize();

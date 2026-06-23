@@ -97,6 +97,7 @@ public:
    unsigned processSF5Pg10Test();
    unsigned processSF5Pg24Test();
    unsigned isAlmDefaultTest();
+   unsigned isSFID_SOW_MismatchTest(); 
 
 #include "D1NavTestDataDecl.hpp"
 };
@@ -814,6 +815,30 @@ isAlmDefaultTest()
 }
 
 
+//-------------------------------------------------------------------
+// Start with a valid CEI data set.  Then change the SOW
+// in the input message to be incorrect for the specified
+// subframe ID
+//
+unsigned PNBBDSD1NavDataFactory_T::
+isSFID_SOW_MismatchTest()
+{
+   TUDEF("PNBBDSD1NavDataFactory", "isSFID_SOW_MismatchTest");
+   gnsstk::PNBBDSD1NavDataFactory uut;
+   gnsstk::NavDataPtrList navOut;
+   
+   // processEph will return true, however, no navigation message
+   // will be in NavOut.
+   TUASSERTE(bool, true, uut.addData(ephD1NAVSF1_flawed1, navOut));
+   TUASSERTE(unsigned, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(ephD1NAVSF1_flawed2, navOut));
+   TUASSERTE(unsigned, 0, navOut.size());
+   TUASSERTE(bool, true, uut.addData(ephD1NAVSF1_flawed3, navOut));
+   TUASSERTE(unsigned, 0, navOut.size());
+   TURETURN();   
+}
+
+
 unsigned PNBBDSD1NavDataFactory_T ::
 filterTests()
 {
@@ -845,6 +870,7 @@ int main()
    errorTotal += testClass.processSF5Pg10Test();
    errorTotal += testClass.processSF5Pg24Test();
    errorTotal += testClass.isAlmDefaultTest();
+   errorTotal += testClass.isSFID_SOW_MismatchTest(); 
 
    std::cout << "Total Failures for " << __FILE__ << ": " << errorTotal
              << std::endl;

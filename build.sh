@@ -12,7 +12,7 @@
 #
 #----------------------------------------
 #----------------------------------------
-# Qué hora es? Dónde estamos? Y dónde vamos?
+# Default values for paths. Options can override these.
 #----------------------------------------
 
 source $(dirname "$BASH_SOURCE")/build_setup.sh
@@ -69,6 +69,9 @@ OPTIONS:
                         bindings to the default system location. Make sure the build path
                         is writable by root.
 
+   -R                   Remove artifacts produced by the most recent installation
+                        (best-effort uninstall).
+
    -x                   Disable building the python bindings. Default is to build them
                         if -e is specified.
 
@@ -92,7 +95,7 @@ EOF
 }
 
 
-while getopts ":hab:cdepi:j:xnP:sutTKgC:v" OPTION; do
+while getopts ":hab:cdepi:j:xnP:RsutTKgC:v" OPTION; do
     case $OPTION in
         h) usage
            exit 0
@@ -131,6 +134,8 @@ while getopts ":hab:cdepi:j:xnP:sutTKgC:v" OPTION; do
            install_prefix=$system_install_prefix
            python_install=$system_python_install
            ;;
+        R) remove_installed=1
+           ;;
         t) test_switch=1
            ;;
         T) test_switch=-1
@@ -157,19 +162,14 @@ done
 shift $(($OPTIND - 1))
 LOG="$build_root"/build.log
 
-#----------------------------------------
-# Clean build directory
-#----------------------------------------
 if [ ! -d "$build_root" ]; then
     mkdir -p "$build_root"
 fi
 
-if [ -f "$LOG" ]; then
-    rm $LOG
-fi
-
-if [ $clean ]; then
-
+#----------------------------------------
+# Clean install directory
+#----------------------------------------
+if [ $remove_installed ]; then
     case `uname` in
     Linux)
        echo "Uninstalling using install_manifest.txt if it exists..."
@@ -179,10 +179,19 @@ if [ $clean ]; then
         echo "Not running make uninstall on non-Linux systems"
         ;;
     esac
+fi
 
+#----------------------------------------
+# Clean build directory
+#----------------------------------------
+
+if [ -f "$LOG" ]; then
+    rm $LOG
+fi
+
+if [ $clean ]; then
     rm -rf "$build_root"/*
     log "Cleaned out $build_root ..."
-
 fi
 
 if ((verbose>0)); then
@@ -209,6 +218,7 @@ if ((verbose>0)); then
     log "num_threads          = $num_threads"
     log "cmake args           = $@"
     log "time                 =" `date`
+    log "remove_installed     = $(ptof $remove_installed)"
     log "hostname             =" $hostname
     log "uname                =" `uname -a`
     log "git id               =" $(get_repo_state $repo)

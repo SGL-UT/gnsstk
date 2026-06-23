@@ -1,34 +1,26 @@
-GNSSTk 15.2.0 Release Notes
+GNSSTk 15.3.0 Release Notes
 ========================
 
- * This minor release includes the following:
-     * Adding RefFrameRlz missing G2296 realization of WGS 84
-     * Fixing PNBGPSCNavDataFactory Add_MT_assembly_checks
-     * Fixing RefFrameRlz incorrect reference frame adoption dates for WGS 84 and ITRF realizations.
-     * Updating `NewNav/OrbitDataKepler.cpp` with changes to the eccentric anomaly rate `dek` specified in the Proposed Change Notice to IS-GPS-200 as of 2025-08-27.
- * It also includes the following CI/CD updates:
-     * Fixing conda pkg pipeline job by pinning version of conda glibc to 2.28
-     * Updating fortify scan results with filtering
-     * Fixing build.sh script to remove non-existent ctest `v` flag.
+ * This release introduces PRSolution2, a distinct positioning-solution module with an experimental fix for APV calculation, alongside BeiDou nav-message test coverage and build/CI improvements.
 
-Updates since v15.1.0
+Updates since v15.2.0
 ---------------------
 
 **Build System and Test Suite**
-  * Update fortify scan to exclude ext libraries.
-  * Update fortify_filter-issues.txt Adding files.
-  * Update fortify-filter-issues.txt Adding verbiage explaining fortify exclusions
-  * Fix build.sh to remove non-existent ctest `-v` flag.
+  * Add BeiDou D1 Invalid Navigation Message Data Test
+  * Update build script to clean install directory separately from build directory
 
 **Gitlab CI**
-  * Fix conda pkg pipeline job by pinning version of conda glibc to 2.28
+  * Use reduced pkgbuild image
 
 **Library Changes**
-  * Add RefFrameRlz missing G2296 realization of WGS 84.
-  * Update `NewNav/OrbitDataKepler.cpp` with changes to the eccentric anomaly rate `dek` specified in the Proposed Change Notice to IS-GPS-200 as of 2025-08-27.
+  * Add PackedNavBit class to SWIG
+  * Add an experimental namespace with changes to fix PRSolution module APV calculation
+  * Update PRSolution2 classes with names distinct from PRSolution classes
+  * Add documentation for PRSolution2 migration
 
-Fixes since v15.1.0
---------------------
-  * Fix PNBGPSCNavDataFactory Add_MT_assembly_checks
-  * Fix RefFrameRlz incorrect reference frame adoption dates for WGS 84 and ITRF realizations.
-
+New Modules
+-------------------------------
+     core/lib/PosSol/PRSolution2.cpp
+     core/lib/PosSol/PRSolution2.hpp
+     core/tests/PosSol/PRSolution2_T.cpp

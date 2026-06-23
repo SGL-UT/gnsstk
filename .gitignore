@@ -13,6 +13,9 @@ build*/
 cmake-build-debug/
 gnsstk.egg-info/
 
+# install directories
+install*/
+
 # OS/X File system droppings
 *.DS_Store
 

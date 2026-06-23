@@ -1,3 +1,27 @@
+# Version 15.3.0   Tuesday June 23, 2026
+
+Modifications by Author
+-----------------------
+     Avery Crawley <acrawley@arlut.utexas.edu> (1):
+           PRSolution2 rename and migration plan documentation
+
+     Brent Renfro <renfrob@arlut.utexas.edu> (1):
+           Adding BeiDou D1 Invalid Navigation Message Data Test
+
+     Enrique Padilla <enrique.padilla@arlut.utexas.edu> (1):
+           APV PRS Follow Up MR
+
+     Ferdaws Rashid <ferdaws.rashid@arlut.utexas.edu> (1):
+           Add PackedNavBit to SWIG (TKS-868)
+
+     Richard Ji-Cathriner <rcathriner@arlut.utexas.edu> (1):
+           Split uninstall action away from clean build
+
+     Taben Malik <malik@arlut.utexas.edu> (1):
+           Use reduced pkgbuild image
+
+
+
 # Version 15.2.0   Monday March 30, 2026
 
 Modifications by Author
