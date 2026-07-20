@@ -1,4 +1,18 @@
-%define name python3-gnsstk
+# Default to system python if python_version is not specified
+%{!?python_version: %global python_version 3.6}
+
+# this can be replaced with %if/%elif once moved to newer versions of rpm
+%global python_package_version %{lua:
+    local versions = {
+        ["3.6"]  = "3",
+        ["3.8"]  = "38",
+        ["3.9"]  = "39",
+    }
+    local pyv = rpm.expand("%{python_version}")
+    print(versions[pyv] or pyv)
+}
+
+%define name python%{python_package_version}-gnsstk
 %define version 15.3.0
 %define release 1
 
@@ -11,9 +25,13 @@ Source:         %{name}-master.tar.gz
 URL:            https://github.com/SGL-UT/GNSSTk
 Group:          Development/Libraries
 Requires:       gnsstk >= %{version}
-Requires:       python3-pip
+Requires:       python%{python_package_version}
 BuildRequires:  cmake
 BuildRequires:  swig
+BuildRequires:  python%{python_package_version}-pip
+BuildRequires:  python%{python_package_version}-devel
+BuildRequires:  python%{python_package_version}-wheel
+BuildRequires:  python%{python_package_version}-setuptools
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  ncurses-devel
@@ -34,9 +52,9 @@ The primary goals of the GNSSTk project are to:
 mkdir build
 doxygen Doxyfile
 mkdir -p build/swig/doc
-python3 swig/docstring_generator.py ./docs/ $(pwd)/build/swig/doc
+python%{python_version} swig/docstring_generator.py ./docs/ $(pwd)/build/swig/doc
 cd build
-cmake -DPYTHON_INSTALL_PREFIX=$RPM_BUILD_ROOT/ -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python3.6 ../
+cmake -DPYTHON_INSTALL_PREFIX=$RPM_BUILD_ROOT/ -DCMAKE_INSTALL_PREFIX=$RPM_BUILD_ROOT/usr -DBUILD_EXT=ON -DBUILD_PYTHON=ON -DBUILD_FOR_PACKAGE_SWITCH=ON -DVERSIONED_HEADER_INSTALL=ON -DPYTHON_EXECUTABLE=/usr/bin/python%{python_version} ../
 make all -j 4
 
 # Install bin/lib/include folders in RPM BUILDROOT for packaging
@@ -62,8 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc RELNOTES.md PYTHON.md
 /usr/include/gnsstk*/gnsstk
 /usr/include/gnsstk
-/usr/lib/python3.6/site-packages/gnsstk
-/usr/lib/python3.6/site-packages/gnsstk-%{version}-py3.6.egg-info
+/usr/lib/python%{python_version}/site-packages/gnsstk
+/usr/lib/python%{python_version}/site-packages/gnsstk-%{version}-py%{python_version}.egg-info
 
 
 %changelog

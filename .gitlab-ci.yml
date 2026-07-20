@@ -83,7 +83,7 @@ variables:
       variables:
         BUILD_TYPE: debug
     - when: always
-  retry: 
+  retry:
     max: 2
     when:
       - runner_system_failure
@@ -116,7 +116,7 @@ variables:
       - /^feature\/ci_.*$/
     variables:
       - $RELEASE_ONLY != "True" && $NO_BIGBUILD_CI != "True"
-  retry: 
+  retry:
     max: 2
     when:
       - runner_system_failure
@@ -393,6 +393,31 @@ build_redhat_8:
       - build/
     expire_in: 4 days
 
+build_redhat_8_py:
+  stage: build
+  needs: []
+  extends: .normal_job
+  tags:
+    - extra-large
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
+  script:
+    - dnf builddep -y --spec <(rpmspec --define "debug_package %{nil}" --define "python_version ${PYTHON_VERSION}" -P rpm_files/SPECS/gnsstk_py.spec)
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DPYTHON_EXECUTABLE=/usr/bin/python${PYTHON_VERSION} $CMAKE_ARG_DEFAULT
+    - make all -j 4
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.6", "3.11"]
+  artifacts:
+    paths:
+      - build/
+    expire_in: 4 days
+
 build_windows_vs2019_dll:
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/${CI_PIPELINE_ID}_vs2019_dll
@@ -459,7 +484,7 @@ sonar-scan:
     - gcovr --exclude=build* --xml-pretty --exclude-unreachable-branches --exclude-throw-branches --print-summary -o coverage-cpp.xml -r .
     - suppress_output=$(for f in `find . -name '*.o'`; do echo "Processing $f file..."; pushd `dirname $f`; gcov -o `basename $f` x; popd ;done)
     - !reference [.scan-c++, script]
-  retry: 
+  retry:
     max: 2
     when:
       - runner_system_failure
@@ -481,7 +506,7 @@ fortify-scan:
     - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
     - make all -j 4
     - !reference [.fortify_post_consolidated_cpp, script]
-  retry: 
+  retry:
     max: 2
     when:
       - runner_system_failure
@@ -610,6 +635,33 @@ test_redhat_8:
     expire_in: 4 days
   dependencies:
     - build_redhat_8
+
+test_redhat_8_py:
+  stage: test
+  extends: .normal_job
+  tags:
+    - extra-large
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
+  script:
+    - dnf builddep -y --spec <(rpmspec --define "debug_package %{nil}" --define "python_version ${PYTHON_VERSION}" -P rpm_files/SPECS/gnsstk_py.spec)
+    - cd build
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - ctest -j 4
+  artifacts:
+    when: on_failure
+    paths:
+      - build/Testing/Temporary/
+    expire_in: 4 days
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.6", "3.11"]
+  needs:
+    - job: build_redhat_8_py
+      parallel:
+        matrix:
+          - PYTHON_VERSION: [ '$[[ matrix.PYTHON_VERSION ]]' ]
 
 test_windows_vs2019:
   variables:
@@ -872,7 +924,7 @@ package_redhat_8:
       - rpm_files/SRPMS/gnsstk-*
   dependencies: []
 
-package_redhat_8_py36:
+package_redhat_8_py:
   stage: package
   needs: []
   extends: .normal_job
@@ -880,18 +932,24 @@ package_redhat_8_py36:
     - large
   image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
   script:
+    # because redhat changed naming conventions after python 3.9
+    - declare -A PYTHON_MAP=( ["3.6"]="3" ["3.7"]="37" ["3.8"]="38" ["3.9"]="39" )
+    - PYTHON_PACKAGE_VERSION="${PYTHON_MAP[$PYTHON_VERSION]:-$PYTHON_VERSION}"
+    - dnf builddep -y --spec <(rpmspec --define "debug_package %{nil}" --define "python_version ${PYTHON_VERSION}" -P rpm_files/SPECS/gnsstk_py.spec)
     # source gcc9 for std C++17
     - source /opt/rh/gcc-toolset-9/enable
     - gcc --version
     - bash rpm_files/setup_dirs.sh
-    - git archive --prefix python3-gnsstk-master/ -o rpm_files/SOURCES/python3-gnsstk-master.tar.gz HEAD
+    - git archive --prefix python${PYTHON_PACKAGE_VERSION}-gnsstk-master/ -o rpm_files/SOURCES/python${PYTHON_PACKAGE_VERSION}-gnsstk-master.tar.gz HEAD
     - pushd rpm_files
-    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gnsstk_py36.spec
+    - rpmbuild --define "python_version ${PYTHON_VERSION}" --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gnsstk_py.spec
   artifacts:
     paths:
-      - rpm_files/RPMS/x86_64/python3-gnsstk-*
-      - rpm_files/SRPMS/python3-gnsstk-*
-  dependencies: []
+      - rpm_files/RPMS/x86_64/python*-gnsstk-*
+      - rpm_files/SRPMS/python*-gnsstk-*
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.6", "3.11"]
 
 package_windows_vs2019:
   variables:
@@ -956,7 +1014,19 @@ deploy_ubuntu_20.04:
 
 deploy_redhat_8:
   stage: deploy
+  extends: .big_build
   needs: [package_redhat_8]
+  tags:
+    - large
+  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
+  script:
+    - cd rpm_files/RPMS/x86_64/
+    - sudo yum install gnsstk-*.rpm -y
+    - df_diff -h
+    - gnsstk-config --includedir
+
+deploy_redhat_8_py:
+  stage: deploy
   extends: .big_build
   tags:
     - large
@@ -966,34 +1036,24 @@ deploy_redhat_8:
     - sudo yum install gnsstk-*.rpm -y
     - df_diff -h
     - gnsstk-config --includedir
-  dependencies:
-    - package_redhat_8
-
-deploy_redhat_py36:
-  stage: deploy
-  needs: [package_redhat_8, package_redhat_8_py36]
-  extends: .big_build
-  tags:
-    - large
-  image: $DOCKER_REGISTRY/sgl/rhel-8:pkgbuild
-  script:
-    - cd rpm_files/RPMS/x86_64/
-    - sudo yum install gnsstk-*.rpm -y
-    - sudo yum install python3-gnsstk-*.rpm -y
-    - python3 -c "import gnsstk"
-    - df_diff -h
-  dependencies:
-    - package_redhat_8_py36
-    - package_redhat_8
+  parallel:
+    matrix:
+      - PYTHON_VERSION: [ "3.6", "3.11" ]
+  needs:
+    - job: package_redhat_8_py
+      parallel:
+        matrix:
+          - PYTHON_VERSION: [ '$[[ matrix.PYTHON_VERSION ]]' ]
+    - job: package_redhat_8
 
 push_artifacts:
   extends: .push_selected_artifacts
   variables:
     UBU_20_PACKAGES: "debs/*bpo10+1*ubuntu*.deb"
   stage: push
-  needs: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-  dependencies: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py36, package_windows_vs2019]
-  retry: 
+  needs: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py, package_windows_vs2019]
+  dependencies: [package_conda, package_ubuntu_20.04, package_redhat_8, package_redhat_8_py, package_windows_vs2019]
+  retry:
     max: 2
     when:
       - runner_system_failure
