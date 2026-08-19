@@ -1,0 +1,227 @@
+stages:
+  - sast
+  - build
+  - test
+  - pre-scan
+  - scan
+  - reporting
+  - install
+  - archive
+  - package
+  - push
+
+variables:
+  CMAKE_ARG_DEFAULT: "-DBUILD_EXT=OFF -DBUILD_PYTHON=ON -DTEST_SWITCH=ON -DPIP_WHEEL_SWITCH=ON ../"
+  GIT_SUBMODULE_STRATEGY: recursive
+  #OWASP Controls
+  SUBFOLDER_TO_SCAN: "."
+  ADD_OWASP_FLAGS: "--enableExperimental"
+  #Sonar Controls
+  SONAR_EXCLUSIONS: "**/tests/**,**/rpm_files/**,**/conda_recipe/**,**/data/**,**/coverage-cpp.xml,**/build*/**,**/debian/**,**/deprecated/**,**/examples/**,**/ref/**,**/rpm_files/**,**/swig/**,**/DoxygenLayout.xml,**/custom.css,core/lib/Geomatics/**"
+  SONAR_SOURCES: "core"
+  SONAR_TEST_SOURCES: "core/tests"
+  SONAR_TEST_INCLUSION: "core/tests"
+  SONAR_ADDTIONAL_PARAMS: "-Dsonar.cxx.file.suffixes=.cxx,.cpp,.hxx,.hpp -Dsonar.coverageReportPaths=coverage-cpp.xml -Dsonar.python.version=3.9 -Dsonar.sourceEncoding=UTF-8"
+  #Fortify Controls
+  FORTIFY_SCAN_TYPE:
+    value: ''
+    options:
+    - ''
+    - '-quick'
+    description: "Defaults to blank which is Critical, High, Medium, and Low. Change value to -quick for Critical and High only.  Do not use -quick for releases"
+
+include:
+  # - project: "mayhem/core-components/scripts/cicd/consolidated-pipeline-scripts"
+  #   ref: cpp-create
+  #   file: "cpp-pipeline-scripts/cpp-standard-rpm-pipeline.yml"
+  - project: "mayhem/core-components/scripts/cicd/consolidated-pipeline-scripts"
+    file: "base-pipeline-scripts/base-pipeline-scripts.yml"
+    ref: sglswap
+  - project: "mayhem/geomatics-tooling/sgl/toolkits/sgl-ci-control"
+    file: "common/scanning/fortify.yml"
+    ref: sglswap
+
+build_redhat_8:
+  stage: build
+  needs: []
+  tags:
+    - memory
+  image: $DOCKER_REGISTRY/sgl/toolkits/tks_images/rhel-8:sonarqube-gcovr52
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install $CMAKE_ARG_DEFAULT
+    - make all -j 4
+    - ctest -j 4
+
+sonar-scan:
+  image: $DOCKER_REGISTRY/sgl/toolkits/tks_images/rhel-8:sonarqube-gcovr52
+  tags:
+    - memory
+  stage: scan
+  needs: []
+  extends:
+    - .sonarqube_scanning
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
+    - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+    - ctest -j 4
+    - cd ..
+    - gcovr -r . --exclude=build/ --exclude=ext/ --exclude=swig/ --exclude-unreachable-branches --exclude-throw-branches --exclude-lines-by-pattern '^\s*(try|catch|cerr|exitCode|return false|(\s*\{)|(\s*\}))' --print-summary --sonarqube coverage-cpp.xml
+    # Let's remove branch coverage stats.
+    - sed -i -e 's/ *branchesToCover="[^"]*" *//g' -e 's/ *coveredBranches="[^"]*" *//g' coverage-cpp.xml
+    - !reference [.sonarqube_scanning, script]
+  artifacts:
+    paths:
+      - coverage-cpp.xml
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+coverage-scan:
+  image: $DOCKER_REGISTRY/sgl/toolkits/tks_images/rhel-8:sonarqube-gcovr52
+  tags:
+    - memory
+  stage: scan
+  needs: []
+  extends:
+    - .sonarqube_scanning
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DPYTHON_INSTALL_PREFIX=$gnsstk -DCMAKE_INSTALL_PREFIX=install -DCOVERAGE_SWITCH=ON -DDEBUG_SWITCH=ON -DPYTHON_EXECUTABLE=/usr/bin/python3 $CMAKE_ARG_DEFAULT
+    - build-wrapper-linux-x86-64 --out-dir . make all -j 4
+    - ctest -j 4
+    - cd ..
+    - gcovr -r . --exclude=build/ --exclude=ext/ --exclude=swig/ --exclude-unreachable-branches --exclude-throw-branches --print-summary --cobertura cobertura.xml --html coverage_summary.html
+  coverage: '/lines:\s+(\d+\.?\d*%)/'
+  artifacts:
+    paths:
+      - cobertura.xml
+      - coverage_summary.html
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: cobertura.xml
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+fortify-scan:
+  extends:
+    - .cpp_fortify
+  needs: []
+  tags:
+    - memory
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - mkdir -p build
+    - cd build
+    - export gnsstk=`pwd`/install
+    - cmake -DCMAKE_INSTALL_PREFIX=install -DBUILD_EXT=OFF -DBUILD_PYTHON=OFF -DTEST_SWITCH=OFF -DPIP_WHEEL_SWITCH=OFF ../
+    - make all -j 4
+    - !reference [.fortify_post_consolidated_cpp, script]
+  retry: 
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+
+Semgrep:
+  stage: sast
+  image: "$CI_REGISTRY/dso-millennium-falcon/docker/semgrep:4"
+  script:
+    - /analyzer run
+  after_script:
+    - echo "SAST_Scanner = ${CI_JOB_IMAGE}" >> SAST_Scanner_attestation.txt
+    - echo "SAST_Scanner_Version = ${SCANNER_VERSION}" >> SAST_Scanner_attestation.txt
+    - echo "SAST_Rule_Version = ${SAST_RULES_VERSION}" >> SAST_Scanner_attestation.txt
+    - echo "Lines of Code in repo by file:" >> SAST_Scanner_attestation.txt
+    - git ls-files | xargs wc -l | sort -n >> SAST_Scanner_attestation.txt
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+    paths:
+      - gl-sast-report.json
+      - SAST_Scanner_attestation.txt
+    when: always
+  allow_failure: true
+  tags:
+    - standard
+
+package_redhat_8:
+  stage: package
+  needs: []
+  image: $DOCKER_REGISTRY/sgl/toolkits/tks_images/rhel-8:pkgbuild
+  script:
+    # source gcc9 for std C++17
+    - source /opt/rh/gcc-toolset-9/enable
+    - gcc --version
+    - bash rpm_files/setup_dirs.sh
+    - git archive --prefix gnsstk-master/ -o rpm_files/SOURCES/gnsstk-master.tar.gz HEAD
+    - pushd rpm_files
+    - rpmbuild --define "_topdir ${PWD}" --define "debug_package %{nil}" --define "_build_id_links none" -ba SPECS/gnsstk.spec
+  artifacts:
+    paths:
+      - rpm_files/RPMS/x86_64/gnsstk-*
+      - rpm_files/SRPMS/gnsstk-*
+  dependencies: []
+
+upload_redhat_8:
+  stage: push
+  image: gitlab-registry.gs.mil/mayhem/core-components/docker/ubi8:cim-ubi8
+  needs: [package_redhat_8]
+  dependencies: [package_redhat_8]
+  variables:
+    PACKAGES: "rpm_files/RPMS/x86_64/*.rpm"
+  script:
+    - F=($PACKAGES)
+    - if [[ "$F" == "$PACKAGES"  ]]; then echo "No artifact downloaded from package job"; exit 1; fi
+    - echo "Number of packages to upload = ${#F[@]}"
+    - if [[ ${#F[@]} -lt 0 || ${#F[@]} == 0 ]]; then exit 1; fi
+    - |
+      response=0; upload_status=""; job_status=0; version=""
+      for package in ${F[@]}; do
+          echo "Uploading package: ${package}"
+          if [[ -f $package ]]; then
+            filename=$(basename $package)
+            package_name=$(echo $filename | cut -d "-" -f1)
+            version=$(echo $filename | cut -d "-" -f2)
+            echo "filename=$filename; package_name=$package_name; version=$version"
+            response=$(curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file $package "https://gitlab.gs.mil/api/v4/projects/$CI_PROJECT_ID/packages/generic/$package_name/$version/$filename")
+            if [[ "$response" == *"201 Created"* ]]; then
+                upload_status="SUCCESS";
+            else
+                upload_status="FAIL";
+                job_status=1;
+            fi
+          else
+            echo "FAIL: $package is not a file"
+            job_status=1
+          fi
+      done
+      # job fails if file does not exist or when there's at least 1 unsuccessful curl response
+      if [[ $job_status > 0 ]]; then exit $job_status; fi
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /swap_v\d+\.\d+\.\d+/'

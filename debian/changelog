@@ -1,3 +1,11 @@
+gnsstk (15.3.1-1) focal; urgency=low
+
+  * Updated to version 15.3.1
+  * Create Py3.11 target RPM package
+  * Add pipeline code for swap release 
+
+ -- Cherie Formacion <cformacion@arlut.utexas.edu>  Tue, 18 Aug 2026 19:21:32 -0500
+
 gnsstk (15.3.0-1) focal; urgency=low
 
   * Updated to version 15.3.0
