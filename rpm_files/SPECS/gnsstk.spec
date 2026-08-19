@@ -1,5 +1,5 @@
 %define name gnsstk
-%define version 15.3.0
+%define version 15.3.1
 %define release 1
 
 Summary:        GNSS Toolkit
@@ -57,6 +57,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 18 2026  <>
+- Updated for v15.3.1 release
+- Add pipeline code for swap release 
+- Create Py3.11 target RPM package
 * Tue Jun 23 2026  <>
 - Updated for v15.3.0 release
 - Add an experimental namespace with changes to fix PRSolution module APV calculation
