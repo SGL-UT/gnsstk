@@ -72,8 +72,13 @@ namespace gnsstk
          Unknown, ///< A default value
          GAL,     ///< Galileo
          GPSA,    ///< GPS alpha
-         GPSB     ///< GPS beta
-            /// @todo add support for remaining systems in RINEX 3.04
+         GPSB,    ///< GPS beta
+         QZSA,    ///< QZSS alpha
+         QZSB,    ///< QZSS beta
+         BDSA,    ///< BeiDou alpha
+         BDSB,    ///< BeiDou beta
+         IRNA,    ///< IRNSS alpha
+         IRNB     ///< IRNSS beta
       };
 
          /// Set data members to default values
@@ -112,20 +117,20 @@ namespace gnsstk
 
          /// Constructor
       Rinex3NavHeader()
-         : valid(0), version(3.02),
+         : valid(0), version(3.04),
            leapSeconds(0), leapDelta(0), leapWeek(0),leapDay(0)
       {}
 
          /// Destructor
-      virtual ~Rinex3NavHeader()
+      ~Rinex3NavHeader() override
       {}
 
          /// Rinex3NavHeader is a "header" so this function always returns true.
-      virtual bool isHeader() const
+      bool isHeader() const override
       { return true; }
 
          /// This function dumps the contents of the header.
-      virtual void dump(std::ostream& s) const;
+      void dump(std::ostream& s) const override;
 
          /** Change the file system, keeping fileType, fileSys, and fileSysSat
           * consistent.
@@ -158,8 +163,7 @@ namespace gnsstk
          validVersion     = 0x01,   ///< Set if RINEX version is valid.
          validRunBy       = 0x02,   ///< Set if Run-by value is valid.
          validComment     = 0x04,   ///< Set if Comments are valid
-         validIonoCorrGPS = 0x08,   ///< Set if GPS Iono Correction data is valid.
-         validIonoCorrGal = 0x010,  ///< Set if Gal Iono Correction data is valid.
+         validIonoCorr    = 0x08,   ///< Set if Iono Correction data is valid.
          validTimeSysCorr = 0x020,  ///< Set if Time System Correction is valid.
          validLeapSeconds = 0x040,  ///< Set if the Leap Seconds value is valid.
          validEoH         = 0x080000000,  ///< Set if the End of Header is valid.
@@ -186,7 +190,7 @@ namespace gnsstk
          /// map of label: GAUT, GPUT, etc, and TimeCorr
       std::map<std::string,TimeSystemCorrection> mapTimeCorr;
          /// map of label : GAL, GPSA or GPSB, and IONO CORRs
-      std::map<std::string,IonoCorr> mapIonoCorr;
+      std::map<IonoCorr::CorrType, IonoCorr> mapIonoCorr;
       long leapSeconds;              ///< Leap seconds
       long leapDelta;                ///< Change in Leap seconds at ref time
       long leapWeek;                 ///< Week number of ref time
