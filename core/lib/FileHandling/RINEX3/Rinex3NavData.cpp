@@ -96,6 +96,7 @@ namespace gnsstk
       Tgd2 = 0.0;
 
       // perturbations
+      Cuc = rnd.Cuc;
       Cus = rnd.Cus;
       Crc = rnd.Crc;
       Crs = rnd.Crs;
